@@ -25,7 +25,7 @@ int Server::setup(){
     // create serversocket
     _serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (_serverSocket == -1){
-        std::cerr << "Error creating socket" << std::endl;
+        std::cerr << "Error creating socket\n" ;
         return 1;
     }
 
@@ -35,12 +35,12 @@ int Server::setup(){
     this->_serverAddr.sin_addr.s_addr = htonl(2130706433); //127.0.0.1
     // serverAddr.sin_addr.s_addr = INADDR_ANY;
     if (bind(_serverSocket, reinterpret_cast<struct sockaddr*>(&this->_serverAddr), sizeof(this->_serverAddr)) == -1) {
-        std::cerr << "Error binding socket" << std::endl;
+        std::cerr << "Error binding socket\n";
         return 1;
     }
 
     if (listen(this->_serverSocket, MAX_CONNECTIONS) == -1){
-        std::cerr << "Error listening on socket" << std::endl;
+        std::cerr << "Error listening on socket\n";
         return 1;
     }
 
@@ -49,5 +49,23 @@ int Server::setup(){
 
     this->_run = true;
     std::cout << "Server listening on port " << this->_port << std::endl;
+
+    int poll (struct pollfd *fds, nfds_t nfds, int timeout);
+    struct pollfd *fds_test;
+
+    std::cout << &poll << "\n";
+    fds_test->events = POLLIN ;
+    std::cout << fds_test->fd << "\n";
+    std::cout << fds_test->events << "\n";
+    std::cout << fds_test->revents << "\n";
+
+    while (true){
+        // poll
+        // new client (accept)
+        // command 
+            // receive / send
+        // remove client (close)
+    }
+
     return 0;
 };

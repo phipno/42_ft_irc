@@ -7,6 +7,7 @@
 #include <pthread.h>
 #include <fcntl.h>
 #include <poll.h>
+#include <vector>
 
 #define MAX_CONNECTIONS 100
 

@@ -7,3 +7,6 @@ int main(){
 
     return (0);
 }
+
+// To test server open new terminal and enter:
+// nc localhost 6667
