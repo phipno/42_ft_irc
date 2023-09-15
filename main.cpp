@@ -1,4 +1,5 @@
 #include "Server.Class.hpp"
+#include "Client.Class.hpp"
 
 int main(){
 
