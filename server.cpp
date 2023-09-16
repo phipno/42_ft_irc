@@ -78,6 +78,7 @@ int creat_socket()
     addr.sin_port = htons(PORT);
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
+    //binds the socket to the address struct, which holds the port and 
     int bindResult = bind(server_socket, (struct sockaddr *)&addr, sizeof(addr));
     if (bindResult == -1)
     {
