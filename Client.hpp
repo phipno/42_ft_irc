@@ -6,27 +6,25 @@
 
 class Channel;
 
-typedef struct s_info {
+// typedef struct s_info {
 	
-	bool _operator;
-	bool _kicked;
+// 	bool _operator;
+// 	bool _kicked;
 
-} t_info;
+// } t_info;
 
 class Client {
 	
 	protected:
-		std::string _username;
-		std::string _fullname;
+		std::string _userName;
+		std::string _nickName;
 	
 	public:
 		Client();
 		Client(std::string username, std::string fullname);
-		std::map<std::string, t_info> _channels; //list of channels that the client is in plus additional info, if he is operatr or got kicked
-		void add_channel(std::string name, t_info infos);
 		
-		std::string prv_message(std::string message, class Client &cli); //sends a private message to an user
-		std::string message(std::string message, class Channel &chnl); //sends a message to every user inside the channel
+		std::string prvMessage(std::string message, class Client &cli); //sends a private message to an user
+		std::string messAge(std::string message, class Channel &chnl); //sends a message to every user inside the channel
 
 
 };
