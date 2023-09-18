@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:46:35 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/15 14:17:23 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/18 13:43:04 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@ int &Client::getClientSocket(){
 	return (this->_clientSocket);
 };
 
+pollfd &Client::getClientPollfd(){
+	return (this->_clientPollfd);
+};
+
 void Client::setClientAddr(struct sockaddr_in clientAddr){
 	this->_clientAddr = clientAddr;
 }
@@ -43,3 +47,7 @@ void Client::setClientAddr(struct sockaddr_in clientAddr){
 void Client::setClientSocket(int clientSocket){
 	this->_clientSocket = clientSocket;
 };
+
+void Client::setClientPollfd(pollfd clientPollfd){
+	this->_clientPollfd = clientPollfd;
+}

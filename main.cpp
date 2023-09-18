@@ -4,7 +4,7 @@
 int main(){
 
     Server server(6667, "password");
-    server.setup();
+    server.runServer();
 
     return (0);
 }
