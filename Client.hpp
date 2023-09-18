@@ -1,5 +1,9 @@
 #pragma once
 
+#include <iostream>
+#include <string>
+#include <map>
+
 class Channel;
 
 typedef struct s_info {
@@ -16,7 +20,8 @@ class Client {
 		std::string _fullname;
 	
 	public:
-		
+		Client();
+		Client(std::string username, std::string fullname);
 		std::map<std::string, t_info> _channels; //list of channels that the client is in plus additional info, if he is operatr or got kicked
 		void add_channel(std::string name, t_info infos);
 		
