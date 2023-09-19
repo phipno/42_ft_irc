@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:08 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/18 15:00:33 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/19 11:22:21 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ class Server{
 
         int							_serverSocket;
 		struct sockaddr_in			_serverAddr;
-		pollfd						_serverPollfd;
+		struct pollfd				_serverPollfd;
 		std::vector<Client *>		_clients; //to be changed to vector containing objects of class Client
 		std::vector<pollfd>			_fds;
 		nfds_t						_nfds;
@@ -46,7 +46,7 @@ class Server{
 		Server();
 
 		int setupServer();
-		void acceptNewClient();
+		void acceptNewClient(Client newClient);
 		void handleClient(Client &client);
 
 	public:

@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/18 15:02:20 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/19 11:23:13 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,24 +40,26 @@ void Server::handleClient(Client &client){
             char buffer[1024];
             while (true){
                 memset(buffer, 0, sizeof(buffer));
+				// std::cout << client._clientSocket << std::endl;
                 int bytesRead = recv(client.getClientSocket(), buffer, sizeof(buffer), 0);
-                // std::cout << bytesRead << std::endl;
-                if (bytesRead == 0){
+                // if (bytesRead != -1)
+				// 	std::cout << "Bytes read:" << bytesRead << std::endl;
+                if (bytesRead == 1){
                     // remove client
-                    close(client.getClientSocket());
-                    std::cout << "Client disconnected" << std::endl;
+                    // close(client.getClientSocket());
+                    // std::cout << "Client disconnected" << std::endl;
                     // close (_serverSocket);
-                    // break ;
+                    break ;
                 }
-                if (bytesRead >0){
+                if (bytesRead > 0){
                 std::string message(buffer);
                 std::cout << "received: " << message << std::endl;
                 }
+				
             }
             
 }
-void Server::acceptNewClient(){
-    Client      newClient;
+void Server::acceptNewClient(Client newClient){
     socklen_t   clientAddrLen = sizeof(newClient.getClientAddr());
     newClient.setClientSocket(accept(this->_serverSocket,reinterpret_cast<struct sockaddr *>(&newClient.getClientAddr()), &clientAddrLen));
     if (newClient.getClientSocket() == -1){
@@ -77,7 +79,7 @@ void Server::acceptNewClient(){
 
     // add new client sockets to pollfds
     this->_fds.push_back(clientPollFd);
-    this->_nfds++;
+    // this->_nfds++;
 
     std::cout << "new client added to list of known clients\n";
 }
@@ -114,7 +116,7 @@ int Server::setupServer(){
 	_serverPollfd.fd = this->_serverSocket;
 	_serverPollfd.events = POLLIN;
 	this->_fds.push_back(this->_serverPollfd);
-	this->_nfds = 1;
+	// this->_nfds = 1;
 	
 	std::cout << "Server listening on port " << this->_port << std::endl;
 	return 0;
@@ -129,20 +131,29 @@ void Server::runServer(){
 
 	while (true){
 		// set poll with unlimited time
-		int PollResult = poll(_fds.data(), this->_nfds, -1);
+		int PollResult = poll(_fds.data(), _fds.size(), -1);
 		if (PollResult == -1){
 			perror("poll");
 			continue;
 		}
-
-		if (this->_fds[0].revents & POLLIN)
-			acceptNewClient();
 		
-		for (int i = 0; i < this->_nfds-1; ++i){
-			if(_fds[i].revents & POLLIN){
-				// _clients[i].setClientSocket(_fds[i].fd);
-				std::cout << i << std::endl;
-				handleClient(*_clients[i]);
+		if (this->_fds[0].revents & POLLIN)
+		{
+			Client      newClient;
+			acceptNewClient(newClient);
+		
+			std::vector<Client *>::iterator it = _clients.begin();
+
+			for (;it != _clients.end(); it++){
+				std::cout << _clients.data() << std::endl;
+			}
+					
+			for (int i = 0; i < _fds.size(); ++i){
+				if(_fds[i].revents & POLLIN){
+					// _clients[i].setClientSocket(_fds[i].fd);
+					std::cout << i << std::endl;
+					handleClient(*_clients[i]);
+				}
 			}
 		}
 

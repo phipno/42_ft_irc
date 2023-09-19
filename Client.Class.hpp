@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:40:27 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/18 13:43:34 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/19 10:42:56 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
+#define VERBOSE true
+
 class Client{
 
 		protected:
 			struct sockaddr_in	_clientAddr;
-			int					_clientSocket;
 			pollfd				_clientPollfd;
+			int					_clientSocket;
 
 		public:
 			Client();

@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:46:35 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/18 13:43:04 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/19 11:27:47 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,16 @@
 
 Client::Client(){
 	memset(&_clientAddr, 0, sizeof(_clientAddr));
+	if (VERBOSE)
+		std::cout << "default constructor called\n"; 
 };
-Client::~Client(){};
+Client::~Client(){
+	if (VERBOSE)
+		std::cout << "destructor called\n";
+};
 Client::Client (Client const &src){
-	*this = src;
+	if (this != &src)
+		*this = src;
 };
 Client &Client::operator= (Client const &src){
 	(void) src;
