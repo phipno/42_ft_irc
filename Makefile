@@ -4,7 +4,7 @@ CPPFLAGS		= 	-Wall -Wextra -Werror -std=c++98 -g
 CXX 			= 	c++
 # ---------------------------------------#
 
-NAME			=	ft_irc
+NAME			=	ircserv
 
 
 SRC				= 	main \

@@ -33,3 +33,5 @@
 
 .vscode
 *.pdf
+a.out.dSYM
+ircserv
