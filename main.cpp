@@ -1,5 +1,5 @@
-#include "Client.hpp"
-#include "Channel.hpp"
+#include "Client.Class.hpp"
+#include "Channel.Class.hpp"
 
 int main(void)
 {
