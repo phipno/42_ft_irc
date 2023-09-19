@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:08 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/19 11:22:21 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/19 13:03:01 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,14 @@ class Server{
         int							_serverSocket;
 		struct sockaddr_in			_serverAddr;
 		struct pollfd				_serverPollfd;
-		std::vector<Client *>		_clients; //to be changed to vector containing objects of class Client
+		std::vector<Client>		_clients; //to be changed to vector containing objects of class Client
 		std::vector<pollfd>			_fds;
 		nfds_t						_nfds;
 		// pthread_mutex_t				_clientMutex;
 		Server();
 
 		int setupServer();
-		void acceptNewClient(Client newClient);
+		void acceptNewClient(Client &newClient);
 		void handleClient(Client &client);
 
 	public:

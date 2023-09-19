@@ -1,9 +1,10 @@
 #include "Server.Class.hpp"
 #include "Client.Class.hpp"
 
-int main(){
+int main(int argc, char **argv){
 
-    Server server(6667, "password");
+    int port = std::atoi(argv[1]); 
+    Server server(port, "password");
     server.runServer();
 
     return (0);

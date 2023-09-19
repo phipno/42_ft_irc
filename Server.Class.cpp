@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/19 11:23:13 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/19 13:12:30 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,8 @@ void Server::handleClient(Client &client){
                 memset(buffer, 0, sizeof(buffer));
 				// std::cout << client._clientSocket << std::endl;
                 int bytesRead = recv(client.getClientSocket(), buffer, sizeof(buffer), 0);
-                // if (bytesRead != -1)
-				// 	std::cout << "Bytes read:" << bytesRead << std::endl;
+                if (bytesRead != -1)
+					std::cout << "Bytes read:" << bytesRead << std::endl;
                 if (bytesRead == 1){
                     // remove client
                     // close(client.getClientSocket());
@@ -59,20 +59,27 @@ void Server::handleClient(Client &client){
             }
             
 }
-void Server::acceptNewClient(Client newClient){
+void Server::acceptNewClient(Client &newClient){
     socklen_t   clientAddrLen = sizeof(newClient.getClientAddr());
     newClient.setClientSocket(accept(this->_serverSocket,reinterpret_cast<struct sockaddr *>(&newClient.getClientAddr()), &clientAddrLen));
-    if (newClient.getClientSocket() == -1){
+   
+    std::cout << "Client Socket: " << newClient.getClientSocket() << std::endl;
+	
+	if (newClient.getClientSocket() == -1){
         std::cerr << "Error accepting client connection\n";
     }
 
 	//insert prompt and checks for nickname, username and password;
 	
-    this->_clients.push_back(&newClient);
+    this->_clients.push_back(newClient);
+	std::cout << "new Client: "<< &newClient << std::endl;
     std::cout << "Client connected\n";
     
 	pollfd clientPollFd;
 	clientPollFd.fd = newClient.getClientSocket();
+
+	std::cout << "socketfd: " << newClient.getClientPollfd().fd << std::endl;
+	
 	clientPollFd.events = POLLIN;
     // set new client to non-blocking mode
     fcntl(newClient.getClientSocket(), F_SETFL, O_NONBLOCK);
@@ -140,19 +147,20 @@ void Server::runServer(){
 		if (this->_fds[0].revents & POLLIN)
 		{
 			Client      newClient;
+			
 			acceptNewClient(newClient);
 		
-			std::vector<Client *>::iterator it = _clients.begin();
+			std::vector<Client>::iterator it = _clients.begin();
 
 			for (;it != _clients.end(); it++){
-				std::cout << _clients.data() << std::endl;
+				std::cout << (it)->getClientSocket() << std::endl;
 			}
 					
 			for (int i = 0; i < _fds.size(); ++i){
 				if(_fds[i].revents & POLLIN){
 					// _clients[i].setClientSocket(_fds[i].fd);
 					std::cout << i << std::endl;
-					handleClient(*_clients[i]);
+					handleClient(_clients[i]);
 				}
 			}
 		}
@@ -162,7 +170,7 @@ void Server::runServer(){
         // remove client (close)
 	}
 	for (int i = 1; i < this->_nfds; ++i){
-		close(_clients[i]->getClientSocket());
+		close(_clients[i].getClientSocket());
 	}
 	close (_serverSocket);
 };
