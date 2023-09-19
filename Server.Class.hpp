@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:08 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/19 15:32:59 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/19 16:06:55 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class Server{
         int							_serverSocket;
 		struct sockaddr_in			_serverAddr;
 		struct pollfd				_serverPollfd;
-		std::vector<Client *>			_clients;
+		std::vector<Client>			_clients;
 		std::vector<pollfd>			_fds;
 		nfds_t						_nfds;
 		// pthread_mutex_t				_clientMutex;
@@ -47,8 +47,7 @@ class Server{
 
 		int setupServer();
 		void acceptNewClient();
-		void handleClient(Client *client);
-		void cleanupClients();
+		void handleClient(Client &client);
 
 	public:
 		~Server();

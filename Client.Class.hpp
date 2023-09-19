@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:40:27 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/19 15:00:56 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/19 16:27:43 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,12 @@
 
 #include <iostream>
 #include <string>
+#include <unistd.h>
 #include <poll.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-#define VERBOSE true
+#define VERBOSE false
 
 class Client{
 

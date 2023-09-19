@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:46:35 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/19 15:00:57 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/19 16:03:53 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,15 @@ Client::~Client(){
 		std::cout << "destructor called\n";
 };
 Client::Client (Client const &src){
+	if (VERBOSE)
+		std::cout << "copy constructor called\n";
 	if (this != &src)
 		*this = src;
 };
 Client &Client::operator= (Client const &src){
-	(void) src;
+	this->_clientAddr = src._clientAddr;
+	this->_clientPollfd = src._clientPollfd;
+	this->_clientSocket = src._clientSocket;
 	return (*this);
 };
 
