@@ -8,8 +8,9 @@ NAME			=	ft_irc
 
 
 SRC				= 	main \
-					Client \
-					Channel
+					Client.Class \
+					Channel.Class \
+					Server.Class
 
 
 
