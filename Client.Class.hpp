@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:40:27 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/19 10:42:56 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/19 15:00:56 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ class Client{
 
 		protected:
 			struct sockaddr_in	_clientAddr;
-			pollfd				_clientPollfd;
+			struct pollfd		_clientPollfd;
 			int					_clientSocket;
 
 		public:
@@ -35,10 +35,12 @@ class Client{
 
 			struct sockaddr_in &getClientAddr();
 			int &getClientSocket();
+			int &getClientPollfdFD();
 			pollfd &getClientPollfd();
 			
-			void setClientAddr(struct sockaddr_in clientAddr);
+			void setClientAddr(struct sockaddr_in &clientAddr);
 			void setClientSocket(int clientSocket);
-			void setClientPollfd (pollfd clientPollfd);
+			void setClientPollfdFD (int const &fd);
+			void setClientPollfdEvents (int const &event);
 		
 };

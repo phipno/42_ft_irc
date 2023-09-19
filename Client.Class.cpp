@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:46:35 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/19 11:27:47 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/19 15:00:57 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 Client::Client(){
 	memset(&_clientAddr, 0, sizeof(_clientAddr));
+	
 	if (VERBOSE)
 		std::cout << "default constructor called\n"; 
 };
@@ -42,11 +43,15 @@ int &Client::getClientSocket(){
 	return (this->_clientSocket);
 };
 
+int &Client::getClientPollfdFD(){
+	return (this->_clientPollfd.fd);
+};
+
 pollfd &Client::getClientPollfd(){
 	return (this->_clientPollfd);
 };
 
-void Client::setClientAddr(struct sockaddr_in clientAddr){
+void Client::setClientAddr(struct sockaddr_in &clientAddr){
 	this->_clientAddr = clientAddr;
 }
 
@@ -54,6 +59,10 @@ void Client::setClientSocket(int clientSocket){
 	this->_clientSocket = clientSocket;
 };
 
-void Client::setClientPollfd(pollfd clientPollfd){
-	this->_clientPollfd = clientPollfd;
+void Client::setClientPollfdFD(int const &fd){
+	this->_clientPollfd.fd = fd;
+}
+
+void Client::setClientPollfdEvents(int const &events){
+	this->_clientPollfd.events = events;
 }
