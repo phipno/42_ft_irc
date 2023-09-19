@@ -50,7 +50,29 @@ int Channel::rm_priveleges(std::string cli) {
 	}
 }
 
-//A user joins WITHOUT privilieges into this channel
+/*
+   The JOIN command is used by a user to request to start listening to
+   the specific channel.  Servers MUST be able to parse arguments in the
+   form of a list of target, but SHOULD NOT use lists when sending JOIN
+   messages to clients.
+
+   Once a user has joined a channel, he receives information about
+   all commands his server receives affecting the channel.  This
+   includes JOIN, MODE, KICK, PART, QUIT and of course PRIVMSG/NOTICE.
+   This allows channel members to keep track of the other channel
+   members, as well as channel modes.
+
+   If a JOIN is successful, the user receives a JOIN message as
+   confirmation and is then sent the channel's topic (using RPL_TOPIC) and
+   the list of users who are on the channel (using RPL_NAMREPLY), which
+   MUST include the user joining.
+
+   Note that this message accepts a special argument ("0"), which is
+   a special request to leave all channels the user is currently a member
+   of.  The server will process this message as if the user had sent
+   a PART command (See Section 3.2.2) for each channel he is a member
+   of.
+*/
 int Channel::join(std::string cli) {
 
 	if (VERBOSE)
@@ -68,7 +90,19 @@ int Channel::join(std::string cli) {
 	}
 }
 
-//A User gets kicked from the channel.
+/*
+   The KICK command can be used to request the forced removal of a user
+   from a channel.  It causes the <user> to PART from the <channel> by
+   force.  For the message to be syntactically correct, there MUST be
+   either one channel parameter and multiple user parameter, or as many
+   channel parameters as there are user parameters.  If a "comment" is
+   given, this will be sent instead of the default message, the nickname
+   of the user issuing the KICK.
+
+   The server MUST NOT send KICK messages with multiple channels or
+   users to clients.  This is necessarily to maintain backward
+   compatibility with old client software.
+*/
 int Channel::kick(std::string to_kick) {
 	
 	if (VERBOSE)
@@ -86,7 +120,20 @@ int Channel::kick(std::string to_kick) {
 	}
 }
 
-//A User gets invited to the channel
+/*
+   The INVITE command is used to invite a user to a channel.  The
+   parameter <nickname> is the nickname of the person to be invited to
+   the target channel <channel>.  There is no requirement that the
+   channel the target user is being invited to must exist or be a valid
+   channel.  However, if the channel exists, only members of the channel
+   are allowed to invite other users.  When the channel has invite-only
+   flag set, only channel operators may issue INVITE command.
+
+   Only the user inviting and the user being invited will receive
+   notification of the invitation.  Other channel members are not
+   notified.  (This is unlike the MODE changes, and is occasionally the
+   source of trouble for users.)
+*/
 // int Channel::invite(std::string to_invite) {
 	
 // 	if (VERBOSE)
@@ -104,14 +151,47 @@ int Channel::kick(std::string to_kick) {
 // 	}
 // }
 
+/*
+   The TOPIC command is used to change or view the topic of a channel.
+   The topic for channel <channel> is returned if there is no <topic>
+   given.  If the <topic> parameter is present, the topic for that
+   channel will be changed, if this action is allowed for the user
+   requesting it.  If the <topic> parameter is an empty string, the
+   topic for that channel will be removed.
+*/
 int Channel::topic(std::string topic_message) {
 	
 	if (VERBOSE)
-		std::cout << "Topic Message" << std::endl;
+		std::cout << "Set new topic message" << std::endl;
 
 	set_topic(topic_message);
 	return (1);
 }
+
+int Channel::view_topic(void) {
+	
+	if (VERBOSE)
+		std::cout << "Display topic message" << std::endl;
+
+	std::cout << get_topic() << std::endl;
+	return (1);
+}
+
+/*
+3.2.3 Channel mode message
+
+      Command: MODE
+   Parameters: <channel> *( ( "-" / "+" ) *<modes> *<modeparams> )
+
+   The MODE command is provided so that users may query and change the
+   characteristics of a channel.  For more details on available modes
+   and their uses, see "Internet Relay Chat: Channel Management" [IRC-
+   CHAN].  Note that there is a maximum limit of three (3) changes per
+   command for modes that take a parameter.
+*/
+// Channel& Channel::modes(bool privileges, char alter, std::string mode) {
+
+// }
 
 //==============================================================================
 //Debugging
