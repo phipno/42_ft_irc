@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichowsky <kczichowsky@student.42.fr>    +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/20 11:46:39 by kczichowsky      ###   ########.fr       */
+/*   Updated: 2023/09/20 15:56:59 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 #include "Server.Class.hpp"
 
 /* ---------------- CANONICAL FORM ---------------------------*/
-Server::Server() : _port(0), _password("no_pw"), _hostname("ft_irc"){
+Server::Server() : _port(0), _password("no_pw"){
 	this->_fds[MAX_EVENTS];
 };
 
-Server::Server(int port, std::string password) : _port(port), _password(password), _hostname("ft_irc"){};
+Server::Server(int port, std::string password) : _port(port), _password(password){};
 
 Server::~Server(){};
 
@@ -35,7 +35,7 @@ Server &Server::operator= (Server const &src){
 /* ------------------------- PRIVATE METHODS ---------------------------------*/
 
 void Server::handleClient(Client &client){
-             
+
     std::cout << "handle client function accessed\n"; 
             char buffer[1024];
             while (true){
@@ -55,18 +55,18 @@ void Server::handleClient(Client &client){
                 std::string message(buffer);
                 std::cout << "received: " << message << std::endl;
                 }
-				
+
             }
-            
+
 }
 void Server::acceptNewClient(){
 
 	Client     newClient;
-	
+
     socklen_t   clientAddrLen = sizeof(newClient.getClientAddr());
     newClient.setClientSocket(accept(this->_serverSocket,reinterpret_cast<struct sockaddr *>(&newClient.getClientAddr()), &clientAddrLen));
-   
-	
+
+
 	if (newClient.getClientSocket() == -1){
         std::cerr << "Error accepting client connection\n";
     }
@@ -74,7 +74,7 @@ void Server::acceptNewClient(){
 	//insert prompt and checks for nickname, username and password;
 
     std::cout << "Client connected\n";
-    
+
 	newClient.setClientPollfdFD(newClient.getClientSocket());
 	newClient.setClientPollfdEvents(POLLIN);
 
@@ -84,13 +84,13 @@ void Server::acceptNewClient(){
     // add new client socket to pollfds and client to clients vector
     this->_clients.push_back(newClient);
     this->_fds.push_back(newClient.getClientPollfd());
-	
+
     std::cout << "new client added to list of known clients on socket " << newClient.getClientSocket() << " at address " << &_clients.back() << "\n";
 }
 
 int Server::setupServer(){
 	close (3);
-	
+
 	// create serversocket
 	_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverSocket == -1){
@@ -121,7 +121,7 @@ int Server::setupServer(){
 	_serverPollfd.events = POLLIN;
 	this->_fds.push_back(this->_serverPollfd);
 	// this->_nfds = 1;
-	
+
 	std::cout << "Server listening on port " << this->_port << std::endl;
 	return 0;
 }
@@ -140,10 +140,10 @@ void Server::runServer(){
 			perror("poll");
 			continue;
 		}
-		
+
 		if (this->_fds[0].revents & POLLIN)
 			acceptNewClient();
-					
+
 		for (unsigned long i = 0; i < _fds.size() - 1; ++i){
 			if(_fds[i].revents & POLLIN){
 				std::cout << i << std::endl;
