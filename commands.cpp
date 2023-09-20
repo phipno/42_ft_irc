@@ -89,9 +89,31 @@ int Server::pass(t_msg *message, Client client){
     //      - Sent by the server to a user upon connection to indicate
     //      the restricted nature of the connection (user mode "+r").
 
+int Server::nick(t_msg *message, Client client){
+	if (client.getRegistrationStatus() == false)
+		return 1; //send error message
+	if (message->paramVec[0].empty() == true){
+		numReply(431, message, client);
+		return 1;
+	}
+	if (client.getNickName().empty() == true){
+		for (size_t i = 0; i < message->paramVec[0].length(); ++i){
+			if (!std::isalnum(message->paramVec[0][i])){
+				numReply(432, message, client);
+					return 1;
+			}
+		}
+		std::vector<Client>::iterator it = _clients.begin();
+		for (;it != _clients.end(); it++){
+			// if (it->getNickName().find(message) != _clients.end())
+				numReply(433, message, client);
+				return 1;
+		}
+	}
+	client.setNickName(message->paramVec[0]);
+	return 0;
+}
 
-
-// USER
 // USER <your-username> <your-hostname> <your-servername> :<your-realname>
 // ex:
 // USER MyUsername MyHostname MyServername :John Doe
