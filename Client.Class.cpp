@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kczichowsky <kczichowsky@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:46:35 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/19 17:04:50 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/20 10:53:59 by kczichowsky      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,10 @@ pollfd &Client::getClientPollfd(){
 	return (this->_clientPollfd);
 };
 
+bool &Client::getRegistrationStatus(){
+	return (this->_registered);
+}
+
 void Client::setClientAddr(struct sockaddr_in &clientAddr){
 	this->_clientAddr = clientAddr;
 }
@@ -76,7 +80,9 @@ void Client::setClientPollfdEvents(int const &events){
 	this->_clientPollfd.events = events;
 }
 
-
+void Client::registerClient(bool registered){
+	this->_registered = registered;
+}
 
 															 
 /*

@@ -10,7 +10,11 @@ NAME			=	ircserv
 SRC				= 	main \
 					Client.Class \
 					Channel.Class \
-					Server.Class
+					Server.Class \
+					parsing \
+					commands \
+					numericReplies
+					
 
 
 
