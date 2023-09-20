@@ -6,7 +6,7 @@
 /*   By: kczichowsky <kczichowsky@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:46:35 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/20 10:53:59 by kczichowsky      ###   ########.fr       */
+/*   Updated: 2023/09/20 11:36:50 by kczichowsky      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,13 @@ pollfd &Client::getClientPollfd(){
 bool &Client::getRegistrationStatus(){
 	return (this->_registered);
 }
+
+std::string &Client::getNickName(){
+	return (this->_nickName);
+};
+std::string &Client::getUserName(){
+	return (this->_userName);
+};
 
 void Client::setClientAddr(struct sockaddr_in &clientAddr){
 	this->_clientAddr = clientAddr;
