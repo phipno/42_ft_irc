@@ -4,10 +4,8 @@
 #include <string>
 #include <map>
 
+#include "defines.hpp"
 #include "Client.Class.hpp"
-
-#define VERBOSE 0 //used for print statements of function calls
-#define DEBUG 1	//used for print statements inside functions
 
 class Channel {
 	

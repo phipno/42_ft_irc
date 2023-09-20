@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichowsky <kczichowsky@student.42.fr>    +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:40:27 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/20 11:36:41 by kczichowsky      ###   ########.fr       */
+/*   Updated: 2023/09/20 15:37:12 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@
 #include <arpa/inet.h>
 #include <map>
 
-#define VERBOSE 0
-#define DEBUG 1
+#include "defines.hpp"
 
 class Client{
 

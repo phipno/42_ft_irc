@@ -3,13 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichowsky <kczichowsky@student.42.fr>    +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:08 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/20 13:32:23 by kczichowsky      ###   ########.fr       */
+/*   Updated: 2023/09/20 15:37:55 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #pragma once
 
@@ -24,18 +23,10 @@
 #include <fcntl.h>
 #include <poll.h>
 #include <vector>
-#include "Client.Class.hpp"
 #include <unistd.h>
 
-#define MAX_CONNECTIONS 100
-#define MAX_EVENTS 100
-
-#define RPL_WELCOME 001
-#define RPL_YOURHOST 002
-#define ERR_NONICKNAMEGIVEN 431
-#define ERR_ERRONEUSNICKNAME 432
-#define ERR_ALREADYREGISTRED 462
-#define ERR_NEEDMOREPARAMS 461
+#include "defines.hpp"
+#include "Client.Class.hpp"
 
 typedef	struct s_msg{
 		std::string					prefix;
