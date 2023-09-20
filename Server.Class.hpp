@@ -6,7 +6,7 @@
 /*   By: kczichowsky <kczichowsky@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:08 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/20 11:47:25 by kczichowsky      ###   ########.fr       */
+/*   Updated: 2023/09/20 13:32:23 by kczichowsky      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 #define MAX_CONNECTIONS 100
 #define MAX_EVENTS 100
 
+#define RPL_WELCOME 001
+#define RPL_YOURHOST 002
 #define ERR_NONICKNAMEGIVEN 431
 #define ERR_ERRONEUSNICKNAME 432
 #define ERR_ALREADYREGISTRED 462
