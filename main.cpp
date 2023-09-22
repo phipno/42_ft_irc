@@ -1,6 +1,13 @@
 #include "Server.Class.hpp"
 #include "Client.Class.hpp"
 
+bool sigint = false;
+void	signal_handler(int binary) {
+
+    if (binary == SIGINT)
+        std::cout << "Closing Server and disconnecting clients" << std::endl;
+}
+
 //server
 int main(int argc, char **argv){
 
@@ -8,7 +15,12 @@ int main(int argc, char **argv){
     int port = std::atoi(argv[1]); 
 	close(port);
     Server server(port, "password");
-    server.runServer();
+    signal(SIGINT, signal_handler);
+    while(!sigint)
+        server.runServer();
+    for (unsigned int i = 0; i < server.get_clients().size(); i++)
+		close(server.get_clients()[i].getClientSocket());
+	close(server.get_serversocket());
     return (0);
 }
 

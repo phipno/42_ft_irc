@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:08 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/22 12:40:22 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/22 13:48:09 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 #include <poll.h>
 #include <vector>
 #include <unistd.h>
+#include <signal.h>
 
 #include "defines.hpp"
 #include "Client.Class.hpp"
@@ -54,7 +55,7 @@ class Server{
 		int setupServer();
 		void acceptNewClient();
 		void recv_from_client_socket(Client &client);
-		void send_msg_to_client_socket(Client &client);
+		void send_msg_to_client_socket(Client &client, std::string message);
 
 	public:
 		~Server();
@@ -65,4 +66,8 @@ class Server{
 		void runServer();
 		std::string numReply(int errorCode, t_msg *message, Client client);
 		int pass(t_msg *message, Client client);
+
+		std::vector<Client> get_clients();
+		int get_serversocket();
+
 };

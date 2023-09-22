@@ -6,10 +6,9 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/22 12:41:34 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/22 14:00:53 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "Server.Class.hpp"
 
@@ -52,18 +51,15 @@ void Server::recv_from_client_socket(Client &client){
 		// Process the received data.
 		std::string message(buffer);
 		std::cout << "Received: " << message << std::endl;
-	
 	}
 }
 
 //A message is written to a client's socket
-void Server::send_msg_to_client_socket(Client &client) {
-	
-	char msg[8] = "Message";
-	int bytesRead = send(client.getClientSocket(), msg, sizeof(msg), 0);
-	(void) bytesRead;
-	// if (bytesRead == -1)
-		// perror("send message to client");
+void Server::send_msg_to_client_socket(Client &client,std::string message) {
+
+	int bytesRead = send(client.getClientSocket(), (message + "\r\n").c_str() , message.length() + 2, 0);
+	if (bytesRead == -1)
+		perror("send message to client");
 }
 
 void Server::acceptNewClient() {
@@ -154,7 +150,7 @@ void Server::runServer(){
 		int PollResult = poll(_fds.data(), _fds.size(), -1);
 		if (PollResult == -1){
 			perror("poll");
-			continue;
+			// continue;
 		}
 
 		//used for connecting of a client ot a server
@@ -169,7 +165,7 @@ void Server::runServer(){
 				recv_from_client_socket(_clients[i]);
 			}
 			
-			send_msg_to_client_socket(_clients[i]);
+			send_msg_to_client_socket(_clients[i], "hello from server");
 			if(_fds[0].revents & POLLOUT) {
 				recv_from_client_socket(_clients[i]);
 			}
@@ -178,8 +174,14 @@ void Server::runServer(){
         // remove client (close)
 		}
 	}
-	for (int i = 1; i < _clients.size(); ++i){
-		close(_clients[i].getClientSocket());
-	}
-	close (_serverSocket);
 };
+
+
+//getter/settter
+std::vector<Client> Server::get_clients() {
+	return (_clients);
+}
+
+int Server::get_serversocket() {
+	return (_serverSocket);
+}
