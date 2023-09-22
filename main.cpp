@@ -5,10 +5,10 @@
 int main(int argc, char **argv){
 
     (void) argc;
-	int port = std::atoi(argv[1]); 
+    int port = std::atoi(argv[1]); 
+	close(port);
     Server server(port, "password");
     server.runServer();
-
     return (0);
 }
 

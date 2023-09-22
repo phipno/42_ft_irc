@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:08 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/20 15:37:55 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/22 12:40:22 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,14 @@
 
 #include "defines.hpp"
 #include "Client.Class.hpp"
+#include "Channel.Class.hpp"
 
 typedef	struct s_msg{
 		std::string					prefix;
 		std::string					command;
 		std::string					param;
-		std::vector<std::string>	paramVec;			
+		std::vector<std::string>	paramVec;
 } t_msg;
-
 
 class Server{
 
@@ -47,12 +47,14 @@ class Server{
 		struct sockaddr_in			_serverAddr;
 		struct pollfd				_serverPollfd;
 		std::vector<Client>			_clients;
+		std::vector<Channel>		_channels;
 		std::vector<pollfd>			_fds;
+		
 		Server();
-
 		int setupServer();
 		void acceptNewClient();
-		void handleClient(Client &client);
+		void recv_from_client_socket(Client &client);
+		void send_msg_to_client_socket(Client &client);
 
 	public:
 		~Server();
@@ -61,8 +63,6 @@ class Server{
 		Server &operator= (Server const &src);
 
 		void runServer();
-
 		std::string numReply(int errorCode, t_msg *message, Client client);
-
 		int pass(t_msg *message, Client client);
 };
