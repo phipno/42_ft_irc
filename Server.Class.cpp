@@ -6,11 +6,12 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/22 14:00:53 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/22 15:55:42 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.Class.hpp"
+extern bool g_sigint;
 
 /* ---------------- CANONICAL FORM ---------------------------*/
 Server::Server() : _port(0), _password("no_pw"){
@@ -136,21 +137,20 @@ int Server::setupServer(){
 	return 0;
 }
 
-
 /* ------------------------- PUBLIC METHODS ----------------------------------*/
 
-void Server::runServer(){
+void Server::runServer() {
 
 	if (VERBOSE)
 		std::cout<< "runServer()" << std::endl;
+		
 	setupServer();
-
-	while (true){
+	while (!g_sigint) {
 		// set poll with unlimited time
 		int PollResult = poll(_fds.data(), _fds.size(), -1);
 		if (PollResult == -1){
 			perror("poll");
-			// continue;
+			continue;
 		}
 
 		//used for connecting of a client ot a server
@@ -164,18 +164,13 @@ void Server::runServer(){
 			if(_fds[i + 1].revents & POLLIN){ 
 				recv_from_client_socket(_clients[i]);
 			}
-			
 			send_msg_to_client_socket(_clients[i], "hello from server");
 			if(_fds[0].revents & POLLOUT) {
 				recv_from_client_socket(_clients[i]);
 			}
-        // command if pressed CTRL + C
-            // receive / send
-        // remove client (close)
 		}
 	}
 };
-
 
 //getter/settter
 std::vector<Client> Server::get_clients() {

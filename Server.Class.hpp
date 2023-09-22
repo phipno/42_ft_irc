@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:08 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/22 13:48:09 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/22 15:53:57 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@
 #include <signal.h>
 
 #include "defines.hpp"
-#include "Client.Class.hpp"
 #include "Channel.Class.hpp"
+#include "Client.Class.hpp"
 
 typedef	struct s_msg{
 		std::string					prefix;
@@ -47,8 +47,8 @@ class Server{
         int							_serverSocket;
 		struct sockaddr_in			_serverAddr;
 		struct pollfd				_serverPollfd;
-		std::vector<Client>			_clients;
 		std::vector<Channel>		_channels;
+		std::vector<Client>			_clients;
 		std::vector<pollfd>			_fds;
 		
 		Server();
@@ -69,5 +69,5 @@ class Server{
 
 		std::vector<Client> get_clients();
 		int get_serversocket();
-
+		void signal_handler(int binary);
 };
