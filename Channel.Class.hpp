@@ -28,8 +28,9 @@ class Channel {
 		
 		int give_priveleges(std::string cli); //changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
 		int rm_priveleges(std::string cli); //changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
-		int join(std::string cli); //a client joins the channel
-		
+		int add_user(std::string cli, bool operatorflag); //a client gets added with its appropriate privilieges
+		bool is_in_channel(std::string name);
+
 		//operator functions
 		int kick(std::string to_kick); //returns 1 if successfull
 		int invite(std::string to_invite); //returns 1 if successfull
@@ -41,8 +42,10 @@ class Channel {
 		//Debugging
 		void list_clients(); //lists all clients in the channel and their privileges
 		void list_channel_attributes(void);
+		
 		//setters
 		void set_users(std::map<std::string, bool> users);
+		void set_name(std::string name);
 		void set_topic(std::string message);
 		void set_topic_restriction(bool restriction);
 		void set_invite_only(bool restriction);
@@ -51,6 +54,7 @@ class Channel {
 		
 		//getters
 		std::map<std::string, bool> get_users(void);
+		std::string get_name(void);
 		std::string get_topic(void);
 		bool get_topic_restriction(void);
 		bool get_invite_only(void);

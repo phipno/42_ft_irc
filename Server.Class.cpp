@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/22 15:55:42 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/24 18:46:18 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,10 @@ Server &Server::operator= (Server const &src){
 /* ------------------------- PRIVATE METHODS ---------------------------------*/
 
 //receives a message from a client's socket
-void Server::recv_from_client_socket(Client &client){
+std::string Server::recv_from_client_socket(Client &client) {
 	char buffer[512];
-
+	std::string message;
+	
 	memset(buffer, 0, sizeof(buffer));
 	int bytesRead = recv(client.getClientSocket(), buffer, sizeof(buffer), 0);
 	
@@ -52,48 +53,92 @@ void Server::recv_from_client_socket(Client &client){
 		// Process the received data.
 		std::string message(buffer);
 		std::cout << "Received: " << message << std::endl;
+		return (message);
 	}
+	return (message);
 }
 
 //A message is written to a client's socket
-void Server::send_msg_to_client_socket(Client &client,std::string message) {
+void Server::send_msg_to_client_socket(Client &client, std::string message) {
 
 	int bytesRead = send(client.getClientSocket(), (message + "\r\n").c_str() , message.length() + 2, 0);
 	if (bytesRead == -1)
 		perror("send message to client");
 }
 
+//sets up a new connection between client and server socket
 void Server::acceptNewClient() {
 
 	if (VERBOSE)
 		std::cout<< "acceptNewClient()" << std::endl;
-		
+
+	std::string nickName;	
+	std::string userName;	
 	Client     newClient;
-    socklen_t   clientAddrLen = sizeof(newClient.getClientAddr());
+	socklen_t  clientAddrLen = sizeof(newClient.getClientAddr());
 	
     newClient.setClientSocket(accept(this->_serverSocket, reinterpret_cast<struct sockaddr *>(&newClient.getClientAddr()), &clientAddrLen));
-	
 	if (newClient.getClientSocket() == -1)
-    	perror("accept");
-
-	if (newClient.getClientSocket() == -1){
-        std::cerr << "Error accepting client connection\n";
-    }
+    	perror("accept client connection");
 
 	//insert prompt and checks for nickname, username and password;
-    std::cout << "Client connected\n";
+    std::cout << "Client socket connected\n";
 
 	newClient.setClientPollfdFD(newClient.getClientSocket());
-	newClient.setClientPollfdEvents(POLLIN);
+	newClient.setClientPollfdEvents(POLLIN | POLLOUT);
 
     // set new client to non-blocking mode
     // fcntl(newClient.getClientSocket(), F_SETFL, O_NONBLOCK);
 
-    // add new client socket to pollfds and client to clients vector
-    this->_clients.push_back(newClient);
+    // add new client socket to pollfds
     this->_fds.push_back(newClient.getClientPollfd());
+	
+	std::cout << "Name?" << std::endl;
+	std::cin >> nickName;
+	newClient.setNickName(nickName);
+	this->_clients.push_back(newClient);
+	
+	
+    std::cout << "new client socket added to list of known sockets" << newClient.getClientSocket() << " at address " << &_clients.back() << "\n";
+}
 
-    std::cout << "new client added to list of known clients on socket " << newClient.getClientSocket() << " at address " << &_clients.back() << "\n";
+//used for creating or joining a channel, depending if it is already existent
+void Server::join_channel(std::string channelName, class Client &client) {
+	
+	int i = channel_exists(channelName);
+	std::cout << "Channel already exists? " << i << std::endl;
+	if (i == -1) {
+		Channel channel(channelName);
+		channel.add_user(client.getNickName(), true);
+		_channels.push_back(channel);
+	}
+	else{
+		_channels[i].add_user(client.getNickName(), false);
+	}
+}
+
+//sends a message to all memebers of the channel
+void Server::send_message_to_channel(std::string message, class Channel &channel) {
+
+	std::vector<Client>::iterator it = _clients.begin();
+
+	for (int i = 0 ; it != _clients.end() ; it++, i++) {
+
+		if (channel.is_in_channel(it->getNickName())) {
+			send_msg_to_client_socket(_clients[i], message);
+		}
+	}
+}
+
+//if a channel exists, it returns the index of the channel. Otherwise it returns a -1.
+int Server::channel_exists(std::string channelName) {
+
+	std::vector<Channel>::iterator it = _channels.begin();
+	for ( int i = 0; it != _channels.end(); it++, i++) {
+		if (channelName == it->get_name())
+			return (i);
+	}
+	return (-1);
 }
 
 int Server::setupServer(){
@@ -137,40 +182,78 @@ int Server::setupServer(){
 	return 0;
 }
 
+void Server::handle_requests(t_msg request) {
+
+	(void) request;
+	// if (request.cmd == "JOIN")
+		//join	
+	//etc...
+}
+
 /* ------------------------- PUBLIC METHODS ----------------------------------*/
 
 void Server::runServer() {
 
 	if (VERBOSE)
 		std::cout<< "runServer()" << std::endl;
-		
+
+	std::string cmd;
+
 	setupServer();
+	Channel channel("Channel1");
+	_channels.push_back(channel);
+	list_channels();
+	
 	while (!g_sigint) {
 		// set poll with unlimited time
+		
 		int PollResult = poll(_fds.data(), _fds.size(), -1);
-		if (PollResult == -1){
+		if (PollResult == -1) {
 			perror("poll");
 			continue;
 		}
-
-		//used for connecting of a client ot a server
+		
+		//used for connecting a client to a server
 		if (this->_fds[0].revents & POLLIN){
 			acceptNewClient();
 		}
 
 		for (unsigned long i = 0; i < _fds.size(); ++i) {
+			//1. messages from the client are sent directly to the server's socket
+			//2. ther server is processing the command
+			//3. server sends a response
 			
-			//messages from the client are sent directly to the server's socket
-			if(_fds[i + 1].revents & POLLIN){ 
-				recv_from_client_socket(_clients[i]);
-			}
-			send_msg_to_client_socket(_clients[i], "hello from server");
-			if(_fds[0].revents & POLLOUT) {
-				recv_from_client_socket(_clients[i]);
+			if(_fds[i + 1].revents & POLLIN) {
+				list_clients();
+				
+				cmd = recv_from_client_socket(_clients[i]); //1.
+				if (cmd == "JOIN\n") {
+					join_channel("Channel1", _clients[i]);
+					send_msg_to_client_socket(_clients[i], "U joined a channel");
+				}
+				send_message_to_channel("message to channel", _channels[0]);
+				send_msg_to_client_socket(_clients[i], "hello from server");
+				std::cout << "========================" << std::endl;
 			}
 		}
 	}
 };
+
+
+//Debugging
+void Server::list_channels(void) {
+
+	std::vector<Channel>::iterator it = _channels.begin();
+	for ( ; it != _channels.end(); it++)
+		std::cout << it->get_name() << std::endl;
+}
+
+void Server::list_clients(void) {
+
+	std::vector<Client>::iterator it = _clients.begin();
+	for ( ; it != _clients.end(); it++)
+		std::cout << it->getNickName() << std::endl;
+}
 
 //getter/settter
 std::vector<Client> Server::get_clients() {
@@ -180,3 +263,4 @@ std::vector<Client> Server::get_clients() {
 int Server::get_serversocket() {
 	return (_serverSocket);
 }
+

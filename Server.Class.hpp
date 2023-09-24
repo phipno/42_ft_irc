@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:08 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/22 15:53:57 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/24 16:37:50 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,20 +54,35 @@ class Server{
 		Server();
 		int setupServer();
 		void acceptNewClient();
-		void recv_from_client_socket(Client &client);
-		void send_msg_to_client_socket(Client &client, std::string message);
-
+		
 	public:
 		~Server();
 		Server(int port, std::string password);
 		Server (Server const &src);
 		Server &operator= (Server const &src);
 
+		//Requests and messages
+		void handle_requests(t_msg request);
+		std::string recv_from_client_socket(Client &client);
+		void send_msg_to_client_socket(Client &client, std::string message);
+
+		//Channels
+		void send_message_to_channel(std::string message, class Channel &channel);		
+		void join_channel(std::string channelName, class Client &client);
+		int channel_exists(std::string channelName);
+		int pass(t_msg *message, Client client);
+			
 		void runServer();
 		std::string numReply(int errorCode, t_msg *message, Client client);
-		int pass(t_msg *message, Client client);
 
-		std::vector<Client> get_clients();
-		int get_serversocket();
+		//misc
 		void signal_handler(int binary);
+
+		//Debugging
+		void list_channels(void);
+		void list_clients(void);
+
+		//Getters
+		std::vector<Client> get_clients(void);
+		int get_serversocket(void);
 };

@@ -15,7 +15,6 @@ int main(int argc, char **argv) {
 
     (void) argc;
     int port = std::atoi(argv[1]); 
-	close(port);
     Server server(port, "password");
     signal(SIGINT, signal_handler);
     while(!g_sigint)
