@@ -26,7 +26,7 @@
         //    indicate to the client that it didn't supply enough
         //    parameters.
 
-int Server::pass(t_msg *message, Client client){
+int Server::pass(t_msg *message, Client &client){
     if (client.getRegistrationStatus() == true)
         numReply(462, message, client);
     else if (message->paramVec[0].empty())
@@ -89,7 +89,7 @@ int Server::pass(t_msg *message, Client client){
     //      - Sent by the server to a user upon connection to indicate
     //      the restricted nature of the connection (user mode "+r").
 
-int Server::nick(t_msg *message, Client client){
+int Server::nick(t_msg *message, Client &client){
 	if (client.getRegistrationStatus() == false)
 		return 1; //send error message
 	if (message->paramVec[0].empty() == true){

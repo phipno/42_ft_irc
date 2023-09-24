@@ -11,8 +11,8 @@ SRC				= 	main \
 					Client.Class \
 					Channel.Class \
 					Server.Class \
-					parsing \
-					commands \
+					Server.Parsing \
+					Server.Commands \
 					numericReplies
 					
 

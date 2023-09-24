@@ -30,10 +30,12 @@
 *.exe
 *.out
 *.app
+ircserv
 
 .vscode
 *.pdf
+*.txt
 a.out.dSYM
 a.out.dSYM/Contents
-ircserv
 .DS_Store
+testfile
