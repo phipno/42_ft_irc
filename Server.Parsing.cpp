@@ -21,7 +21,7 @@ void  Server::executeCommands(Client &client) {
     // joinChannel(Message);
   } else if (this->_parMsg.command == "OP") {
     // setOperator(Message);
-  } else if (this->_parMsg.command == "PRVMSG") {
+  } else if (this->_parMsg.command == "PRIVMSG") {
     
   } else if (this->_parMsg.command == "KICK") {
     
