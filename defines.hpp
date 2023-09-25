@@ -6,6 +6,7 @@
 #define ERR_ERRONEUSNICKNAME 432
 #define ERR_ALREADYREGISTRED 462
 #define ERR_NEEDMOREPARAMS 461
+#define ERR_NICKNAMEINUSE 433
 
 #define VERBOSE 0 //used for constructors and function calls
 #define LOOP 0 //used for printing when inside a loop

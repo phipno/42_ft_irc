@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:08 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/25 14:14:22 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/25 14:17:28 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ class Server{
 		void join_channel(std::string channelName, class Client &client);
 		int channel_exists(std::string channelName);
 		int pass(t_msg *message, Client client);
-			
+		int nick(t_msg *message, Client client);
 		void runServer();
 		std::string numReply(int errorCode, t_msg *message, Client client);
 

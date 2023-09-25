@@ -1,3 +1,4 @@
+#include "defines.hpp"
 #include "Server.Class.hpp"
 #include "Client.Class.hpp"
 
