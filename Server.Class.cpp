@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/24 18:46:18 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/25 13:53:51 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ std::string Server::recv_from_client_socket(Client &client) {
 		std::cout << "Received: " << message << std::endl;
 		return (message);
 	}
+	std::cout << bytesRead << std::endl;
 	return (message);
 }
 
@@ -200,8 +201,8 @@ void Server::runServer() {
 	std::string cmd;
 
 	setupServer();
-	Channel channel("Channel1");
-	_channels.push_back(channel);
+	// Channel channel("Channel1");
+	// _channels.push_back(channel);
 	list_channels();
 	
 	while (!g_sigint) {
@@ -223,10 +224,8 @@ void Server::runServer() {
 			//2. ther server is processing the command
 			//3. server sends a response
 			
-			if(_fds[i + 1].revents & POLLIN) {
-				list_clients();
-				
-				cmd = recv_from_client_socket(_clients[i]); //1.
+			if(_fds[i + 1].revents & POLLIN) {				
+				cmd = recv_from_client_socket(_clients[i]);
 				if (cmd == "JOIN\n") {
 					join_channel("Channel1", _clients[i]);
 					send_msg_to_client_socket(_clients[i], "U joined a channel");
@@ -244,23 +243,31 @@ void Server::runServer() {
 void Server::list_channels(void) {
 
 	std::vector<Channel>::iterator it = _channels.begin();
+	std::cout << "------- list_channels() -------" << std::endl;
 	for ( ; it != _channels.end(); it++)
 		std::cout << it->get_name() << std::endl;
+	std::cout << "--------------------------------" << std::endl;
 }
 
 void Server::list_clients(void) {
 
 	std::vector<Client>::iterator it = _clients.begin();
+	std::cout << "------- list_channels() -------" << std::endl;
 	for ( ; it != _clients.end(); it++)
 		std::cout << it->getNickName() << std::endl;
+	std::cout << "--------------------------------" << std::endl;
 }
 
 //getter/settter
-std::vector<Client> Server::get_clients() {
+std::vector<Client> Server::get_clients(void) {
 	return (_clients);
 }
 
-int Server::get_serversocket() {
+std::vector<pollfd> Server::get_fds(void) {
+	return (_fds);
+}
+
+int Server::get_serversocket(void) {
 	return (_serverSocket);
 }
 

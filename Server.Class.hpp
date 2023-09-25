@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:08 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/24 16:37:50 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/25 13:43:25 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,6 @@ class Server{
 
 		//Getters
 		std::vector<Client> get_clients(void);
+		std::vector<pollfd> get_fds(void);
 		int get_serversocket(void);
 };
