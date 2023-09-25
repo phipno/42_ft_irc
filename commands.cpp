@@ -150,7 +150,7 @@ int Server::user(t_msg *message, Client client){
 	}
 	client.registerClient(USERNAME);
 	numReply(001, message, client);
-
+    return (0); //eventually other value
 }
 
 

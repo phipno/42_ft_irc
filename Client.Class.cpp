@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/25 14:25:26 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/25 14:27:59 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ Client &Client::operator= (Client const &src){
 		this->_clientSocket = src._clientSocket;
 		this->_userName = src._userName;
 		this->_nickName = src._nickName;
-		this->_registered = src._registered;
+		this->_status = src._status;
 	}
 	return (*this);
 };
@@ -106,9 +106,6 @@ void Client::registerClient(int status){
 	this->_status = status;
 }
 
-void Client::setNickName(std::string nickName){
-	this->_nickName = nickName;
-}
 void Client::setFullName(std::string fullName){
 	this->_userName = fullName;
 }
