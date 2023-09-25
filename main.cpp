@@ -1,16 +1,32 @@
 #include "Server.Class.hpp"
+#include "Channel.Class.hpp"
 #include "Client.Class.hpp"
 
+bool g_sigint = false;
+void signal_handler(int binary) {
+
+    if (binary == SIGINT)
+        std::cout << "Closing Server and disconnecting clients" << std::endl;
+        g_sigint = true;
+}
+
 //server
-int main(int argc, char **argv){
+int main(int argc, char **argv) {
 
     (void) argc;
-	int port = std::atoi(argv[1]); 
+    int port = std::atoi(argv[1]); 
     Server server(port, "password");
-    server.runServer();
-
+    signal(SIGINT, signal_handler);
+    while(!g_sigint)
+        server.runServer();
+    for (unsigned int i = 0; i < server.get_clients().size(); i++) {
+		int j = close(server.get_clients()[i].getClientSocket());
+        std::cout << "J" << j << std::endl;
+    }
+	close(server.get_serversocket());
     return (0);
 }
+
 
 // To test server open new terminal and enter:
 // nc localhost 6667#include "Client.Class.hpp"

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichowsky <kczichowsky@student.42.fr>    +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:46:35 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/20 11:36:50 by kczichowsky      ###   ########.fr       */
+/*   Updated: 2023/09/23 16:27:52 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,29 @@ Client::Client(std::string username, std::string nickname) : _userName(username)
 															 _nickName(nickname) {}
 															 
 Client::~Client(){
+	
 	if (VERBOSE)
 		std::cout << "destructor called\n";
 };
+
 Client::Client (Client const &src){
+	
 	if (VERBOSE)
 		std::cout << "copy constructor called\n";
 	if (this != &src)
 		*this = src;
 };
+
 Client &Client::operator= (Client const &src){
-	this->_clientAddr = src._clientAddr;
-	this->_clientPollfd = src._clientPollfd;
-	this->_clientSocket = src._clientSocket;
+	
+	if (this != &src) {
+		this->_clientAddr = src._clientAddr;
+		this->_clientPollfd = src._clientPollfd;
+		this->_clientSocket = src._clientSocket;
+		this->_userName = src._userName;
+		this->_nickName = src._nickName;
+		this->_registered = src._registered;
+	}
 	return (*this);
 };
 
@@ -70,6 +80,10 @@ std::string &Client::getNickName(){
 std::string &Client::getUserName(){
 	return (this->_userName);
 };
+
+void Client::setNickName(std::string nickName){
+	_nickName = nickName;
+}
 
 void Client::setClientAddr(struct sockaddr_in &clientAddr){
 	this->_clientAddr = clientAddr;

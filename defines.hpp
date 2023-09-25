@@ -7,6 +7,6 @@
 #define ERR_ALREADYREGISTRED 462
 #define ERR_NEEDMOREPARAMS 461
 
-#define VERBOSE 0
-#define DEBUG 0
-#define LOOP 1
+#define VERBOSE 0 //used for constructors and function calls
+#define LOOP 0 //used for printing when inside a loop
+#define DEBUG 0 // generic print flag
