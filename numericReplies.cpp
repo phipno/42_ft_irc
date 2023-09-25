@@ -14,7 +14,13 @@ std::string Server::numReply(int errorCode, t_msg *message, Client client){
 			reply =  ": " + this->_hostname + " 002 " + client.getNickName() + " :Your host is " + this->_hostname + ", running on version 1.0 !";
 			break;
 		case ERR_NONICKNAMEGIVEN:
-			reply =  ": " + this->_hostname + " 431 " + client.getNickName() + " :No nickname given\n";
+			reply =  "to be specified";
+			break;
+		case ERR_ERRONEUSNICKNAME:
+			reply =  "to be specified";
+			break;
+		case ERR_NICKNAMEINUSE:
+			reply =  "to be specified";
 			break;
 		case ERR_ALREADYREGISTRED:
 			reply = ": " + this->_hostname + " 462 " + client.getNickName() + " :You may not reregister\n";
