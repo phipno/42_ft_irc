@@ -41,11 +41,12 @@ t_msg tokenize_msg(std::string Message) {
   std::string       tempToken;
   t_msg             s_tempMsg;
 
+  tempSS >> tempToken;
+  s_tempMsg.command = tempToken;
   while (tempSS >> tempToken) {
     s_tempMsg.paramVec.push_back(tempToken);
   }
-  if (s_tempMsg.paramVec.size() != 0)
-    s_tempMsg.command = s_tempMsg.paramVec[0];
+  //probably dont need this
   if (s_tempMsg.paramVec.size() > 1)
     s_tempMsg.param = s_tempMsg.paramVec[1];
   return s_tempMsg;
@@ -55,8 +56,11 @@ t_msg tokenize_msg(std::string Message) {
 void Server::parsing_msg(std::string &Message, Client &client) {
   try {
     this->_parMsg = tokenize_msg(Message);
-    for (size_t i = 0; i < this->_parMsg.paramVec.size(); ++i) {
-      std::cout << this->_parMsg.paramVec[i] << " " << std::endl;
+    if (DEBUG) {
+      std::cout << " .Com: " << this->_parMsg.command << std::endl;
+      for (size_t i = 0; i < this->_parMsg.paramVec.size(); ++i) {
+        std::cout << i << ".Tok: " << this->_parMsg.paramVec[i] << std::endl;
+      }
     }
     executeCommands(client);
     (void)client;

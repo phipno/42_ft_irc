@@ -1,6 +1,8 @@
 #include "Server.Class.hpp"
 #include "Client.Class.hpp"
 
+#include "defines.hpp"
+
 
 std::string Server::numReply(int errorCode, t_msg *message, Client client){
 
@@ -31,6 +33,8 @@ std::string Server::numReply(int errorCode, t_msg *message, Client client){
 		default:
 			std::cout << "unkown error\n";
 	}
+	if (DEBUG)
+		std::cout << reply << std::endl;
 	return NULL;
 }
 

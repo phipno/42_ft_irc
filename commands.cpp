@@ -33,6 +33,7 @@ int Server::pass(t_msg *message, Client &client){
         numReply(461, message, client);
     else if (message->paramVec[0].compare(this->_password) == 0){
         client.registerClient(true);
+        std::cout << "registered" << std::endl;
         return 0;
     }
     return 1;

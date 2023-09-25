@@ -1,4 +1,6 @@
 
+#.~"~._.~"~._.~"~._.~"~.__.~"~._.~"~. VARS .~"~._.~"~.__.~"~._.~"~._.~"~._.~"~.#
+
 SHELL 			=	/bin/bash
 CPPFLAGS		= 	-Wall -Wextra -Werror -std=c++98 -g
 CXX 			= 	c++
@@ -15,18 +17,22 @@ SRC				= 	main \
 					commands \
 					numericReplies
 					
-
-
+DEPS 			= Channel.Class.hpp \
+						Client.Class.hpp \
+						defines.hpp \
+						Server.Class.hpp
 
 SRC_FILES		=	$(addsuffix .c, $(SRC))
 OBJ_FILES		=	$(addsuffix .o, $(SRC))
+
+#.~"~._.~"~._.~"~._.~"~.__.~"~._.~"~. RULES .~"~._.~"~.__.~"~._.~"~._.~"~._.~"~.#
 
 all: $(NAME)
 
 %.o: %.c
 	$(CXX) $(CPPFLAGS) -c $< -o $@
 
-$(NAME): $(OBJ_FILES)
+$(NAME): $(OBJ_FILES) $(DEPS)
 	$(CXX) $(CPPFLAGS) $(OBJ_FILES) -o $(NAME)
 
 clean:
@@ -40,3 +46,5 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
+
+#.~"~._.~"~._.~"~._.~"~.__.~"~._.~"~._.~"~._.~"~._.~"~.__.~"~._.~"~._.~"~._.~"~.#
