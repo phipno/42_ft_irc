@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/25 13:53:51 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/25 15:04:28 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,9 @@ std::string Server::recv_from_client_socket(Client &client) {
 	} 
 	else {
 		// Process the received data.
-		std::string message(buffer);
+		std::string message(buffer); 
 		std::cout << "Received: " << message << std::endl;
+		parsing_msg(message, client);
 		return (message);
 	}
 	std::cout << bytesRead << std::endl;
@@ -271,3 +272,6 @@ int Server::get_serversocket(void) {
 	return (_serverSocket);
 }
 
+t_msg Server::get_parsedMsg() {
+	return _parMsg;
+}

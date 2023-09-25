@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/25 14:25:00 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/25 15:01:04 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,29 +34,31 @@
 #include "Client.Class.hpp"
 
 typedef	struct s_msg{
-		std::string					prefix;
-		std::string					command;
-		std::string					param;
-		std::vector<std::string>	paramVec;
+	std::string					prefix; //dont know if i need that
+	std::string					command;
+	std::string					param; //this could be better formulated
+	std::vector<std::string>	paramVec;
 } t_msg;
 
 class Server{
 
-    private:
-        int							_port;
-        std::string					_password;
-		std::string					_hostname;
-
-        int							_serverSocket;
-		struct sockaddr_in			_serverAddr;
-		struct pollfd				_serverPollfd;
-		std::vector<Channel>		_channels;
-		std::vector<Client>			_clients;
-		std::vector<pollfd>			_fds;
-		
-		Server();
-		int setupServer();
-		void acceptNewClient();
+	private:
+     int					_port;
+     std::string			_password;
+	 std::string			_hostname;
+     int					_serverSocket;
+	 struct sockaddr_in		_serverAddr;
+	 struct pollfd			_serverPollfd;
+	 std::vector<Channel>	_channels;
+	 std::vector<Client>	_clients;
+	 std::vector<pollfd>	_fds;
+	 t_msg								_parMsg; //added this to private, just because :)
+	
+	 Server();
+	 int setupServer();
+	 void acceptNewClient();
+	 void recv_from_client_socket(Client &client);
+	 void send_msg_to_client_socket(Client &client, std::string message);
 		
 	public:
 		~Server();
@@ -79,7 +81,10 @@ class Server{
 		std::string numReply(int errorCode, t_msg *message, Client client);
 
 		//misc
+		t_msg get_parsedMsg();
 		void signal_handler(int binary);
+		void parsing_msg(std::string &message, Client &client);
+	 	void executeCommands(Client &client);
 
 		//Debugging
 		void list_channels(void);
