@@ -5,10 +5,11 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/15 10:40:27 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/20 15:37:12 by aestraic         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2023/09/25 14:26:13 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #pragma once
 
@@ -21,6 +22,10 @@
 #include <map>
 
 #include "defines.hpp"
+#define REGISTERED 2
+#define NICKNAME 3
+#define USERNAME 4
+#define USERLEN 9
 
 class Client{
 
@@ -30,7 +35,7 @@ class Client{
 			int					_clientSocket;
 			std::string			_userName;
 			std::string			_nickName;
-			bool				_registered;
+			int					_status;
 
 		public:
 			Client();
@@ -43,7 +48,7 @@ class Client{
 			int &getClientSocket();
 			int &getClientPollfdFD();
 			pollfd &getClientPollfd();
-			bool &getRegistrationStatus();
+			int &getRegistrationStatus();
 			std::string &getNickName();
 			std::string &getUserName();
 			
@@ -51,7 +56,7 @@ class Client{
 			void setClientSocket(int clientSocket);
 			void setClientPollfdFD (int const &fd);
 			void setClientPollfdEvents (int const &event);
-			void registerClient(bool registered);
+			void registerClient(int status);
 			void setNickName(std::string nickName);
 			void setFullName(std::string fullName);
 		
