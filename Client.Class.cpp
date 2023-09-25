@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichowsky <kczichowsky@student.42.fr>    +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:46:35 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/20 11:36:50 by kczichowsky      ###   ########.fr       */
+/*   Updated: 2023/09/25 10:36:59 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,8 @@ pollfd &Client::getClientPollfd(){
 	return (this->_clientPollfd);
 };
 
-bool &Client::getRegistrationStatus(){
-	return (this->_registered);
+int &Client::getRegistrationStatus(){
+	return (this->_status);
 }
 
 std::string &Client::getNickName(){
@@ -87,8 +87,15 @@ void Client::setClientPollfdEvents(int const &events){
 	this->_clientPollfd.events = events;
 }
 
-void Client::registerClient(bool registered){
-	this->_registered = registered;
+void Client::registerClient(int status){
+	this->_status = status;
+}
+
+void Client::setNickName(std::string nickName){
+	this->_nickName = nickName;
+}
+void Client::setFullName(std::string fullName){
+	this->_userName = fullName;
 }
 
 															 

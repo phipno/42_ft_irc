@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichowsky <kczichowsky@student.42.fr>    +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:40:27 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/20 11:36:41 by kczichowsky      ###   ########.fr       */
+/*   Updated: 2023/09/25 11:17:32 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,10 @@
 
 #define VERBOSE 0
 #define DEBUG 1
+#define REGISTERED 2
+#define NICKNAME 3
+#define USERNAME 4
+#define USERLEN 9
 
 class Client{
 
@@ -31,7 +35,7 @@ class Client{
 			int					_clientSocket;
 			std::string			_userName;
 			std::string			_nickName;
-			bool				_registered;
+			int					_status;
 
 		public:
 			Client();
@@ -44,7 +48,7 @@ class Client{
 			int &getClientSocket();
 			int &getClientPollfdFD();
 			pollfd &getClientPollfd();
-			bool &getRegistrationStatus();
+			int &getRegistrationStatus();
 			std::string &getNickName();
 			std::string &getUserName();
 			
@@ -52,7 +56,7 @@ class Client{
 			void setClientSocket(int clientSocket);
 			void setClientPollfdFD (int const &fd);
 			void setClientPollfdEvents (int const &event);
-			void registerClient(bool registered);
+			void registerClient(int status);
 			void setNickName(std::string nickName);
 			void setFullName(std::string fullName);
 		

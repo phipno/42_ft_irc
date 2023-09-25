@@ -27,15 +27,15 @@
         //    parameters.
 
 int Server::pass(t_msg *message, Client client){
-    if (client.getRegistrationStatus() == true)
-        numReply(462, message, client);
-    else if (message->paramVec[0].empty())
-        numReply(461, message, client);
-    else if (message->paramVec[0].compare(this->_password) == 0){
-        client.registerClient(true);
-        return 0;
-    }
-    return 1;
+	if (client.getRegistrationStatus() == true)
+		numReply(462, message, client);
+	else if (message->paramVec[0].empty())
+		numReply(461, message, client);
+	else if (message->paramVec[0].compare(this->_password) == 0){
+		client.registerClient(true);
+		return 0;
+	}
+	return 1;
 }
 
 // NICK
@@ -90,27 +90,33 @@ int Server::pass(t_msg *message, Client client){
     //      the restricted nature of the connection (user mode "+r").
 
 int Server::nick(t_msg *message, Client client){
-	if (client.getRegistrationStatus() == false)
+	if (client.getRegistrationStatus() < REGISTERED)
 		return 1; //send error message
 	if (message->paramVec[0].empty() == true){
 		numReply(431, message, client);
 		return 1;
 	}
-	if (client.getNickName().empty() == true){
-		for (size_t i = 0; i < message->paramVec[0].length(); ++i){
-			if (!std::isalnum(message->paramVec[0][i])){
-				numReply(432, message, client);
-					return 1;
-			}
-		}
-		std::vector<Client>::iterator it = _clients.begin();
-		for (;it != _clients.end(); it++){
-			// if (it->getNickName().find(message) != _clients.end())
-				numReply(433, message, client);
-				return 1;
-		}
+    // check if characters of chosen nickname are valid
+    std::string allowed_chars = "abcdefghijklmnopqrstuvwxyz0123456789{}[]\\|";
+	for (size_t i = 0; i < message->paramVec[0].length(); ++i){
+        char ch = message->paramVec[0][i];
+		if (allowed_chars.find(ch) != std::string::npos){}
+        else{
+			numReply(432, message, client);
+			return 1;
+        }
+	}
+    // check if nickname already exists on same server
+	std::vector<Client>::iterator it = _clients.begin();
+	for (;it != _clients.end(); it++){
+		if (it->getNickName() == message->paramVec[0]){
+			numReply(433, message, client);
+			return 1;
+        }
 	}
 	client.setNickName(message->paramVec[0]);
+    if (client.getRegistrationStatus() <= NICKNAME)
+        client.registerClient(NICKNAME);
 	return 0;
 }
 
@@ -123,6 +129,29 @@ int Server::nick(t_msg *message, Client client){
 
 // PRIVMSG
 // PRIVMSEG <msgtarget> <text to be sent>
+
+int Server::user(t_msg *message, Client client){
+	if (client.getRegistrationStatus() < REGISTERED){
+		return 1; //send error message
+	}
+	if (client.getRegistrationStatus() >= USERNAME){
+		numReply(462, message, client); //already registered
+		return 1;
+	}
+	if (message->paramVec[0].empty() == true){
+		numReply(461, message, client); // need more params
+		return 1;
+	}
+	if (message->paramVec[0].length() <= USERLEN)
+		client.setFullName(message->paramVec[0]);
+	else{
+		std::string name = message->paramVec[0].substr(0,9);
+		client.setFullName(name);
+	}
+	client.registerClient(USERNAME);
+	numReply(001, message, client);
+
+}
 
 
 
@@ -143,7 +172,6 @@ int Server::nick(t_msg *message, Client client){
 
 /* --------------------------------------------------------------------------------------*/
 
-/*Commands specific to channel operators*/
 
 
 
