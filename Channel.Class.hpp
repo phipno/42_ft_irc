@@ -40,7 +40,7 @@ class Channel {
 		class Channel& modes(bool privileges, char alter, std::string mode); //returns a reference to the new channel
 
 		//Debugging
-		void list_clients(); //lists all clients in the channel and their privileges
+		void list_clients_in_channel(void); //lists all clients in the channel and their privileges
 		void list_channel_attributes(void);
 		
 		//setters

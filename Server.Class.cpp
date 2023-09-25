@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/25 15:56:58 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/25 19:20:15 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ Server::Server() : _port(0), _password("no_pw"){
 	this->_fds[MAX_EVENTS];
 };
 
-Server::Server(int port, std::string password) : _port(port), _password("pw"){};
+Server::Server(int port, std::string password) : _port(port), _password(password){
+};
 
 Server::~Server(){};
 
@@ -56,7 +57,7 @@ std::string Server::recv_from_client_socket(Client &client) {
 		parsing_msg(message, client);
 		return (message);
 	}
-	std::cout << bytesRead << std::endl;
+	std::cout << "recv_from_client_socket():" << bytesRead << std::endl;
 	return (message);
 }
 
@@ -83,43 +84,53 @@ void Server::acceptNewClient() {
 	if (newClient.getClientSocket() == -1)
     	perror("accept client connection");
 	
-	send_msg_to_client_socket(newClient, "Enter Password:");
-	recv_from_client_socket(newClient);
+	// as long correct passphrase is not entered, asks for password
+	while (newClient.getStatus() != 1) {
+		
+		send_msg_to_client_socket(newClient, "Enter Password:");
+		recv_from_client_socket(newClient);
+	}
 	//insert prompt and checks for nickname, username and password;
-    std::cout << "Client socket connected\n";
-
+    std::cout << "Client socket connected" << std::endl;
+	
 	newClient.setClientPollfdFD(newClient.getClientSocket());
 	newClient.setClientPollfdEvents(POLLIN | POLLOUT);
 
     // set new client to non-blocking mode
     // fcntl(newClient.getClientSocket(), F_SETFL, O_NONBLOCK);
-
     // add new client socket to pollfds
     this->_fds.push_back(newClient.getClientPollfd());
-	
-	// std::cout << "Name?" << std::endl;
-	// std::cin >> nickName;
-	// newClient.setNickName(nickName);
 	this->_clients.push_back(newClient);
 	
 	
     std::cout << "new client socket added to list of known sockets" << newClient.getClientSocket() << " at address " << &_clients.back() << "\n";
 }
 
-//used for creating or joining a channel, depending if it is already existent
-void Server::join_channel(std::string channelName, class Client &client) {
+// //used for creating or joining a channel, depending if it is already existent
+// void Server::join_channel(std::string channelName, class Client &client) {
 	
-	int i = channel_exists(channelName);
-	std::cout << "Channel already exists? " << i << std::endl;
-	if (i == -1) {
-		Channel channel(channelName);
-		channel.add_user(client.getNickName(), true);
-		_channels.push_back(channel);
-	}
-	else{
-		_channels[i].add_user(client.getNickName(), false);
-	}
-}
+// 	int i = channel_exists(channelName);
+// 	std::cout << "Channel already exists? " << i << std::endl;
+// 	if (i == -1) {
+// 		Channel channel(channelName);
+// 		channel.add_user(client.getNickName(), true);
+// 		_channels.push_back(channel);
+// 	}
+// 	else{
+// 		_channels[i].add_user(client.getNickName(), false);
+// 	}
+// }
+
+//if a channel exists, it returns the index of the channel. Otherwise it returns a -1.
+// int Server::channel_exists(std::string channelName) {
+
+// 	std::vector<Channel>::iterator it = _channels.begin();
+// 	for ( int i = 0; it != _channels.end(); it++, i++) {
+// 		if (channelName == it->get_name())
+// 			return (i);
+// 	}
+// 	return (-1);
+// }
 
 //sends a message to all memebers of the channel
 void Server::send_message_to_channel(std::string message, class Channel &channel) {
@@ -134,16 +145,7 @@ void Server::send_message_to_channel(std::string message, class Channel &channel
 	}
 }
 
-//if a channel exists, it returns the index of the channel. Otherwise it returns a -1.
-int Server::channel_exists(std::string channelName) {
 
-	std::vector<Channel>::iterator it = _channels.begin();
-	for ( int i = 0; it != _channels.end(); it++, i++) {
-		if (channelName == it->get_name())
-			return (i);
-	}
-	return (-1);
-}
 
 int Server::setupServer(){
 
@@ -236,6 +238,8 @@ void Server::runServer() {
 				// }
 				// send_message_to_channel("message to channel", _channels[0]);
 				send_msg_to_client_socket(_clients[i], "hello from server");
+				list_clients();
+				list_channels_all();
 				std::cout << "========================" << std::endl;
 			}
 		}
@@ -248,17 +252,35 @@ void Server::list_channels(void) {
 
 	std::vector<Channel>::iterator it = _channels.begin();
 	std::cout << "------- list_channels() -------" << std::endl;
-	for ( ; it != _channels.end(); it++)
+	for ( ; it != _channels.end(); it++) {	
 		std::cout << it->get_name() << std::endl;
+	}
+	std::cout << "--------------------------------" << std::endl;
+}
+void Server::list_channels_all(void) {
+	//TO-DO: Segfaults entfernen
+	if (VERBOSE)
+		std::cout << "------- list_channels_all() -------" << std::endl;
+	std::vector<Channel>::iterator it = _channels.begin();
+	for ( ; it != _channels.end(); it++) {	
+		std::cout << "------- channels_name() -------" << std::endl;
+		std::cout << it->get_name() << std::endl;
+		std::cout << "------- clients -------" << std::endl;
+		it->list_clients_in_channel(); // segfaults
+	}
 	std::cout << "--------------------------------" << std::endl;
 }
 
 void Server::list_clients(void) {
 
 	std::vector<Client>::iterator it = _clients.begin();
-	std::cout << "------- list_channels() -------" << std::endl;
-	for ( ; it != _clients.end(); it++)
-		std::cout << it->getNickName() << std::endl;
+	std::cout << "------- list_clients() -------" << std::endl;
+	for ( ; it != _clients.end(); it++) {
+		std::cout << "Nickname: " << it->getNickName() << std::endl;
+		std::cout << "Username: " << it->getUserName() << std::endl;
+		std::cout << "Status: " << it->getStatus() << std::endl;
+		std::cout << "Superuser? " << it->getSu() << std::endl;
+	}
 	std::cout << "--------------------------------" << std::endl;
 }
 

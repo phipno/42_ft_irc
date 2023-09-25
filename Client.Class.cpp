@@ -6,10 +6,9 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/25 14:27:59 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/25 18:21:07 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #include "Client.Class.hpp"
 
@@ -55,6 +54,16 @@ Client &Client::operator= (Client const &src){
 
 /* -------------------- METHODS ----------------------------------------------*/
 
+void Client::list_attributes(void) {
+	std::cout << "---List Client Attributes()---" << std::endl;
+	std::cout << "Nickname: " << getNickName() << std::endl;
+	std::cout << "Username: " << getUserName() << std::endl;
+	std::cout << "Status: " << getStatus() << std::endl;
+	std::cout << "Superuser? " << getSu() << std::endl;
+	std::cout << "------------------------------" << std::endl;
+}
+
+
 struct sockaddr_in &Client::getClientAddr(){
 	return (this->_clientAddr);
 }
@@ -80,6 +89,14 @@ std::string &Client::getNickName(){
 };
 std::string &Client::getUserName(){
 	return (this->_userName);
+};
+
+int Client::getStatus(){
+	return (this->_status);
+};
+
+bool Client::getSu(){
+	return (this->_superUser);
 };
 
 void Client::setNickName(std::string nickName){

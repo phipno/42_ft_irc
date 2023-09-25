@@ -26,7 +26,7 @@
         //    indicate to the client that it didn't supply enough
         //    parameters.
 
-int Server::pass(t_msg *message, Client client){
+int Server::pass(t_msg *message, Client &client){
     std::cout << "Password_func()" << std::endl;
     
 	if (client.getRegistrationStatus() == true)
@@ -34,7 +34,8 @@ int Server::pass(t_msg *message, Client client){
 	else if (message->paramVec.empty() || message->paramVec[0].empty())
 		numReply(461, message, client);
 	else if (message->paramVec[0].compare(this->_password) == 0){
-		client.registerClient(true);
+        client.registerClient(true);
+		std::cout << "Registering succesfull: Client status is " << client.getStatus() << std::endl;
 		return 0;
 	}
 	return 1;
@@ -91,7 +92,12 @@ int Server::pass(t_msg *message, Client client){
     //      - Sent by the server to a user upon connection to indicate
     //      the restricted nature of the connection (user mode "+r").
 
-int Server::nick(t_msg *message, Client client){
+int Server::nick(t_msg *message, Client &client){
+// TODO(albert) - sending a message to the accoring client, wether the name exists, must be implemented
+    
+    if (VERBOSE)
+        std::cout << "nick()" << std::endl;
+
 	if (client.getRegistrationStatus() < REGISTERED)
 		return 1; //send error message
 	if (message->paramVec[0].empty() == true){
@@ -102,7 +108,9 @@ int Server::nick(t_msg *message, Client client){
     std::string allowed_chars = "abcdefghijklmnopqrstuvwxyz0123456789{}[]\\|";
 	for (size_t i = 0; i < message->paramVec[0].length(); ++i){
         char ch = message->paramVec[0][i];
-		if (allowed_chars.find(ch) != std::string::npos){}
+		if (allowed_chars.find(ch) != std::string::npos){
+
+        }
         else{
 			numReply(432, message, client);
 			return 1;
@@ -132,7 +140,11 @@ int Server::nick(t_msg *message, Client client){
 // PRIVMSG
 // PRIVMSEG <msgtarget> <text to be sent>
 
-int Server::user(t_msg *message, Client client){
+int Server::user(t_msg *message, Client &client){
+
+    if (VERBOSE)
+        std::cout << "nick()" << std::endl;
+
 	if (client.getRegistrationStatus() < REGISTERED){
 		return 1; //send error message
 	}
@@ -172,6 +184,31 @@ int Server::user(t_msg *message, Client client){
 //            successful registration.
 
 
+
+//used for creating or joining a channel, depending if it is already existent
+void Server::join_channel(std::string channelName, class Client &client) {
+	
+	int i = channel_exists(channelName);
+	std::cout << "Channel already exists? " << i << std::endl;
+	if (i == -1) {
+		Channel channel(channelName);
+		channel.add_user(client.getNickName(), true);
+		this->_channels.push_back(channel);
+	}
+	else{
+		this->_channels[i].add_user(client.getNickName(), false);
+	}
+}
+
+int Server::channel_exists(std::string channelName) {
+
+	std::vector<Channel>::iterator it = this->_channels.begin();
+	for ( int i = 0; it != this->_channels.end(); it++, i++) {
+		if (channelName == it->get_name())
+			return (i);
+	}
+	return (-1);
+}
 /* --------------------------------------------------------------------------------------*/
 
 

@@ -6,10 +6,9 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/25 15:55:14 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/25 18:12:01 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 
 #pragma once
 
@@ -22,9 +21,9 @@
 #include <map>
 
 #include "defines.hpp"
-#define REGISTERED 2
-#define NICKNAME 3
-#define USERNAME 4
+#define REGISTERED 1 //correct password entered
+#define NICKNAME 3	 //nick name entered
+#define USERNAME 4   //user name entered
 #define USERLEN 9
 
 class Client{
@@ -45,6 +44,8 @@ class Client{
 			Client &operator= (Client const &src);
 			~Client();
 
+			void list_attributes();
+
 			struct sockaddr_in &getClientAddr();
 			int &getClientSocket();
 			int &getClientPollfdFD();
@@ -52,6 +53,8 @@ class Client{
 			int &getRegistrationStatus();
 			std::string &getNickName();
 			std::string &getUserName();
+			int getStatus();
+			bool getSu();
 			
 			void setClientAddr(struct sockaddr_in &clientAddr);
 			void setClientSocket(int clientSocket);
@@ -60,7 +63,4 @@ class Client{
 			void registerClient(int status);
 			void setNickName(std::string nickName);
 			void setFullName(std::string fullName);
-		
-			std::string prvMessage(std::string message, class Client &cli); //sends a private message to an user
-			std::string messAge(std::string message, class Channel &chnl); //sends a message to every user inside the channel
 };

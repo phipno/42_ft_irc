@@ -80,9 +80,14 @@ int Channel::add_user(std::string client, bool operatorflag) {
 
 	std::map<std::string, bool>::iterator it = _users.find(client);
 	if (it == _users.end()) {
-		std::cout << "ADD_USER()" << std::endl;
-		std::cout << "clientname = " << client << std::endl;
-		_users[client] = operatorflag;
+		// if (DEBUG) {
+			std::cout << "ADD_USER()" << std::endl;
+			std::cout << "clientname = " << client << std::endl;
+		// }
+
+		this->_users[client] = operatorflag;
+			list_clients_in_channel();
+			list_channel_attributes();
 		return (1);
 	}
 	else {
@@ -215,24 +220,22 @@ bool Channel::is_in_channel(std::string name) {
 
 //==============================================================================
 //Debugging
-void Channel::list_clients(void) {
+void Channel::list_clients_in_channel(void) {
 
 	if (VERBOSE)
-		std::cout << "list_clients" << std::endl;
+		std::cout << "list_clients_in_channel" << std::endl;
 
 	std::map<std::string, bool>::iterator it = _users.begin();
-	std::cout << "----- list_clients() -----" << std::endl;
-	std::cout << "Channel: " << get_name() << std::endl;
 	for ( ; it != _users.end(); it++) {
 		std::cout << "Client: " << it->first << " Privilieges: " << it->second << std::endl;
 	}
-	std::cout << "--------------------------" << std::endl;
+	std::cout << "-------------------------------------" << std::endl;
 }
 
 void Channel::list_channel_attributes(void) {
 
 	if (VERBOSE)
-		std::cout << "list_attributes" << std::endl;
+		std::cout << "list_channel_attributes" << std::endl;
 
 		std::cout << "ChannelName: " << _channelName << std::endl;
 		std::cout << "TopicMessage: " << _topicMessage << std::endl;
