@@ -27,9 +27,11 @@
         //    parameters.
 
 int Server::pass(t_msg *message, Client client){
+    std::cout << "Password_func()" << std::endl;
+    
 	if (client.getRegistrationStatus() == true)
 		numReply(462, message, client);
-	else if (message->paramVec[0].empty())
+	else if (message->paramVec.empty() || message->paramVec[0].empty())
 		numReply(461, message, client);
 	else if (message->paramVec[0].compare(this->_password) == 0){
 		client.registerClient(true);

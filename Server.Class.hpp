@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/25 15:01:04 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/25 15:05:48 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ class Server{
 	 Server();
 	 int setupServer();
 	 void acceptNewClient();
-	 void recv_from_client_socket(Client &client);
-	 void send_msg_to_client_socket(Client &client, std::string message);
+	//  void recv_from_client_socket(Client &client);
+	//  void send_msg_to_client_socket(Client &client, std::string message);
 		
 	public:
 		~Server();

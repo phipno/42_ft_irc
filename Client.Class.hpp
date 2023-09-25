@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/25 14:26:13 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/25 15:55:14 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ class Client{
 			std::string			_userName;
 			std::string			_nickName;
 			int					_status;
+			bool				_superUser; //nick must be superuser to get priviliges
 
 		public:
 			Client();

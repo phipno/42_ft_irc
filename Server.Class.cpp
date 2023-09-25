@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/25 15:04:28 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/25 15:56:58 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ Server::Server() : _port(0), _password("no_pw"){
 	this->_fds[MAX_EVENTS];
 };
 
-Server::Server(int port, std::string password) : _port(port), _password(password){};
+Server::Server(int port, std::string password) : _port(port), _password("pw"){};
 
 Server::~Server(){};
 
@@ -82,7 +82,9 @@ void Server::acceptNewClient() {
     newClient.setClientSocket(accept(this->_serverSocket, reinterpret_cast<struct sockaddr *>(&newClient.getClientAddr()), &clientAddrLen));
 	if (newClient.getClientSocket() == -1)
     	perror("accept client connection");
-
+	
+	send_msg_to_client_socket(newClient, "Enter Password:");
+	recv_from_client_socket(newClient);
 	//insert prompt and checks for nickname, username and password;
     std::cout << "Client socket connected\n";
 
@@ -95,9 +97,9 @@ void Server::acceptNewClient() {
     // add new client socket to pollfds
     this->_fds.push_back(newClient.getClientPollfd());
 	
-	std::cout << "Name?" << std::endl;
-	std::cin >> nickName;
-	newClient.setNickName(nickName);
+	// std::cout << "Name?" << std::endl;
+	// std::cin >> nickName;
+	// newClient.setNickName(nickName);
 	this->_clients.push_back(newClient);
 	
 	
@@ -219,19 +221,20 @@ void Server::runServer() {
 		if (this->_fds[0].revents & POLLIN){
 			acceptNewClient();
 		}
-
-		for (unsigned long i = 0; i < _fds.size(); ++i) {
+		unsigned long i; //clients[i]
+		unsigned long j; //_fds[j]
+		for (i = 0, j = 1; j < _fds.size() && i < _clients.size(); i++, j++) {
 			//1. messages from the client are sent directly to the server's socket
 			//2. ther server is processing the command
 			//3. server sends a response
-			
-			if(_fds[i + 1].revents & POLLIN) {				
+			// std::cout << "LOOP" << _fds.size() << std::endl;
+			if(_fds[j].revents & POLLIN) {				
 				cmd = recv_from_client_socket(_clients[i]);
-				if (cmd == "JOIN\n") {
-					join_channel("Channel1", _clients[i]);
-					send_msg_to_client_socket(_clients[i], "U joined a channel");
-				}
-				send_message_to_channel("message to channel", _channels[0]);
+				// if (cmd == "JOIN\n") {
+				// 	join_channel("Channel1", _clients[i]);
+				// 	send_msg_to_client_socket(_clients[i], "U joined a channel");
+				// }
+				// send_message_to_channel("message to channel", _channels[0]);
 				send_msg_to_client_socket(_clients[i], "hello from server");
 				std::cout << "========================" << std::endl;
 			}
