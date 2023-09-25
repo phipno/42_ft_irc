@@ -12,7 +12,7 @@ SRC				= 	main \
 					Channel.Class \
 					Server.Class \
 					Server.Parsing \
-					Server.Commands \
+					commands \
 					numericReplies
 					
 
