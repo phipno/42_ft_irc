@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/26 11:11:49 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/26 11:14:48 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,13 +76,13 @@ class Server{
 		void join_channel(std::string channelName, class Client &client);
 		int channel_exists(std::string channelName);
 		void runServer();
-		std::string numReply(int errorCode, t_msg *message, Client client);
+		std::string numReply(int errorCode, t_msg *message, Client &client);
 
 		//Commands
-		int pass(t_msg *message, Client client);
-		int nick(t_msg *message, Client client);
-		int user(t_msg *message, Client client);
-		int privmseg(t_msg *message, Client client);
+		int pass(t_msg *message, Client &client);
+		int nick(t_msg *message, Client &client);
+		int user(t_msg *message, Client &client);
+		int privmseg(t_msg *message, Client &client);
 
 		//misc
 		t_msg get_parsedMsg();

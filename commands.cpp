@@ -26,7 +26,7 @@
         //    indicate to the client that it didn't supply enough
         //    parameters.
 
-int Server::pass(t_msg *message, Client client){
+int Server::pass(t_msg *message, Client &client){
 	if (client.getRegistrationStatus() >= REGISTERED)
 		numReply(462, message, client);
 	else if (message->paramVec.empty() || message->paramVec[0].empty())
@@ -191,7 +191,7 @@ int Server::user(t_msg *message, Client &client){
 //            ERR_NOSUCHNICK
 //            RPL_AWAY
 
-int Server::privmseg(t_msg *message, Client client){
+int Server::privmseg(t_msg *message, Client &client){
 	if (client.getRegistrationStatus() < USERNAME){
 		numReply(462, message, client); // not sure which message to send, if user is not fully registered
 		return 1;
