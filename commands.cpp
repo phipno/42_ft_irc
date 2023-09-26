@@ -268,8 +268,27 @@ void Server::join_channel(std::string channelName, class Client &client) {
 }
 
 void Server::join(t_msg &parsedMsg, Client &client) {
-	(void)parsedMsg;
-	(void)client;
+	if (parsedMsg.paramVec.empty()) {
+		numReply(461, &parsedMsg, client);
+		return ;
+	}
+
+	std::vector<std::string> channelsToJoin;
+	std::vector<std::string>::iterator It1 = parsedMsg.paramVec.begin();
+	size_t pos;
+
+	while ((pos = It1->find(',')) != std::string::npos) {
+		channelsToJoin.push_back(It1->substr(0, pos));
+		It1->erase(0, pos + 1);
+	}
+	if (pos == std::string::npos)
+		channelsToJoin.push_back(*It1);
+	if (DEBUG) {
+		for (std::vector<std::string>::iterator It = channelsToJoin.begin();
+				 It != channelsToJoin.end(); ++It) {
+			std::cout << "Channel: " << *It << std::endl;
+		}
+	}
 }
 
 int Server::channel_exists(std::string channelName) {
