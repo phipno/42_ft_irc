@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: pnolte <pnolte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:46:35 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/20 15:53:05 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/26 11:06:46 by pnolte           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 /* ------------------ CANONICAL FORM -----------------------------------------*/
 
-															 
+
 Client::Client():_userName("Unknown"), _nickName("Unknown") {
 	memset(&_clientAddr, 0, sizeof(_clientAddr));
-	
+
 	if (VERBOSE)
 		std::cout << "default constructor called\n"; 
 };
