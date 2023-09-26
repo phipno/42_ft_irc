@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/25 19:20:15 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/26 11:15:30 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,7 +230,7 @@ void Server::runServer() {
 			//2. ther server is processing the command
 			//3. server sends a response
 			// std::cout << "LOOP" << _fds.size() << std::endl;
-			if(_fds[j].revents & POLLIN) {				
+			if(_fds[j].revents & POLLIN) {
 				cmd = recv_from_client_socket(_clients[i]);
 				// if (cmd == "JOIN\n") {
 				// 	join_channel("Channel1", _clients[i]);
