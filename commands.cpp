@@ -149,7 +149,8 @@ int Server::user(t_msg *message, Client client){
 		client.setFullName(name);
 	}
 	client.registerClient(USERNAME);
-	numReply(001, message, client);
+	numReply(001, message, client); // welcome
+	numReply(002, message, client); // your host
     return (0); //eventually other value
 }
 

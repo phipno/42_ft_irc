@@ -14,6 +14,9 @@ std::string Server::numReply(int errorCode, t_msg *message, Client client){
 		case RPL_YOURHOST:
 			reply =  ": " + this->_hostname + " 002 " + client.getNickName() + " :Your host is " + this->_hostname + ", running on version 1.0 !";
 			break;
+		case RPL_CREATED:
+			reply =  ": " + this->_hostname + " 002 " + client.getNickName() + " :Your host is " + this->_hostname + ", running on version 1.0 !";
+			break;
 		case ERR_NONICKNAMEGIVEN:
 			reply =  "to be specified";
 			break;
