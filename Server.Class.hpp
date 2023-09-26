@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/26 11:14:48 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/26 13:11:39 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ class Server{
 		int pass(t_msg *message, Client &client);
 		int nick(t_msg *message, Client &client);
 		int user(t_msg *message, Client &client);
-		int privmseg(t_msg *message, Client &client);
+		int privmsg(t_msg *message, Client &client);
 
 		//misc
 		t_msg get_parsedMsg();

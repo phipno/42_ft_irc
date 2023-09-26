@@ -18,11 +18,11 @@ void  Server::executeCommands(Client &client) {
   } else if (this->_parMsg.command == "USER") {
       this->user(&this->_parMsg, client);
   } else if (this->_parMsg.command == "JOIN") {
-      this->join_channel("Testchannel", client);
+      this->join_channel("#Testchannel", client);
   } else if (this->_parMsg.command == "OP") {
     // setOperator(Message);
   } else if (this->_parMsg.command == "PRIVMSG") {
-    
+      this->privmsg(&this->_parMsg, client);
   } else if (this->_parMsg.command == "KICK") {
     
   } else if (this->_parMsg.command == "TOPIC") {

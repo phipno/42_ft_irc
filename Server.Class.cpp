@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/25 19:20:15 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/26 12:37:36 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 extern bool g_sigint;
 
 /* ---------------- CANONICAL FORM ---------------------------*/
-Server::Server() : _port(0), _password("no_pw"){
+Server::Server() : _port(0), _password("no_pw"), _hostname("Ingwer.Radish.Cherry"){
 	this->_fds[MAX_EVENTS];
 };
 
-Server::Server(int port, std::string password) : _port(port), _password(password){
+Server::Server(int port, std::string password) : _port(port), _password(password), _hostname("Ingwer.Radish.Cherry"){
 };
 
 Server::~Server(){};

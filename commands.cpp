@@ -141,7 +141,7 @@ int Server::user(t_msg *message, Client &client){
     if (VERBOSE)
         std::cout << "nick()" << std::endl;
 
-	if (client.getRegistrationStatus() < REGISTERED){
+	if (client.getRegistrationStatus() < NICKNAME){
 		return 1; //send error message
 	}
 	if (client.getRegistrationStatus() >= USERNAME){
@@ -191,7 +191,7 @@ int Server::user(t_msg *message, Client &client){
 //            ERR_NOSUCHNICK
 //            RPL_AWAY
 
-int Server::privmseg(t_msg *message, Client &client){
+int Server::privmsg(t_msg *message, Client &client){
 	if (client.getRegistrationStatus() < USERNAME){
 		numReply(462, message, client); // not sure which message to send, if user is not fully registered
 		return 1;
@@ -208,13 +208,17 @@ int Server::privmseg(t_msg *message, Client &client){
 	if (!message->paramVec[0].empty())
 	{
 		if (message->paramVec[0].at(0) == '#'){
-			// search in channel vector
+			int i = channel_exists(message->paramVec[0]);
+			if (i != -1)
+				send_message_to_channel(message->paramVec[1], this->_channels[i]);
+			else
+				numReply(403, message, client); // ERR_ NOSUCHCHANNEL
 		}
 		else {
 			std::vector<Client>::iterator clientit = _clients.begin();
 			for (; clientit < _clients.end(); clientit++){
 				if (clientit->getNickName() == message->paramVec[0]){
-					send_msg_to_client_socket(client, msg);
+					send_msg_to_client_socket(*clientit, msg);
 					break;	
 				}
 			numReply(412, message, client); // ERR_NOSUCHNICK			

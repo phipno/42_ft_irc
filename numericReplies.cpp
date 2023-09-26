@@ -19,15 +19,15 @@ std::string Server::numReply(int errorCode, t_msg *message, Client &client){
 			send_msg_to_client_socket(client, reply);
 			break;
 		case ERR_NONICKNAMEGIVEN:
-			reply =  "to be specified";
+			reply =  ":No Nickname given";
 			send_msg_to_client_socket(client, reply);
 			break;
 		case ERR_NOSUCHNICK:
-			reply =  "401 - to be specified";
+			reply = client.getNickName() + " :No such nich/channel";
 			send_msg_to_client_socket(client, reply);
 			break;
 		case ERR_ERRONEUSNICKNAME:
-			reply =  "to be specified";
+			reply =  client.getNickName() + " :Erroneus nickname";
 			send_msg_to_client_socket(client, reply);
 			break;
 		case ERR_NORECIPIENT:
@@ -35,7 +35,7 @@ std::string Server::numReply(int errorCode, t_msg *message, Client &client){
 			send_msg_to_client_socket(client, reply);
 			break;
 		case ERR_NICKNAMEINUSE:
-			reply =  "to be specified";
+			reply =  client.getNickName() + ": Nickname is already in use";
 			send_msg_to_client_socket(client, reply);
 			break;
 		case ERR_ALREADYREGISTRED:

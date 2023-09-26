@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/25 18:12:01 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/26 12:40:34 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 
 #include "defines.hpp"
 #define REGISTERED 1 //correct password entered
-#define NICKNAME 3	 //nick name entered
-#define USERNAME 4   //user name entered
+#define NICKNAME 2	 //nick name entered
+#define USERNAME 3   //user name entered
 #define USERLEN 9
 
 class Client{
