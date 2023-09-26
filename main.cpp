@@ -15,13 +15,14 @@ int main(int argc, char **argv) {
 
     (void) argc;
     int port = std::atoi(argv[1]); 
-	close(port);
-    Server server(port, "password");
+    Server server(port, "pw");
     signal(SIGINT, signal_handler);
     while(!g_sigint)
         server.runServer();
-    for (unsigned int i = 0; i < server.get_clients().size(); i++)
-		close(server.get_clients()[i].getClientSocket());
+    for (unsigned int i = 0; i < server.get_clients().size(); i++) {
+		int j = close(server.get_clients()[i].getClientSocket());
+        std::cout << "J" << j << std::endl;
+    }
 	close(server.get_serversocket());
     return (0);
 }

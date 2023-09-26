@@ -3,12 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pnolte <pnolte@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/15 10:27:08 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/25 10:59:14 by pnolte           ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2023/09/26 11:14:48 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
 
 #pragma once
 
@@ -30,18 +32,6 @@
 #include "defines.hpp"
 #include "Channel.Class.hpp"
 #include "Client.Class.hpp"
-#include <unistd.h>
-
-#define MAX_CONNECTIONS 100
-#define MAX_EVENTS 100
-
-#define RPL_WELCOME 001
-#define RPL_YOURHOST 002
-#define ERR_NONICKNAMEGIVEN 431
-#define ERR_ERRONEUSNICKNAME 432
-#define ERR_NICKNAMEINUSE 433
-#define ERR_ALREADYREGISTRED 462
-#define ERR_NEEDMOREPARAMS 461
 
 typedef	struct s_msg{
 	std::string					prefix; //dont know if i need that
@@ -67,8 +57,8 @@ class Server{
 	 Server();
 	 int setupServer();
 	 void acceptNewClient();
-	 void recv_from_client_socket(Client &client);
-	 void send_msg_to_client_socket(Client &client, std::string message);
+	//  void recv_from_client_socket(Client &client);
+	//  void send_msg_to_client_socket(Client &client, std::string message);
 		
 	public:
 		~Server();
@@ -76,17 +66,37 @@ class Server{
 		Server (Server const &src);
 		Server &operator= (Server const &src);
 
-		void runServer();
-		std::string numReply(int errorCode, t_msg *message, Client client);
+		//Requests and messages
+		void handle_requests(t_msg request);
+		std::string recv_from_client_socket(Client &client);
+		void send_msg_to_client_socket(Client &client, std::string message);
 
-		std::vector<Client> get_clients();
-		int get_serversocket();
+		//Channels
+		void send_message_to_channel(std::string message, class Channel &channel);		
+		void join_channel(std::string channelName, class Client &client);
+		int channel_exists(std::string channelName);
+		void runServer();
+		std::string numReply(int errorCode, t_msg *message, Client &client);
+
+		//Commands
+		int pass(t_msg *message, Client &client);
+		int nick(t_msg *message, Client &client);
+		int user(t_msg *message, Client &client);
+		int privmseg(t_msg *message, Client &client);
+
+		//misc
 		t_msg get_parsedMsg();
 		void signal_handler(int binary);
-	
-		int nick(t_msg *message, Client &client);
-		int pass(t_msg *message, Client &client);
-	 
-	 void parsing_msg(std::string &message, Client &client);
-	 void executeCommands(Client &client);
+		void parsing_msg(std::string &message, Client &client);
+	 	void executeCommands(Client &client);
+
+		//Debugging
+		void list_channels(void);
+		void list_channels_all(void);
+		void list_clients(void);
+
+		//Getters
+		std::vector<Client> get_clients(void);
+		std::vector<pollfd> get_fds(void);
+		int get_serversocket(void);
 };

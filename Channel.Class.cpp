@@ -73,14 +73,21 @@ int Channel::rm_priveleges(std::string cli) {
    a PART command (See Section 3.2.2) for each channel he is a member
    of.
 */
-int Channel::join(std::string cli) {
+int Channel::add_user(std::string client, bool operatorflag) {
 
 	if (VERBOSE)
-		std::cout << "join" << std::endl;
+		std::cout << "add_user" << std::endl;
 
-	std::map<std::string, bool>::iterator it = _users.find(cli);
+	std::map<std::string, bool>::iterator it = _users.find(client);
 	if (it == _users.end()) {
-		_users[cli] = false;
+		// if (DEBUG) {
+			std::cout << "ADD_USER()" << std::endl;
+			std::cout << "clientname = " << client << std::endl;
+		// }
+
+		this->_users[client] = operatorflag;
+			list_clients_in_channel();
+			list_channel_attributes();
 		return (1);
 	}
 	else {
@@ -193,24 +200,42 @@ int Channel::view_topic(void) {
 
 // }
 
+bool Channel::is_in_channel(std::string name) {
+	
+	if (VERBOSE)
+		std::cout << "is_in_channel()" << std::endl;
+
+	std::map<std::string, bool>::iterator it = _users.find(name);
+	if (it != _users.end()) {
+		if (DEBUG)
+			std::cout << "User found in channel, returned 1" << std::endl;
+		return (true);
+	}
+	else {
+		if (DEBUG)
+			std::cout << "User not found in channel, returned 0" << std::endl;
+		return (false);
+	}
+}
+
 //==============================================================================
 //Debugging
-void Channel::list_clients(void) {
+void Channel::list_clients_in_channel(void) {
 
 	if (VERBOSE)
-		std::cout << "list_clients" << std::endl;
+		std::cout << "list_clients_in_channel" << std::endl;
 
 	std::map<std::string, bool>::iterator it = _users.begin();
 	for ( ; it != _users.end(); it++) {
 		std::cout << "Client: " << it->first << " Privilieges: " << it->second << std::endl;
 	}
-	std::cout << "--------------------" << std::endl;
+	std::cout << "-------------------------------------" << std::endl;
 }
 
 void Channel::list_channel_attributes(void) {
 
 	if (VERBOSE)
-		std::cout << "list_attributes" << std::endl;
+		std::cout << "list_channel_attributes" << std::endl;
 
 		std::cout << "ChannelName: " << _channelName << std::endl;
 		std::cout << "TopicMessage: " << _topicMessage << std::endl;
@@ -222,10 +247,10 @@ void Channel::list_channel_attributes(void) {
 
 }
 
-
 //==============================================================================
 //setter
 void Channel::set_users(std::map<std::string, bool> users) {_users = users;}
+void Channel::set_name(std::string name) {_channelName = name;}
 void Channel::set_topic(std::string message) {_topicMessage = message;}
 void Channel::set_topic_restriction(bool restriction) {_topic_restricted = restriction;}
 void Channel::set_invite_only(bool restriction) {_invite_only = restriction;}
@@ -234,6 +259,7 @@ void Channel::set_userlimit(int limit) {_userlimit = limit;}
 
 //getter
 std::map<std::string, bool> Channel::get_users(void) {return (_users);}
+std::string Channel::get_name(void) {return (_channelName);}
 std::string Channel::get_topic(void) {return (_topicMessage);}
 bool Channel::get_topic_restriction(void) {return (_topic_restricted);}
 bool Channel::get_invite_only(void) {return (_invite_only);}

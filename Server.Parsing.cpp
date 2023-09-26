@@ -14,11 +14,11 @@ void  Server::executeCommands(Client &client) {
   if (this->_parMsg.command == "PASS") {
     this->pass(&this->_parMsg, client);
   } else if (this->_parMsg.command == "NICK") {
-    this->nick(&this->_parMsg, client);
+      this->nick(&this->_parMsg, client);
   } else if (this->_parMsg.command == "USER") {
-    // setUserName(Message);
+      this->user(&this->_parMsg, client);
   } else if (this->_parMsg.command == "JOIN") {
-    // joinChannel(Message);
+      this->join_channel("Testchannel", client);
   } else if (this->_parMsg.command == "OP") {
     // setOperator(Message);
   } else if (this->_parMsg.command == "PRIVMSG") {
@@ -31,6 +31,8 @@ void  Server::executeCommands(Client &client) {
     
   } else if (this->_parMsg.command == "INVITE") {
    
+  } else if (this->_parMsg.command == "LIST") {
+      
   } else {
     throw(std::runtime_error("Command not found"));
   }

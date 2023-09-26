@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/15 10:40:27 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/20 15:37:12 by aestraic         ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2023/09/25 18:12:01 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@
 #include <map>
 
 #include "defines.hpp"
+#define REGISTERED 1 //correct password entered
+#define NICKNAME 3	 //nick name entered
+#define USERNAME 4   //user name entered
+#define USERLEN 9
 
 class Client{
 
@@ -30,7 +34,8 @@ class Client{
 			int					_clientSocket;
 			std::string			_userName;
 			std::string			_nickName;
-			bool				_registered;
+			int					_status;
+			bool				_superUser; //nick must be superuser to get priviliges
 
 		public:
 			Client();
@@ -39,22 +44,23 @@ class Client{
 			Client &operator= (Client const &src);
 			~Client();
 
+			void list_attributes();
+
 			struct sockaddr_in &getClientAddr();
 			int &getClientSocket();
 			int &getClientPollfdFD();
 			pollfd &getClientPollfd();
-			bool &getRegistrationStatus();
+			int &getRegistrationStatus();
 			std::string &getNickName();
 			std::string &getUserName();
+			int getStatus();
+			bool getSu();
 			
 			void setClientAddr(struct sockaddr_in &clientAddr);
 			void setClientSocket(int clientSocket);
 			void setClientPollfdFD (int const &fd);
 			void setClientPollfdEvents (int const &event);
-			void registerClient(bool registered);
+			void registerClient(int status);
 			void setNickName(std::string nickName);
 			void setFullName(std::string fullName);
-		
-			std::string prvMessage(std::string message, class Client &cli); //sends a private message to an user
-			std::string messAge(std::string message, class Channel &chnl); //sends a message to every user inside the channel
 };

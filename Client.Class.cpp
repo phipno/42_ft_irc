@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: pnolte <pnolte@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/09/15 10:46:35 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/26 11:06:46 by pnolte           ###   ########.fr       */
+/*   Created: Invalid date        by                   #+#    #+#             */
+/*   Updated: 2023/09/25 18:21:07 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,29 @@ Client::Client (Client const &src){
 };
 
 Client &Client::operator= (Client const &src){
-	this->_clientAddr = src._clientAddr;
-	this->_clientPollfd = src._clientPollfd;
-	this->_clientSocket = src._clientSocket;
+	
+	if (this != &src) {
+		this->_clientAddr = src._clientAddr;
+		this->_clientPollfd = src._clientPollfd;
+		this->_clientSocket = src._clientSocket;
+		this->_userName = src._userName;
+		this->_nickName = src._nickName;
+		this->_status = src._status;
+	}
 	return (*this);
 };
 
 /* -------------------- METHODS ----------------------------------------------*/
+
+void Client::list_attributes(void) {
+	std::cout << "---List Client Attributes()---" << std::endl;
+	std::cout << "Nickname: " << getNickName() << std::endl;
+	std::cout << "Username: " << getUserName() << std::endl;
+	std::cout << "Status: " << getStatus() << std::endl;
+	std::cout << "Superuser? " << getSu() << std::endl;
+	std::cout << "------------------------------" << std::endl;
+}
+
 
 struct sockaddr_in &Client::getClientAddr(){
 	return (this->_clientAddr);
@@ -64,8 +80,8 @@ pollfd &Client::getClientPollfd(){
 	return (this->_clientPollfd);
 };
 
-bool &Client::getRegistrationStatus(){
-	return (this->_registered);
+int &Client::getRegistrationStatus(){
+	return (this->_status);
 }
 
 std::string &Client::getNickName(){
@@ -74,6 +90,18 @@ std::string &Client::getNickName(){
 std::string &Client::getUserName(){
 	return (this->_userName);
 };
+
+int Client::getStatus(){
+	return (this->_status);
+};
+
+bool Client::getSu(){
+	return (this->_superUser);
+};
+
+void Client::setNickName(std::string nickName){
+	_nickName = nickName;
+}
 
 void Client::setClientAddr(struct sockaddr_in &clientAddr){
 	this->_clientAddr = clientAddr;
@@ -91,8 +119,12 @@ void Client::setClientPollfdEvents(int const &events){
 	this->_clientPollfd.events = events;
 }
 
-void Client::registerClient(bool registered){
-	this->_registered = registered;
+void Client::registerClient(int status){
+	this->_status = status;
+}
+
+void Client::setFullName(std::string fullName){
+	this->_userName = fullName;
 }
 
 															 
