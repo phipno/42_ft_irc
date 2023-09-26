@@ -242,7 +242,19 @@ int Server::privmsg(t_msg *message, Client &client){
 //          - The server sends Replies 001 to 004 to a user upon
 //            successful registration.
 
+void Server::list(t_msg &message, Client &client) {
+	std::vector<Channel>::iterator it = _channels.begin();
 
+	if (message.paramVec.empty()) {
+		send_msg_to_client_socket(client, "------- LIST OF CHANNELS -------");
+		for ( ; it != _channels.end(); it++) {	
+			std::cout << it->get_name() << std::endl;
+			send_msg_to_client_socket(client, it->get_name());
+		}
+		send_msg_to_client_socket(client, "------- LIST OF CHANNELS -------");
+	}
+
+}
 
 //used for creating or joining a channel, depending if it is already existent
 void Server::join_channel(std::string channelName, class Client &client) {
@@ -257,6 +269,11 @@ void Server::join_channel(std::string channelName, class Client &client) {
 	else{
 		this->_channels[i].add_user(client.getNickName(), false);
 	}
+}
+
+void Server::join(t_msg &parsedMsg, Client &client) {
+	(void)parsedMsg;
+	(void)client;
 }
 
 int Server::channel_exists(std::string channelName) {

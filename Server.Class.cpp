@@ -230,7 +230,7 @@ void Server::runServer() {
 			//2. ther server is processing the command
 			//3. server sends a response
 			// std::cout << "LOOP" << _fds.size() << std::endl;
-			if(_fds[j].revents & POLLIN) {				
+			if(_fds[j].revents & POLLIN) {
 				cmd = recv_from_client_socket(_clients[i]);
 				// if (cmd == "JOIN\n") {
 				// 	join_channel("Channel1", _clients[i]);

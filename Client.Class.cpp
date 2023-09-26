@@ -17,7 +17,7 @@
 															 
 Client::Client():_userName("Unknown"), _nickName("Unknown"), _status(0) {
 	memset(&_clientAddr, 0, sizeof(_clientAddr));
-	
+
 	if (VERBOSE)
 		std::cout << "default constructor called\n"; 
 };

@@ -38,7 +38,7 @@ class Channel {
 		int view_topic(); //second topic function for the case, that no topic_parameter is entered, it displays the latest topic message
 		//alters the mode of a channel, e.g. #teest +l 10 (limit of 10 users on channel #teest)
 		class Channel& modes(bool privileges, char alter, std::string mode); //returns a reference to the new channel
-
+		
 		//Debugging
 		void list_clients_in_channel(void); //lists all clients in the channel and their privileges
 		void list_channel_attributes(void);

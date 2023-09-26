@@ -31,6 +31,8 @@ void  Server::executeCommands(Client &client) {
     
   } else if (this->_parMsg.command == "INVITE") {
    
+  } else if (this->_parMsg.command == "LIST") {
+      this->list(this->_parMsg, client);
   } else {
     throw(std::runtime_error("Command not found"));
   }
@@ -38,17 +40,23 @@ void  Server::executeCommands(Client &client) {
 
 t_msg tokenize_msg(std::string Message) {
   std::stringstream tempSS(Message);
-  std::string       tempToken;
+  std::string       Token;
+  std::string       String;
   t_msg             s_tempMsg;
+  bool              ignore_space = false;
 
-  tempSS >> tempToken;
-  s_tempMsg.command = tempToken;
-  while (tempSS >> tempToken) {
-    s_tempMsg.paramVec.push_back(tempToken);
+  tempSS >> Token;
+  s_tempMsg.command = Token;
+  while (tempSS >> Token) {
+    if (Token[0] == ':')
+      ignore_space = true;
+    if (ignore_space == false)
+      s_tempMsg.paramVec.push_back(Token);
+    else
+      String += Token + " ";
   }
-  //probably dont need this
-  if (s_tempMsg.paramVec.size() > 1)
-    s_tempMsg.param = s_tempMsg.paramVec[1];
+  if (ignore_space == true)
+     s_tempMsg.paramVec.push_back(String);
   return s_tempMsg;
 }
 
@@ -69,37 +77,3 @@ void Server::parsing_msg(std::string &Message, Client &client) {
     std::cout << e.what() << std::endl;
   }
 }
-
-//prototypes that i need later for parsing
-//log in, authenticate client and create new user
-void  logIn(std::string userName);
-//nick, create nickname
-void setNickName(std::string newNickName);
-//user, create username
-void setUserName(std::string newUserName);
-//join, join a channel that is not invite-only
-void joinChannel(std::string channelToJoin);
-//op, make a user operator on channel or whole server
-void setOperator(std::string nickName);
-//prvmsg, write directly to another client or channel
-void privateMessAge(std::string writeTo, std::string textToBeSent);
-
-//all commands with uppercase need to be implemented like in IRC_protocol 
-//KICK, eject a client from channel
-void kick(std::vector<std::string> channelList, 
-          std::vector<std::string> usersToKick, std::string commentToDisplay);
-
-//INVITE, invite a client to a channel
-void invite(std::string nickName, std::string channelToBeInvited);
-
-//TOPIC, change or view the hannel topic, if setTopic is NULL -> view topic, if setTopic is emptyString -> remove all Topics in channel
-std::string topic(std::string channelToChange);
-std::string topic(std::string channelToChange, std::string setTopic);
-
-//MODE, Change the channel mode
-// +k set passwod, -k remove password
-void  mode(std::string channelToChange, std::string modesFlag, std::string Message);
-// +o set operator, -o remove operator
-// +l set user limit to channel amount is user_limit, -l remove user limit
-//+i set invite only channel, -i removce it
-//+t set topic command to Operator only, -t topic command for regular users

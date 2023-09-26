@@ -76,17 +76,20 @@ class Server{
 		void join_channel(std::string channelName, class Client &client);
 		int channel_exists(std::string channelName);
 		void runServer();
-		std::string numReply(int errorCode, t_msg *message, Client &client);
+		void list(t_msg &message, Client &client);
 
 		//Commands
 		int pass(t_msg *message, Client &client);
 		int nick(t_msg *message, Client &client);
 		int user(t_msg *message, Client &client);
 		int privmsg(t_msg *message, Client &client);
+		void join(t_msg &parsedMsg, Client &client);
 
 		//misc
-		t_msg get_parsedMsg();
 		void signal_handler(int binary);
+		std::string numReply(int errorCode, t_msg *message, Client &client);
+
+		//parsing
 		void parsing_msg(std::string &message, Client &client);
 	 	void executeCommands(Client &client);
 
@@ -99,4 +102,5 @@ class Server{
 		std::vector<Client> get_clients(void);
 		std::vector<pollfd> get_fds(void);
 		int get_serversocket(void);
+		t_msg get_parsedMsg();
 };
