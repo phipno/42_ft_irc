@@ -127,36 +127,7 @@ int Channel::kick(std::string to_kick) {
 	}
 }
 
-/*
-   The INVITE command is used to invite a user to a channel.  The
-   parameter <nickname> is the nickname of the person to be invited to
-   the target channel <channel>.  There is no requirement that the
-   channel the target user is being invited to must exist or be a valid
-   channel.  However, if the channel exists, only members of the channel
-   are allowed to invite other users.  When the channel has invite-only
-   flag set, only channel operators may issue INVITE command.
 
-   Only the user inviting and the user being invited will receive
-   notification of the invitation.  Other channel members are not
-   notified.  (This is unlike the MODE changes, and is occasionally the
-   source of trouble for users.)
-*/
-// int Channel::invite(std::string to_invite) {
-	
-// 	if (VERBOSE)
-// 		std::cout << "invite" << std::endl;
-
-// 	std::map<std::string, bool>::iterator it = _users.find(to_invite);
-// 	if (it != _users.end()) {
-// 		_users.(to_kick);
-// 		return (1);
-// 	}
-// 	else {
-// 		if (DEBUG)
-// 			std::cout << "User not found, returned 0" << std::endl;
-// 		return (0);
-// 	}
-// }
 
 /*
    The TOPIC command is used to change or view the topic of a channel.

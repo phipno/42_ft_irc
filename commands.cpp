@@ -228,6 +228,7 @@ int Server::privmsg(t_msg *message, Client &client){
 	return (0);
 }
 
+
 // 001    RPL_WELCOME
 //               "Welcome to the Internet Relay Network
 //                <nick>!<user>@<host>"

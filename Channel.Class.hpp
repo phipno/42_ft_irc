@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <vector>
 
 #include "defines.hpp"
 #include "Client.Class.hpp"
@@ -12,6 +13,7 @@ class Channel {
 	protected:
 		std::string _channelName;
 		std::map<std::string, bool> _users; //has all users and their operator flag
+		std::vector<std::string>	_invited;
 		std::string _topicMessage; // standard topic message is: "None"
 		bool _topic_restricted; //if true only operators can alter the topic_message
 		bool _invite_only;
