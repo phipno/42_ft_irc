@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/25 14:25:00 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/26 10:23:43 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,14 @@ class Server{
 		void send_message_to_channel(std::string message, class Channel &channel);		
 		void join_channel(std::string channelName, class Client &client);
 		int channel_exists(std::string channelName);
-		int pass(t_msg *message, Client client);
-		int nick(t_msg *message, Client client);
 		void runServer();
 		std::string numReply(int errorCode, t_msg *message, Client client);
+
+		//Commands
+		int pass(t_msg *message, Client client);
+		int nick(t_msg *message, Client client);
+		int user(t_msg *message, Client client);
+		int privmseg(t_msg *message, Client client);
 
 		//misc
 		void signal_handler(int binary);
@@ -89,5 +93,4 @@ class Server{
 		std::vector<Client> get_clients(void);
 		std::vector<pollfd> get_fds(void);
 		int get_serversocket(void);
-		int user(t_msg *message, Client client);
 };

@@ -27,9 +27,9 @@
         //    parameters.
 
 int Server::pass(t_msg *message, Client client){
-	if (client.getRegistrationStatus() == true)
+	if (client.getRegistrationStatus() >= REGISTERED)
 		numReply(462, message, client);
-	else if (message->paramVec[0].empty())
+	else if (message->paramVec.empty() || message->paramVec[0].empty())
 		numReply(461, message, client);
 	else if (message->paramVec[0].compare(this->_password) == 0){
 		client.registerClient(true);
@@ -92,7 +92,7 @@ int Server::pass(t_msg *message, Client client){
 int Server::nick(t_msg *message, Client client){
 	if (client.getRegistrationStatus() < REGISTERED)
 		return 1; //send error message
-	if (message->paramVec[0].empty() == true){
+	if (message->paramVec.empty() || message->paramVec[0].empty()){
 		numReply(431, message, client);
 		return 1;
 	}
@@ -127,8 +127,6 @@ int Server::nick(t_msg *message, Client client){
 // JOIN
 // JOIN #channelname
 
-// PRIVMSG
-// PRIVMSEG <msgtarget> <text to be sent>
 
 int Server::user(t_msg *message, Client client){
 	if (client.getRegistrationStatus() < REGISTERED){
@@ -138,7 +136,7 @@ int Server::user(t_msg *message, Client client){
 		numReply(462, message, client); //already registered
 		return 1;
 	}
-	if (message->paramVec[0].empty() == true){
+	if (message->paramVec.empty() || message->paramVec[0].empty()){
 		numReply(461, message, client); // need more params
 		return 1;
 	}
@@ -155,28 +153,61 @@ int Server::user(t_msg *message, Client client){
 }
 
 
+// PRIVMSG
+// PRIVMSEG <msgtarget> <text to be sent>
 
-// 001    RPL_WELCOME
-//               "Welcome to the Internet Relay Network
-//                <nick>!<user>@<host>"
-//        002    RPL_YOURHOST
-//               "Your host is <servername>, running version <ver>"
-//        003    RPL_CREATED
-//               "This server was created <date>"
-//        004    RPL_MYINFO
-//               "<servername> <version> <available user modes>
-//                <available channel modes>"
+//    Parameters: <msgtarget> <text to be sent>
 
-//          - The server sends Replies 001 to 004 to a user upon
-//            successful registration.
+//    PRIVMSG is used to send private messages between users, as well as to
+//    send messages to channels.  <msgtarget> is usually the nickname of
+//    the recipient of the message, or a channel name.
 
+//    The <msgtarget> parameter may also be a host mask (#<mask>) or server
+//    mask ($<mask>).  In both cases the server will only send the PRIVMSG
+//    to those who have a server or host matching the mask.  The mask MUST
+//    have at least 1 (one) "." in it and no wildcards following the last
+//    ".".  This requirement exists to prevent people sending messages to
+//    "#*" or "$*", which would broadcast to all users.  Wildcards are the
+//    '*' and '?'  characters.  This extension to the PRIVMSG command is
+//    only available to operators.
 
-/* --------------------------------------------------------------------------------------*/
+//    Numeric Replies:
 
+//            ERR_NORECIPIENT                 ERR_NOTEXTTOSEND
+//            ERR_CANNOTSENDTOCHAN            ERR_NOTOPLEVEL
+//            ERR_WILDTOPLEVEL                ERR_TOOMANYTARGETS
+//            ERR_NOSUCHNICK
+//            RPL_AWAY
 
-
-
-
-
-
-
+int Server::privmseg(t_msg *message, Client client){
+	if (client.getRegistrationStatus() < USERNAME){
+		numReply(462, message, client); // not sure which message to send, if user is not fully registered
+		return 1;
+	}
+	else if (message->paramVec.empty() || message->paramVec[0].empty()){
+		numReply(411, message, client); // ERR_NORECIPIENT
+		return 1;
+	}
+	else if (message->paramVec[1].empty()){
+		numReply(412, message, client); // ERR_NOTEXTTOSEND
+		return 1;		
+	}
+	std::string msg = message->paramVec[1];
+	if (!message->paramVec[0].empty())
+	{
+		if (message->paramVec[0].at(0) == '#'){
+			// search in channel vector
+		}
+		else {
+			std::vector<Client>::iterator clientit = _clients.begin();
+			for (; clientit < _clients.end(); clientit++){
+				if (clientit->getNickName() == message->paramVec[0]){
+					send_msg_to_client_socket(client, msg);
+					break;	
+				}
+			numReply(412, message, client); // ERR_NOSUCHNICK			
+			}
+		}
+	}
+	return (0);
+}
