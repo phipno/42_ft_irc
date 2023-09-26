@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/25 18:52:22 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/26 11:11:49 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,12 +74,15 @@ class Server{
 		//Channels
 		void send_message_to_channel(std::string message, class Channel &channel);		
 		void join_channel(std::string channelName, class Client &client);
-			int channel_exists(std::string channelName);
-		
-		int pass(t_msg *message, Client &client);
-		int nick(t_msg *message, Client &client);
+		int channel_exists(std::string channelName);
 		void runServer();
-		std::string numReply(int errorCode, t_msg *message, Client &client);
+		std::string numReply(int errorCode, t_msg *message, Client client);
+
+		//Commands
+		int pass(t_msg *message, Client client);
+		int nick(t_msg *message, Client client);
+		int user(t_msg *message, Client client);
+		int privmseg(t_msg *message, Client client);
 
 		//misc
 		t_msg get_parsedMsg();
@@ -96,5 +99,4 @@ class Server{
 		std::vector<Client> get_clients(void);
 		std::vector<pollfd> get_fds(void);
 		int get_serversocket(void);
-		int user(t_msg *message, Client &client);
 };
