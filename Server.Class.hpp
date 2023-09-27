@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/27 14:07:19 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/27 14:09:27 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,6 @@ class Server{
 		void send_msg_to_client_socket(Client &client, std::string message);
 		void send_message_to_channel(std::string message, class Channel &channel);		
 		void list(t_msg &message, Client &client);
-		void parsing_msg(std::string &message, Client &client);
-		t_msg get_parsedMsg();
 
 		//Commands
 		void join_channel(std::string channelName, class Client &client);

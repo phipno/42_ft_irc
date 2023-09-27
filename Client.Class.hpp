@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/27 14:05:47 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/27 14:12:48 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 #define REGISTERED 1 //correct password entered
 #define NICKNAME 2	 //nick name entered
 #define USERNAME 3   //user name entered
-#define WELCOMED 5   //once the user typed in his credentials and answered with PONG, he can use all commands
-#define SUPERUSER 7
+#define WELCOMED 4   //once the user typed in his credentials and answered with PONG, he can use all commands
+#define SUPERUSER 5
 #define USERLEN 9
 
 class Client{

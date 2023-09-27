@@ -149,9 +149,6 @@ int Server::user(t_msg *message, Client &client){
     if (VERBOSE)
         std::cout << "user()" << std::endl;
 
-	if (client.getRegistrationStatus() < NICKNAME){
-		return 1; //send error message
-	}
 	if (client.getRegistrationStatus() >= USERNAME){
 		numReply(462, message, client); //already registered
 		return 1;
