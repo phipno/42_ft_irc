@@ -1,3 +1,4 @@
+#include "defines.hpp"
 #include "Server.Class.hpp"
 #include "Client.Class.hpp"
 #include "Channel.Class.hpp"
@@ -91,7 +92,7 @@ int Server::pass(t_msg *message, Client &client){
     //      the restricted nature of the connection (user mode "+r").
 
 int Server::nick(t_msg *message, Client &client){
-// TODO(albert) - sending a message to the accoring client, wether the name exists, must be implemented
+// TODO(albert) - sending a message to the according client, wether the name exists, must be implemented
     
     if (VERBOSE)
         std::cout << "nick()" << std::endl;
@@ -122,9 +123,16 @@ int Server::nick(t_msg *message, Client &client){
 			return 1;
         }
 	}
+
 	client.setNickName(message->paramVec[0]);
-    if (client.getRegistrationStatus() <= NICKNAME)
-        client.registerClient(NICKNAME);
+	if (client.getNickName() == "superuser") {
+		numReply(001, message, client); // welcome
+		numReply(002, message, client); // your host
+		client.setSu(true);
+		client.registerClient(SUPERUSER);
+		return (0);
+	}
+	ping(client);
 	return 0;
 }
 
@@ -139,7 +147,7 @@ int Server::nick(t_msg *message, Client &client){
 int Server::user(t_msg *message, Client &client){
 
     if (VERBOSE)
-        std::cout << "nick()" << std::endl;
+        std::cout << "user()" << std::endl;
 
 	if (client.getRegistrationStatus() < REGISTERED){
 		return 1; //send error message
@@ -158,13 +166,69 @@ int Server::user(t_msg *message, Client &client){
 		std::string name = message->paramVec[0].substr(0,9);
 		client.setFullName(name);
 	}
-	client.registerClient(USERNAME);
-	numReply(001, message, client); // welcome
-	numReply(002, message, client); // your host
+	
+	if (client.getStatus() == NICKNAME) {
+		numReply(001, message, client); // welcome
+		numReply(002, message, client); // your host
+		client.registerClient(WELCOMED);
+	}
+	else 
+		client.registerClient(USERNAME);
     return (0); //eventually other value
 }
 
+/*
+3.7.2 Ping message
+Command: PING
+Parameters: <server1> [ <server2> ]
+The PING command is used to test the presence of an active client or
+server at the other end of the connection.  Servers send a PING
+message at regular intervals if no other activity detected coming
+from a connection.  If a connection fails to respond to a PING
+message within a set amount of time, that connection is closed.  A
+PING message MAY be sent even if the connection is active.
+When a PING message is received, the appropriate PONG message MUST be
+sent as reply to <server1> (server which sent the PING message out)
+as soon as possible.  If the <server2> parameter is specified, it
+represents the target of the ping, and the message gets forwarded
+there.
+   Numeric Replies:
+           ERR_NOORIGIN                  ERR_NOSUCHSERVER
+   Examples:
+   PING tolsun.oulu.fi             ; Command to send a PING message to
+                                   server
+   PING WiZ tolsun.oulu.fi         ; Command from WiZ to send a PING
+                                   message to server "tolsun.oulu.fi"
+   PING :irc.funet.fi              ; Ping message sent by server
+                                   "irc.funet.fi"*/
 
+//server sends a ping message to the client. Client has to respond with a pong message
+void Server::ping(class Client &client) {
+
+		send_msg_to_client_socket(client, "PING :1234567890");
+}
+
+int Server::pong(t_msg *message, class Client &client) {
+
+	// std::string pong_msg = recv_from_client_socket(client);
+	if (message->paramVec[0] == "") {
+		numReply(409, message, client); //ERR_NOOIRIGIN means, no parameter fpr /PONG
+		return (1);
+	}
+	if (message->paramVec[0] == "1234567890") {
+		if (client.getStatus() == USERNAME) {
+			numReply(001, message, client); // welcome
+			numReply(002, message, client); // your host
+			client.setStatus(WELCOMED);
+		}
+		else 
+			client.setStatus(NICKNAME);
+		return (0);
+	}
+	else if (message->paramVec[0] != "1234567890")
+		numReply(005, message, client);
+		return (1);
+}
 // PRIVMSG
 // PRIVMSEG <msgtarget> <text to be sent>
 
@@ -217,7 +281,7 @@ int Server::privmseg(t_msg *message, Client &client){
 					send_msg_to_client_socket(client, msg);
 					break;	
 				}
-			numReply(412, message, client); // ERR_NOSUCHNICK			
+				numReply(412, message, client); // ERR_NOSUCHNICK			
 			}
 		}
 	}
@@ -250,7 +314,7 @@ void Server::join_channel(std::string channelName, class Client &client) {
 		channel.add_user(client.getNickName(), true);
 		this->_channels.push_back(channel);
 	}
-	else{
+	else {
 		this->_channels[i].add_user(client.getNickName(), false);
 	}
 }
@@ -264,11 +328,8 @@ int Server::channel_exists(std::string channelName) {
 	}
 	return (-1);
 }
+
 /* --------------------------------------------------------------------------------------*/
-
-
-
-
 
 
 

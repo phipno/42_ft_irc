@@ -11,6 +11,7 @@
 
 
 void  Server::executeCommands(Client &client) {
+
   if (this->_parMsg.command == "PASS") {
     this->pass(&this->_parMsg, client);
   } else if (this->_parMsg.command == "NICK") {
@@ -31,7 +32,10 @@ void  Server::executeCommands(Client &client) {
     
   } else if (this->_parMsg.command == "INVITE") {
    
-  } else {
+  } else if (this->_parMsg.command == "PONG") {
+    this->pong(&this->_parMsg, client);
+  } 
+  else {
     throw(std::runtime_error("Command not found"));
   }
 }

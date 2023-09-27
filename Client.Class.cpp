@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/25 18:21:07 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/26 16:25:12 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ bool Client::getSu(){
 	return (this->_superUser);
 };
 
+
 void Client::setNickName(std::string nickName){
 	_nickName = nickName;
 }
@@ -127,7 +128,15 @@ void Client::setFullName(std::string fullName){
 	this->_userName = fullName;
 }
 
-															 
+void Client::setStatus(int status) {
+	this->_status = status;
+}
+
+void Client::setSu(bool su_flag) {
+	this->_superUser = su_flag;	
+}
+
+
 /*
 3.3.1 Private messages
 

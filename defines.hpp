@@ -1,3 +1,4 @@
+//protocol errors
 #define MAX_CONNECTIONS 100
 #define MAX_EVENTS 100
 #define RPL_WELCOME 001
@@ -12,6 +13,14 @@
 #define ERR_NORECIPIENT 411
 #define ERR_NOTEXTTOSEND 412
 
+//custom errors
+#define ERR_PING 005
+
+//Ping/Pong Message
+#define PONG 1234567890
+#define ERR_NOORIGIN 409
+
+//debugflags
 #define VERBOSE 0 //used for constructors and function calls
 #define LOOP 0 //used for printing when inside a loop
 #define DEBUG 1 // generic print flag
