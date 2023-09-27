@@ -46,6 +46,8 @@ std::string Server::numReply(int errorCode, t_msg *message, Client &client){
 			reply = ": " + this->_hostname + " 461 " + client.getNickName() + " :" +message->command + ": Not enough parameters";
 			send_msg_to_client_socket(client, reply);
 			break;
+		case ERR_BADCHANNELKEY:
+			reply = "<Channel> :Cannot join channel (+k)";
 		default:
 			std::cout << "unkown error\n";
 	}

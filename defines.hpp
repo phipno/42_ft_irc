@@ -11,6 +11,7 @@
 #define ERR_NICKNAMEINUSE 433
 #define ERR_NORECIPIENT 411
 #define ERR_NOTEXTTOSEND 412
+#define ERR_BADCHANNELKEY 475
 
 #define VERBOSE 0 //used for constructors and function calls
 #define LOOP 0 //used for printing when inside a loop
