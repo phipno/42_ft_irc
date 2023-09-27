@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/27 14:09:27 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/27 16:41:20 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,15 +81,17 @@ class Server{
 		int user(t_msg *message, Client &client);
 		int privmsg(t_msg *message, Client &client);
 		void join(t_msg &parsedMsg, Client &client);
-
+		int topic(t_msg *parsedMsg, Client &client);
+		
 		//misc
 		void signal_handler(int binary);
 		std::string numReply(int errorCode, t_msg *message, Client &client);
-
+		
 		//parsing
 		void parsing_msg(std::string &message, Client &client);
 	 	void executeCommands(Client &client);
 		int channel_exists(std::string channelName);
+		bool is_empty_string(std::string token);
 
 		//Debugging
 		void list_channels(void);

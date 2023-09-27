@@ -26,21 +26,14 @@ class Channel {
 		Channel(std::string name, bool topic, bool invite, std::string pass, int userlimit);
 
 		
-		int give_priveleges(std::string cli); //changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
-		int rm_priveleges(std::string cli); //changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
-		int add_user(std::string cli, bool operatorflag); //a client gets added with its appropriate privilieges
-		bool is_in_channel(std::string name);
+		int give_priveleges(std::string cli); 
+		int rm_priveleges(std::string cli); 
+		int add_user(std::string cli, bool operatorflag); 
+		bool is_in_channel(std::string name); 
+		bool is_operator(std::string name); 
 
-		//operator functions
-		int kick(std::string to_kick); //returns 1 if successfull
-		int invite(std::string to_invite); //returns 1 if successfull
-		int topic(std::string topic_message); //If an empty string is given, the topic will be removed, otherwise it will be changed to new mesage
-		int view_topic(); //second topic function for the case, that no topic_parameter is entered, it displays the latest topic message
-		//alters the mode of a channel, e.g. #teest +l 10 (limit of 10 users on channel #teest)
-		class Channel& modes(bool privileges, char alter, std::string mode); //returns a reference to the new channel
-		
 		//Debugging
-		void list_clients_in_channel(void); //lists all clients in the channel and their privileges
+		void list_clients_in_channel(void); 
 		void list_channel_attributes(void);
 		
 		//setters

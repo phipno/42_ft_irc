@@ -14,7 +14,7 @@ Channel::Channel(std::string name, bool topic, bool invite, std::string pass, in
 					_passPhrase(pass), _userlimit(userlimit) {}
 
 
-//priviliges are given to a user
+//changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
 int Channel::give_priveleges(std::string cli) {
 
 	if (VERBOSE)
@@ -32,7 +32,7 @@ int Channel::give_priveleges(std::string cli) {
 	}
 }
 
-// priviliges are removed
+//changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
 int Channel::rm_priveleges(std::string cli) {
 
 	if (VERBOSE)
@@ -51,6 +51,7 @@ int Channel::rm_priveleges(std::string cli) {
 }
 
 /*
+	//a client gets added with its appropriate privilieges
    The JOIN command is used by a user to request to start listening to
    the specific channel.  Servers MUST be able to parse arguments in the
    form of a list of target, but SHOULD NOT use lists when sending JOIN
@@ -97,109 +98,7 @@ int Channel::add_user(std::string client, bool operatorflag) {
 	}
 }
 
-/*
-   The KICK command can be used to request the forced removal of a user
-   from a channel.  It causes the <user> to PART from the <channel> by
-   force.  For the message to be syntactically correct, there MUST be
-   either one channel parameter and multiple user parameter, or as many
-   channel parameters as there are user parameters.  If a "comment" is
-   given, this will be sent instead of the default message, the nickname
-   of the user issuing the KICK.
-
-   The server MUST NOT send KICK messages with multiple channels or
-   users to clients.  This is necessarily to maintain backward
-   compatibility with old client software.
-*/
-int Channel::kick(std::string to_kick) {
-	
-	if (VERBOSE)
-		std::cout << "kick" << std::endl;
-
-	std::map<std::string, bool>::iterator it = _users.find(to_kick);
-	if (it != _users.end()) {
-		_users.erase(to_kick);
-		return (1);
-	}
-	else {
-		if (DEBUG)
-			std::cout << "User not found, returned 0" << std::endl;
-		return (0);
-	}
-}
-
-/*
-   The INVITE command is used to invite a user to a channel.  The
-   parameter <nickname> is the nickname of the person to be invited to
-   the target channel <channel>.  There is no requirement that the
-   channel the target user is being invited to must exist or be a valid
-   channel.  However, if the channel exists, only members of the channel
-   are allowed to invite other users.  When the channel has invite-only
-   flag set, only channel operators may issue INVITE command.
-
-   Only the user inviting and the user being invited will receive
-   notification of the invitation.  Other channel members are not
-   notified.  (This is unlike the MODE changes, and is occasionally the
-   source of trouble for users.)
-*/
-// int Channel::invite(std::string to_invite) {
-	
-// 	if (VERBOSE)
-// 		std::cout << "invite" << std::endl;
-
-// 	std::map<std::string, bool>::iterator it = _users.find(to_invite);
-// 	if (it != _users.end()) {
-// 		_users.(to_kick);
-// 		return (1);
-// 	}
-// 	else {
-// 		if (DEBUG)
-// 			std::cout << "User not found, returned 0" << std::endl;
-// 		return (0);
-// 	}
-// }
-
-/*
-   The TOPIC command is used to change or view the topic of a channel.
-   The topic for channel <channel> is returned if there is no <topic>
-   given.  If the <topic> parameter is present, the topic for that
-   channel will be changed, if this action is allowed for the user
-   requesting it.  If the <topic> parameter is an empty string, the
-   topic for that channel will be removed.
-*/
-int Channel::topic(std::string topic_message) {
-	
-	if (VERBOSE)
-		std::cout << "Set new topic message" << std::endl;
-
-	set_topic(topic_message);
-	return (1);
-}
-
-int Channel::view_topic(void) {
-	
-	if (VERBOSE)
-		std::cout << "Display topic message" << std::endl;
-
-	std::cout << get_topic() << std::endl;
-	return (1);
-}
-
-/*
-3.2.3 Channel mode message
-
-      Command: MODE
-   Parameters: <channel> *( ( "-" / "+" ) *<modes> *<modeparams> )
-
-   The MODE command is provided so that users may query and change the
-   characteristics of a channel.  For more details on available modes
-   and their uses, see "Internet Relay Chat: Channel Management" [IRC-
-   CHAN].  Note that there is a maximum limit of three (3) changes per
-   command for modes that take a parameter.
-*/
-// Channel& Channel::modes(bool privileges, char alter, std::string mode) {
-
-// }
-
+//checks if a user is existent in this channel
 bool Channel::is_in_channel(std::string name) {
 	
 	if (VERBOSE)
@@ -218,8 +117,28 @@ bool Channel::is_in_channel(std::string name) {
 	}
 }
 
+//cheks if a user is operator in this channel
+bool Channel::is_operator(std::string name) {
+
+	if (VERBOSE)
+		std::cout << "is_in_channel()" << std::endl;
+
+	std::map<std::string, bool>::iterator it = _users.find(name);
+	if (it->second) {
+		if (DEBUG)
+			std::cout << "User is operator" << std::endl;
+		return (true);
+	}
+	else {
+		if (DEBUG)
+			std::cout << "User is not operator" << std::endl;
+		return (false);
+	}
+}
+
 //==============================================================================
 //Debugging
+//lists all clients in the channel and their privileges
 void Channel::list_clients_in_channel(void) {
 
 	if (VERBOSE)

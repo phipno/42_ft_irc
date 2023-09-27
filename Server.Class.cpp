@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/27 14:04:34 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/27 17:28:52 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,6 @@ void Server::runServer() {
 			//3. server sends a response		
 			if(_fds[j].revents & POLLIN) {
 				recv_from_client_socket(_clients[i]);
-				
 				send_msg_to_client_socket(_clients[i], "hello from server");
 				list_clients();
 				list_channels_all();
@@ -148,24 +147,6 @@ void Server::runServer() {
 		}
 	}
 };
-
-// void Server::welcome(class Client &client) {
-
-	
-// }
-
-//sends a message to all memebers of the channel
-void Server::send_message_to_channel(std::string message, class Channel &channel) {
-
-	std::vector<Client>::iterator it = _clients.begin();
-
-	for (int i = 0 ; it != _clients.end() ; it++, i++) {
-
-		if (channel.is_in_channel(it->getNickName())) {
-			send_msg_to_client_socket(_clients[i], message);
-		}
-	}
-}
 
 //receives a message from a client's socket
 std::string Server::recv_from_client_socket(Client &client) {
@@ -201,7 +182,29 @@ void Server::send_msg_to_client_socket(Client &client, std::string message) {
 		perror("send message to client");
 }
 
-//Debugging
+//Debugging/ HELPER functions
+
+//an empty string is, when there is only a : in the token
+bool Server::is_empty_string(std::string token) {
+	
+	if (token == ":")
+		return (true);
+	return (false);
+}
+
+//sends a message to all memebers of the channel
+void Server::send_message_to_channel(std::string message, class Channel &channel) {
+
+	std::vector<Client>::iterator it = _clients.begin();
+
+	for (int i = 0 ; it != _clients.end() ; it++, i++) {
+
+		if (channel.is_in_channel(it->getNickName())) {
+			send_msg_to_client_socket(_clients[i], message);
+		}
+	}
+}
+
 void Server::list_channels(void) {
 
 	std::vector<Channel>::iterator it = _channels.begin();
@@ -211,8 +214,8 @@ void Server::list_channels(void) {
 	}
 	std::cout << "--------------------------------" << std::endl;
 }
+
 void Server::list_channels_all(void) {
-	//TO-DO: Segfaults entfernen
 	if (VERBOSE)
 		std::cout << "------- list_channels_all() -------" << std::endl;
 	std::vector<Channel>::iterator it = _channels.begin();
@@ -238,7 +241,7 @@ void Server::list_clients(void) {
 	std::cout << "--------------------------------" << std::endl;
 }
 
-//getter/settter
+//getter/setter
 std::vector<Client> Server::get_clients(void) {
 	return (_clients);
 }

@@ -347,7 +347,67 @@ int Server::channel_exists(std::string channelName) {
 	return (-1);
 }
 
-/* --------------------------------------------------------------------------------------*/
+/*Command: TOPIC
+Parameters: <channel> [ <topic> ]
+The TOPIC command is used to change or view the topic of a channel.
+The topic for channel <channel> is returned if there is no <topic>
+given.  If the <topic> parameter is present, the topic for that
+channel will be changed, if this action is allowed for the user
+requesting it.  If the <topic> parameter is an empty string, the
+topic for that channel will be removed.
+   Numeric Replies:
+           ERR_NEEDMOREPARAMS              ERR_NOTONCHANNEL
+           RPL_NOTOPIC                     RPL_TOPIC
+           ERR_CHANOPRIVSNEEDED            ERR_NOCHANMODES
+   Examples:
+   :WiZ!jto@tolsun.oulu.fi TOPIC #test :New topic ; User Wiz setting the
+                                   topic.
+   TOPIC #test :another topic      ; Command to set the topic on #test
+                                   to "another topic".
+   TOPIC #test :                   ; Command to clear the topic on
+                                   #test.
+   TOPIC #test                     ; Command to check the topic for
+                                   #test.
+*/
+int Server::topic(t_msg *parsedMsg, Client &client) {
+	
+	int i = channel_exists(parsedMsg->paramVec[0]);
+	//if channel does not exist, return USER not on channel
+	if (i == -1) { 
+		numReply(ERR_NOTONCHANNEL, parsedMsg, client);
+		return (1);
+	}
+
+	//checks if the client is on that channel
+	if (!_channels[i].is_in_channel(client.getNickName())) {
+		numReply(ERR_NOTONCHANNEL, parsedMsg, client);
+		return (1);
+	}
+
+	// if no topic argument exists, the Topic will be displayed
+	// if there is an empty string the Topic will be deleted (operator)
+	// else the topic will be set if there is a non-empty string (operator)	
+	bool privileges = _channels[i].is_operator(client.getNickName());
+	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin();
+
+	if (it == parsedMsg->paramVec.end())
+		numReply(RPL_TOPIC, parsedMsg, client);
+	else if (is_empty_string(*(++it)) && (privileges || !_channels[i].get_topic_restriction()))
+		_channels[i].set_topic(" :No topic set");
+	else if (is_empty_string(*(++it)) && _channels[i].get_topic_restriction() && !privileges)
+		numReply(ERR_CHANOPRIVSNEEDED, parsedMsg, client);
+	else if (!is_empty_string(*(++it)) && (privileges || !_channels[i].get_topic_restriction()))
+		_channels[i].set_topic(*it);
+	else if (!is_empty_string(*(++it)) && _channels[i].get_topic_restriction() && !privileges)
+		numReply(ERR_CHANOPRIVSNEEDED, parsedMsg, client);
+	return (0);
+}
+
+
+// ERR_PING(client)
+// define ERR_PING(client){"": To connect, type PONG 1234567890"}
+// send_msg_to_client_socket(client, ERR_PING(client));
+
 
 
 
