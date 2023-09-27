@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/26 16:25:12 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/27 14:03:49 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,16 @@
 /* ------------------ CANONICAL FORM -----------------------------------------*/
 
 															 
-Client::Client():_userName("Unknown"), _nickName("Unknown") {
+Client::Client():_userName("Unknown"), _nickName("Unknown"), _status(0) {
 	memset(&_clientAddr, 0, sizeof(_clientAddr));
-	
+
 	if (VERBOSE)
 		std::cout << "default constructor called\n"; 
 };
 
 Client::Client(std::string username, std::string nickname) : _userName(username),
-															 _nickName(nickname) {}
+															 _nickName(nickname),
+															 _status(0) {}
 															 
 Client::~Client(){
 	

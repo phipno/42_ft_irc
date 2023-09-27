@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/27 12:30:19 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/27 14:07:19 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ class Server{
 		std::string recv_from_client_socket(Client &client);
 		void send_msg_to_client_socket(Client &client, std::string message);
 		void send_message_to_channel(std::string message, class Channel &channel);		
-		std::string numReply(int errorCode, t_msg *message, Client &client);
+		void list(t_msg &message, Client &client);
 		void parsing_msg(std::string &message, Client &client);
 		t_msg get_parsedMsg();
 
@@ -81,10 +81,15 @@ class Server{
 		int pass(t_msg *message, Client &client);
 		int nick(t_msg *message, Client &client);
 		int user(t_msg *message, Client &client);
-		int privmseg(t_msg *message, Client &client);
+		int privmsg(t_msg *message, Client &client);
+		void join(t_msg &parsedMsg, Client &client);
 
 		//misc
 		void signal_handler(int binary);
+		std::string numReply(int errorCode, t_msg *message, Client &client);
+
+		//parsing
+		void parsing_msg(std::string &message, Client &client);
 	 	void executeCommands(Client &client);
 		int channel_exists(std::string channelName);
 
@@ -97,4 +102,5 @@ class Server{
 		std::vector<Client> get_clients(void);
 		std::vector<pollfd> get_fds(void);
 		int get_serversocket(void);
+		t_msg get_parsedMsg();
 };

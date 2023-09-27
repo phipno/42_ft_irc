@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/27 12:06:48 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/27 14:04:34 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 extern bool g_sigint;
 
 /* ---------------- CANONICAL FORM ---------------------------*/
-Server::Server() : _port(0), _password("no_pw"){
+Server::Server() : _port(0), _password("no_pw"), _hostname("Ingwer.Radish.Cherry"){
 	this->_fds[MAX_EVENTS];
 };
 
-Server::Server(int port, std::string password) : _port(port), _password(password){
+Server::Server(int port, std::string password) : _port(port), _password(password), _hostname("Ingwer.Radish.Cherry"){
 };
 
 Server::~Server(){};

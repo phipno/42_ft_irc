@@ -149,7 +149,7 @@ int Server::user(t_msg *message, Client &client){
     if (VERBOSE)
         std::cout << "user()" << std::endl;
 
-	if (client.getRegistrationStatus() < REGISTERED){
+	if (client.getRegistrationStatus() < NICKNAME){
 		return 1; //send error message
 	}
 	if (client.getRegistrationStatus() >= USERNAME){
@@ -255,7 +255,7 @@ int Server::pong(t_msg *message, class Client &client) {
 //            ERR_NOSUCHNICK
 //            RPL_AWAY
 
-int Server::privmseg(t_msg *message, Client &client){
+int Server::privmsg(t_msg *message, Client &client){
 	if (client.getRegistrationStatus() < USERNAME){
 		numReply(462, message, client); // not sure which message to send, if user is not fully registered
 		return 1;
@@ -272,13 +272,17 @@ int Server::privmseg(t_msg *message, Client &client){
 	if (!message->paramVec[0].empty())
 	{
 		if (message->paramVec[0].at(0) == '#'){
-			// search in channel vector
+			int i = channel_exists(message->paramVec[0]);
+			if (i != -1)
+				send_message_to_channel(message->paramVec[1], this->_channels[i]);
+			else
+				numReply(403, message, client); // ERR_ NOSUCHCHANNEL
 		}
 		else {
 			std::vector<Client>::iterator clientit = _clients.begin();
 			for (; clientit < _clients.end(); clientit++){
 				if (clientit->getNickName() == message->paramVec[0]){
-					send_msg_to_client_socket(client, msg);
+					send_msg_to_client_socket(*clientit, msg);
 					break;	
 				}
 				numReply(412, message, client); // ERR_NOSUCHNICK			
@@ -302,7 +306,19 @@ int Server::privmseg(t_msg *message, Client &client){
 //          - The server sends Replies 001 to 004 to a user upon
 //            successful registration.
 
+void Server::list(t_msg &message, Client &client) {
+	std::vector<Channel>::iterator it = _channels.begin();
 
+	if (message.paramVec.empty()) {
+		send_msg_to_client_socket(client, "------- LIST OF CHANNELS -------");
+		for ( ; it != _channels.end(); it++) {	
+			std::cout << it->get_name() << std::endl;
+			send_msg_to_client_socket(client, it->get_name());
+		}
+		send_msg_to_client_socket(client, "------- LIST OF CHANNELS -------");
+	}
+
+}
 
 //used for creating or joining a channel, depending if it is already existent
 void Server::join_channel(std::string channelName, class Client &client) {
@@ -317,6 +333,11 @@ void Server::join_channel(std::string channelName, class Client &client) {
 	else {
 		this->_channels[i].add_user(client.getNickName(), false);
 	}
+}
+
+void Server::join(t_msg &parsedMsg, Client &client) {
+	(void)parsedMsg;
+	(void)client;
 }
 
 int Server::channel_exists(std::string channelName) {
