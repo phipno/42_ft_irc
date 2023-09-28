@@ -14,7 +14,7 @@ Channel::Channel(std::string name, bool topic, bool invite, std::string pass, in
 					_passPhrase(pass), _userlimit(userlimit) {}
 
 
-//priviliges are given to a user
+//changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
 int Channel::give_priveleges(std::string cli) {
 
 	if (VERBOSE)
@@ -32,7 +32,7 @@ int Channel::give_priveleges(std::string cli) {
 	}
 }
 
-// priviliges are removed
+//changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
 int Channel::rm_priveleges(std::string cli) {
 
 	if (VERBOSE)
@@ -51,6 +51,7 @@ int Channel::rm_priveleges(std::string cli) {
 }
 
 /*
+	//a client gets added with its appropriate privilieges
    The JOIN command is used by a user to request to start listening to
    the specific channel.  Servers MUST be able to parse arguments in the
    form of a list of target, but SHOULD NOT use lists when sending JOIN
@@ -189,8 +190,28 @@ bool Channel::is_in_channel(std::string name) {
 	}
 }
 
+//cheks if a user is operator in this channel
+bool Channel::is_operator(std::string name) {
+
+	if (VERBOSE)
+		std::cout << "is_in_channel()" << std::endl;
+
+	std::map<std::string, bool>::iterator it = _users.find(name);
+	if (it->second) {
+		if (DEBUG)
+			std::cout << "User is operator" << std::endl;
+		return (true);
+	}
+	else {
+		if (DEBUG)
+			std::cout << "User is not operator" << std::endl;
+		return (false);
+	}
+}
+
 //==============================================================================
 //Debugging
+//lists all clients in the channel and their privileges
 void Channel::list_clients_in_channel(void) {
 
 	if (VERBOSE)

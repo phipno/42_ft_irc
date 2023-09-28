@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/26 14:16:39 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/28 09:59:29 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,11 @@ class Server{
 	 std::vector<Channel>	_channels;
 	 std::vector<Client>	_clients;
 	 std::vector<pollfd>	_fds;
-	 t_msg								_parMsg; //added this to private, just because :)
+	 t_msg					_parMsg; //added this to private, just because :)
 	
 	 Server();
 	 int setupServer();
 	 void acceptNewClient();
-	//  void recv_from_client_socket(Client &client);
-	//  void send_msg_to_client_socket(Client &client, std::string message);
 		
 	public:
 		~Server();
@@ -66,32 +64,37 @@ class Server{
 		Server (Server const &src);
 		Server &operator= (Server const &src);
 
-		//Requests and messages
-		void handle_requests(t_msg request);
+		void runServer();
+		void ping(class Client &client);
+		int pong(t_msg *message, class Client &client);
+		
+		//Messages
 		std::string recv_from_client_socket(Client &client);
 		void send_msg_to_client_socket(Client &client, std::string message);
-
-		//Channels
 		void send_message_to_channel(std::string message, class Channel &channel);		
-		void join_channel(std::string channelName, class Client &client);
-		int channel_exists(std::string channelName);
-		void runServer();
-		std::string numReply(int errorCode, t_msg *message, Client &client);
+		void list(t_msg &message, Client &client);
 
 		//Commands
+		void join_channel(std::string channelName, class Client &client);
 		int pass(t_msg *message, Client &client);
 		int nick(t_msg *message, Client &client);
 		int user(t_msg *message, Client &client);
 		int privmsg(t_msg *message, Client &client);
-
+		void join(t_msg &parsedMsg, Client &client);
+		int topic(t_msg *parsedMsg, Client &client);
+		
 		//Operator Commands
 		int invite(t_msg *message, Client &client);
 
 		//misc
-		t_msg get_parsedMsg();
 		void signal_handler(int binary);
+		std::string numReply(int errorCode, t_msg *message, Client &client);
+		
+		//parsing
 		void parsing_msg(std::string &message, Client &client);
 	 	void executeCommands(Client &client);
+		int channel_exists(std::string channelName);
+		bool is_empty_string(std::string token);
 
 		//Debugging
 		void list_channels(void);
@@ -102,4 +105,5 @@ class Server{
 		std::vector<Client> get_clients(void);
 		std::vector<pollfd> get_fds(void);
 		int get_serversocket(void);
+		t_msg get_parsedMsg();
 };

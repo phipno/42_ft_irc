@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/26 12:40:34 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/27 14:12:48 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 #define REGISTERED 1 //correct password entered
 #define NICKNAME 2	 //nick name entered
 #define USERNAME 3   //user name entered
+#define WELCOMED 4   //once the user typed in his credentials and answered with PONG, he can use all commands
+#define SUPERUSER 5
 #define USERLEN 9
 
 class Client{
@@ -35,8 +37,8 @@ class Client{
 			std::string			_userName;
 			std::string			_nickName;
 			int					_status;
-			bool				_superUser; //nick must be superuser to get priviliges
-
+			bool				_superUser; //TO-DO(albert):nick must be superuser to be the serveradmin. For testing purposes only.
+			
 		public:
 			Client();
 			Client(std::string username, std::string nickname);
@@ -63,4 +65,6 @@ class Client{
 			void registerClient(int status);
 			void setNickName(std::string nickName);
 			void setFullName(std::string fullName);
+			void setStatus(int status);
+			void setSu(bool su_flag);
 };

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/26 12:42:09 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/27 14:03:49 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 															 
 Client::Client():_userName("Unknown"), _nickName("Unknown"), _status(0) {
 	memset(&_clientAddr, 0, sizeof(_clientAddr));
-	
+
 	if (VERBOSE)
 		std::cout << "default constructor called\n"; 
 };
@@ -100,6 +100,7 @@ bool Client::getSu(){
 	return (this->_superUser);
 };
 
+
 void Client::setNickName(std::string nickName){
 	_nickName = nickName;
 }
@@ -128,7 +129,15 @@ void Client::setFullName(std::string fullName){
 	this->_userName = fullName;
 }
 
-															 
+void Client::setStatus(int status) {
+	this->_status = status;
+}
+
+void Client::setSu(bool su_flag) {
+	this->_superUser = su_flag;	
+}
+
+
 /*
 3.3.1 Private messages
 

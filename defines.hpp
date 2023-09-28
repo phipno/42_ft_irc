@@ -1,3 +1,4 @@
+//protocol errors
 #define MAX_CONNECTIONS 100
 #define MAX_EVENTS 100
 #define RPL_WELCOME 001
@@ -14,7 +15,22 @@
 #define ERR_NOTEXTTOSEND 412
 #define ERR_USERONCHANNEL 443
 // #define ERR_USERONCHANNEL(nickname, channel) (std::string("irc42 443 " + nick + " " + channel +  " :is already on channel"))
+#define ERR_NOTONCHANNEL 442 //"<channel> :You're not on that channel"
+#define ERR_NOCHANMODES 477 //"<channel> :Channel doesn't support modes"
 
+//TOPIC errors              
+#define RPL_NOTOPIC 331 //"<channel> :No topic is set"              
+#define RPL_TOPIC 332 //topic is set
+#define ERR_CHANOPRIVSNEEDED 482 //"<channel> :You're not channel operator"          
+
+//custom errors
+#define ERR_PING 005
+
+//Ping/Pong Message
+#define PONG 1234567890
+#define ERR_NOORIGIN 409 //":No origin specified"
+
+//debugflags
 #define VERBOSE 0 //used for constructors and function calls
 #define LOOP 0 //used for printing when inside a loop
 #define DEBUG 1 // generic print flag

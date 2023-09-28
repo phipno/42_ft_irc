@@ -1,3 +1,4 @@
+#include "defines.hpp"
 #include "Server.Class.hpp"
 #include "Client.Class.hpp"
 #include "Channel.Class.hpp"
@@ -91,7 +92,7 @@ int Server::pass(t_msg *message, Client &client){
     //      the restricted nature of the connection (user mode "+r").
 
 int Server::nick(t_msg *message, Client &client){
-// TODO(albert) - sending a message to the accoring client, wether the name exists, must be implemented
+// TODO(albert) - sending a message to the according client, wether the name exists, must be implemented
     
     if (VERBOSE)
         std::cout << "nick()" << std::endl;
@@ -122,9 +123,16 @@ int Server::nick(t_msg *message, Client &client){
 			return 1;
         }
 	}
+
 	client.setNickName(message->paramVec[0]);
-    if (client.getRegistrationStatus() <= NICKNAME)
-        client.registerClient(NICKNAME);
+	if (client.getNickName() == "superuser") {
+		numReply(001, message, client); // welcome
+		numReply(002, message, client); // your host
+		client.setSu(true);
+		client.registerClient(SUPERUSER);
+		return (0);
+	}
+	ping(client);
 	return 0;
 }
 
@@ -139,11 +147,8 @@ int Server::nick(t_msg *message, Client &client){
 int Server::user(t_msg *message, Client &client){
 
     if (VERBOSE)
-        std::cout << "nick()" << std::endl;
+        std::cout << "user()" << std::endl;
 
-	if (client.getRegistrationStatus() < NICKNAME){
-		return 1; //send error message
-	}
 	if (client.getRegistrationStatus() >= USERNAME){
 		numReply(462, message, client); //already registered
 		return 1;
@@ -158,13 +163,69 @@ int Server::user(t_msg *message, Client &client){
 		std::string name = message->paramVec[0].substr(0,9);
 		client.setFullName(name);
 	}
-	client.registerClient(USERNAME);
-	numReply(001, message, client); // welcome
-	numReply(002, message, client); // your host
+	
+	if (client.getStatus() == NICKNAME) {
+		numReply(001, message, client); // welcome
+		numReply(002, message, client); // your host
+		client.registerClient(WELCOMED);
+	}
+	else 
+		client.registerClient(USERNAME);
     return (0); //eventually other value
 }
 
+/*
+3.7.2 Ping message
+Command: PING
+Parameters: <server1> [ <server2> ]
+The PING command is used to test the presence of an active client or
+server at the other end of the connection.  Servers send a PING
+message at regular intervals if no other activity detected coming
+from a connection.  If a connection fails to respond to a PING
+message within a set amount of time, that connection is closed.  A
+PING message MAY be sent even if the connection is active.
+When a PING message is received, the appropriate PONG message MUST be
+sent as reply to <server1> (server which sent the PING message out)
+as soon as possible.  If the <server2> parameter is specified, it
+represents the target of the ping, and the message gets forwarded
+there.
+   Numeric Replies:
+           ERR_NOORIGIN                  ERR_NOSUCHSERVER
+   Examples:
+   PING tolsun.oulu.fi             ; Command to send a PING message to
+                                   server
+   PING WiZ tolsun.oulu.fi         ; Command from WiZ to send a PING
+                                   message to server "tolsun.oulu.fi"
+   PING :irc.funet.fi              ; Ping message sent by server
+                                   "irc.funet.fi"*/
 
+//server sends a ping message to the client. Client has to respond with a pong message
+void Server::ping(class Client &client) {
+
+		send_msg_to_client_socket(client, "PING :1234567890");
+}
+
+int Server::pong(t_msg *message, class Client &client) {
+
+	// std::string pong_msg = recv_from_client_socket(client);
+	if (message->paramVec[0] == "") {
+		numReply(409, message, client); //ERR_NOOIRIGIN means, no parameter fpr /PONG
+		return (1);
+	}
+	if (message->paramVec[0] == "1234567890") {
+		if (client.getStatus() == USERNAME) {
+			numReply(001, message, client); // welcome
+			numReply(002, message, client); // your host
+			client.setStatus(WELCOMED);
+		}
+		else 
+			client.setStatus(NICKNAME);
+		return (0);
+	}
+	else if (message->paramVec[0] != "1234567890")
+		numReply(005, message, client);
+		return (1);
+}
 // PRIVMSG
 // PRIVMSEG <msgtarget> <text to be sent>
 
@@ -221,7 +282,7 @@ int Server::privmsg(t_msg *message, Client &client){
 					send_msg_to_client_socket(*clientit, msg);
 					break;	
 				}
-			numReply(412, message, client); // ERR_NOSUCHNICK			
+				numReply(412, message, client); // ERR_NOSUCHNICK			
 			}
 		}
 	}
@@ -243,7 +304,19 @@ int Server::privmsg(t_msg *message, Client &client){
 //          - The server sends Replies 001 to 004 to a user upon
 //            successful registration.
 
+void Server::list(t_msg &message, Client &client) {
+	std::vector<Channel>::iterator it = _channels.begin();
 
+	if (message.paramVec.empty()) {
+		send_msg_to_client_socket(client, "------- LIST OF CHANNELS -------");
+		for ( ; it != _channels.end(); it++) {	
+			std::cout << it->get_name() << std::endl;
+			send_msg_to_client_socket(client, it->get_name());
+		}
+		send_msg_to_client_socket(client, "------- LIST OF CHANNELS -------");
+	}
+
+}
 
 //used for creating or joining a channel, depending if it is already existent
 void Server::join_channel(std::string channelName, class Client &client) {
@@ -255,9 +328,14 @@ void Server::join_channel(std::string channelName, class Client &client) {
 		channel.add_user(client.getNickName(), true);
 		this->_channels.push_back(channel);
 	}
-	else{
+	else {
 		this->_channels[i].add_user(client.getNickName(), false);
 	}
+}
+
+void Server::join(t_msg &parsedMsg, Client &client) {
+	(void)parsedMsg;
+	(void)client;
 }
 
 int Server::channel_exists(std::string channelName) {
@@ -269,10 +347,67 @@ int Server::channel_exists(std::string channelName) {
 	}
 	return (-1);
 }
-/* --------------------------------------------------------------------------------------*/
+
+/*Command: TOPIC
+Parameters: <channel> [ <topic> ]
+The TOPIC command is used to change or view the topic of a channel.
+The topic for channel <channel> is returned if there is no <topic>
+given.  If the <topic> parameter is present, the topic for that
+channel will be changed, if this action is allowed for the user
+requesting it.  If the <topic> parameter is an empty string, the
+topic for that channel will be removed.
+   Numeric Replies:
+           ERR_NEEDMOREPARAMS              ERR_NOTONCHANNEL
+           RPL_NOTOPIC                     RPL_TOPIC
+           ERR_CHANOPRIVSNEEDED            ERR_NOCHANMODES
+   Examples:
+   :WiZ!jto@tolsun.oulu.fi TOPIC #test :New topic ; User Wiz setting the
+                                   topic.
+   TOPIC #test :another topic      ; Command to set the topic on #test
+                                   to "another topic".
+   TOPIC #test :                   ; Command to clear the topic on
+                                   #test.
+   TOPIC #test                     ; Command to check the topic for
+                                   #test.
+*/
+int Server::topic(t_msg *parsedMsg, Client &client) {
+	
+	int i = channel_exists(parsedMsg->paramVec[0]);
+	//if channel does not exist, return USER not on channel
+	if (i == -1) { 
+		numReply(ERR_NOTONCHANNEL, parsedMsg, client);
+		return (1);
+	}
+
+	//checks if the client is on that channel
+	if (!_channels[i].is_in_channel(client.getNickName())) {
+		numReply(ERR_NOTONCHANNEL, parsedMsg, client);
+		return (1);
+	}
+
+	// if no topic argument exists, the Topic will be displayed
+	// if there is an empty string the Topic will be deleted (operator)
+	// else the topic will be set if there is a non-empty string (operator)	
+	bool privileges = _channels[i].is_operator(client.getNickName());
+	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin();
+
+	if (it == parsedMsg->paramVec.end())
+		numReply(RPL_TOPIC, parsedMsg, client);
+	else if (is_empty_string(*(++it)) && (privileges || !_channels[i].get_topic_restriction()))
+		_channels[i].set_topic(" :No topic set");
+	else if (is_empty_string(*(++it)) && _channels[i].get_topic_restriction() && !privileges)
+		numReply(ERR_CHANOPRIVSNEEDED, parsedMsg, client);
+	else if (!is_empty_string(*(++it)) && (privileges || !_channels[i].get_topic_restriction()))
+		_channels[i].set_topic(*it);
+	else if (!is_empty_string(*(++it)) && _channels[i].get_topic_restriction() && !privileges)
+		numReply(ERR_CHANOPRIVSNEEDED, parsedMsg, client);
+	return (0);
+}
 
 
-
+// ERR_PING(client)
+// define ERR_PING(client){"": To connect, type PONG 1234567890"}
+// send_msg_to_client_socket(client, ERR_PING(client));
 
 
 
