@@ -11,6 +11,7 @@
 
 
 void  Server::executeCommands(Client &client) {
+
   if (this->_parMsg.command == "PASS") {
     this->pass(&this->_parMsg, client);
   } else if (this->_parMsg.command == "NICK") {
@@ -22,7 +23,7 @@ void  Server::executeCommands(Client &client) {
   } else if (this->_parMsg.command == "OP") {
     // setOperator(Message);
   } else if (this->_parMsg.command == "PRIVMSG") {
-    
+      this->privmsg(&this->_parMsg, client);
   } else if (this->_parMsg.command == "KICK") {
     this->kick(this->_parMsg, client);
   } else if (this->_parMsg.command == "TOPIC") {
@@ -33,7 +34,13 @@ void  Server::executeCommands(Client &client) {
    
   } else if (this->_parMsg.command == "LIST") {
       this->list(this->_parMsg, client);
-  } else {
+  } else if (this->_parMsg.command == "CAP") {
+      this->handshake(&this->_parMsg, client);
+  } 
+  else if (this->_parMsg.command == "PONG") {
+    this->pong(&this->_parMsg, client);
+  } 
+  else {
     throw(std::runtime_error("Command not found"));
   }
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/26 11:14:48 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/28 15:40:21 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,11 @@ class Server{
 	 std::vector<Channel>	_channels;
 	 std::vector<Client>	_clients;
 	 std::vector<pollfd>	_fds;
-	 t_msg								_parMsg; //added this to private, just because :)
+	 t_msg					_parMsg; //added this to private, just because :)
 	
 	 Server();
 	 int setupServer();
 	 void acceptNewClient();
-	//  void recv_from_client_socket(Client &client);
-	//  void send_msg_to_client_socket(Client &client, std::string message);
 		
 	public:
 		~Server();
@@ -66,33 +64,39 @@ class Server{
 		Server (Server const &src);
 		Server &operator= (Server const &src);
 
-		//Requests and messages
-		void handle_requests(t_msg request);
+		void runServer();
+		void ping(class Client &client);
+		int pong(t_msg *message, class Client &client);
+		int handshake(t_msg *message, class Client &client);
+		
+		//Messages
 		std::string recv_from_client_socket(Client &client);
 		void send_msg_to_client_socket(Client &client, std::string message);
-
-		//Channels
 		void send_message_to_channel(std::string message, class Channel &channel);		
-		void join_channel(std::string channelName, class Client &client);
-		int channel_exists(std::string channelName);
-		void runServer();
 		void list(t_msg &message, Client &client);
 
 		//Commands
+		void join_channel(std::string channelName, class Client &client);
 		int pass(t_msg *message, Client &client);
 		int nick(t_msg *message, Client &client);
 		int user(t_msg *message, Client &client);
-		int privmseg(t_msg *message, Client &client);
+		int privmsg(t_msg *message, Client &client);
 		void join(t_msg &parsedMsg, Client &client);
 		void kick(t_msg &parsedMsg, Client &client);
+		int topic(t_msg *parsedMsg, Client &client);
+		
+		//Operator Commands
+		int invite(t_msg *message, Client &client);
 
 		//misc
 		void signal_handler(int binary);
-		std::string numReply(int errorCode, t_msg *message, Client &client);
-
+		void numReply(Client &client, std::string message);
+		
 		//parsing
 		void parsing_msg(std::string &message, Client &client);
 	 	void executeCommands(Client &client);
+		int channel_exists(std::string channelName);
+		bool is_empty_string(std::string token);
 
 		//Debugging
 		void list_channels(void);

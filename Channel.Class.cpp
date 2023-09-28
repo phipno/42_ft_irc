@@ -14,7 +14,8 @@ Channel::Channel(std::string name, bool topic, bool invite, std::string pass, in
 					_topic_restricted(topic), _invite_only(invite), \
 					_passPhrase(pass), _userlimit(userlimit) {}
 
-//priviliges are given to a user
+
+//changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
 int Channel::give_priveleges(std::string cli) {
 
 	if (VERBOSE)
@@ -32,7 +33,7 @@ int Channel::give_priveleges(std::string cli) {
 	}
 }
 
-// priviliges are removed
+//changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
 int Channel::rm_priveleges(std::string cli) {
 
 	if (VERBOSE)
@@ -157,11 +158,11 @@ int Channel::kick_user(std::string to_kick) {
 // int Channel::invite(std::string to_invite) {
 	
 // 	if (VERBOSE)
-// 		std::cout << "invite" << std::endl;
+// 		std::cout << "kick" << std::endl;
 
-// 	std::map<std::string, bool>::iterator it = _users.find(to_invite);
+// 	std::map<std::string, bool>::iterator it = _users.find(to_kick);
 // 	if (it != _users.end()) {
-// 		_users.(to_kick);
+// 		_users.erase(to_kick);
 // 		return (1);
 // 	}
 // 	else {
@@ -171,6 +172,8 @@ int Channel::kick_user(std::string to_kick) {
 // 	}
 // }
 
+
+
 /*
    The TOPIC command is used to change or view the topic of a channel.
    The topic for channel <channel> is returned if there is no <topic>
@@ -179,23 +182,23 @@ int Channel::kick_user(std::string to_kick) {
    requesting it.  If the <topic> parameter is an empty string, the
    topic for that channel will be removed.
 */
-int Channel::topic(std::string topic_message) {
+// int Channel::topic(std::string topic_message) {
 	
-	if (VERBOSE)
-		std::cout << "Set new topic message" << std::endl;
+// 	if (VERBOSE)
+// 		std::cout << "Set new topic message" << std::endl;
 
-	set_topic(topic_message);
-	return (1);
-}
+// 	set_topic(topic_message);
+// 	return (1);
+// }
 
-int Channel::view_topic(void) {
+// int Channel::view_topic(void) {
 	
-	if (VERBOSE)
-		std::cout << "Display topic message" << std::endl;
+// 	if (VERBOSE)
+// 		std::cout << "Display topic message" << std::endl;
 
-	std::cout << get_topic() << std::endl;
-	return (1);
-}
+// 	std::cout << get_topic() << std::endl;
+// 	return (1);
+// }
 
 /*
 3.2.3 Channel mode message
@@ -231,8 +234,28 @@ bool Channel::is_in_channel(std::string name) {
 	}
 }
 
+//cheks if a user is operator in this channel
+bool Channel::is_operator(std::string name) {
+
+	if (VERBOSE)
+		std::cout << "is_in_channel()" << std::endl;
+
+	std::map<std::string, bool>::iterator it = _users.find(name);
+	if (it->second) {
+		if (DEBUG)
+			std::cout << "User is operator" << std::endl;
+		return (true);
+	}
+	else {
+		if (DEBUG)
+			std::cout << "User is not operator" << std::endl;
+		return (false);
+	}
+}
+
 //==============================================================================
 //Debugging
+//lists all clients in the channel and their privileges
 void Channel::list_clients_in_channel(void) {
 
 	if (VERBOSE)
@@ -269,6 +292,7 @@ void Channel::set_topic_restriction(bool restriction) {_topic_restricted = restr
 void Channel::set_invite_only(bool restriction) {_invite_only = restriction;}
 void Channel::set_passphrase(std::string passphrase) {_passPhrase = passphrase;}
 void Channel::set_userlimit(int limit) {_userlimit = limit;}
+void Channel::set_invitee(std::string nickname) { this->_invited.push_back(nickname);}
 
 //getter
 std::map<std::string, bool> Channel::get_users(void) {return (_users);}
