@@ -12,6 +12,8 @@
 #define ERR_NICKNAMEINUSE 433
 #define ERR_NORECIPIENT 411
 #define ERR_NOTEXTTOSEND 412
+#define ERR_USERONCHANNEL 443
+// #define ERR_USERONCHANNEL(nickname, channel) (std::string("irc42 443 " + nick + " " + channel +  " :is already on channel"))
 
 #define VERBOSE 0 //used for constructors and function calls
 #define LOOP 0 //used for printing when inside a loop

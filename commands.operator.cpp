@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 14:11:56 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/26 14:54:52 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/28 09:52:45 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,14 @@ int Server::invite(t_msg *message, Client &client) {
 	if (VERBOSE)
 		std::cout << "invite" << std::endl;
 	(void) client;
-	// check if client is already on channel
-		// return if yes;
 	std::vector<Channel>::iterator it = _channels.begin();
 	for (; it != _channels.end(); it++){
 		if (it->get_name() == message->paramVec[1]){
 			Channel channel = *it;
+			if (it->is_in_channel(message->paramVec[0])){
+				numReply(ERR_USERONCHANNEL, message, client);
+				return 1;
+			}
 			if (channel.get_invite_only()){
 				// if client is channel operator -> function to be buil in channel class
 				// RPL_INVITING

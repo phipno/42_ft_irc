@@ -30,6 +30,10 @@ std::string Server::numReply(int errorCode, t_msg *message, Client &client){
 			reply =  client.getNickName() + " :Erroneus nickname";
 			send_msg_to_client_socket(client, reply);
 			break;
+		case ERR_USERONCHANNEL:
+			reply =  " to be specified Erroneus nickname";
+			send_msg_to_client_socket(client, reply);
+			break;
 		case ERR_NORECIPIENT:
 			reply =  "to be specified - no recipient";
 			send_msg_to_client_socket(client, reply);
