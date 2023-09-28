@@ -147,6 +147,13 @@ void Server::ping(class Client &client) {
 		send_msg_to_client_socket(client, "PING :1234567890");
 }
 
+int Server::handshake(t_msg *message, class Client &client) {
+
+	send_msg_to_client_socket(client, "PONG: " + message->paramVec[2]);
+	return (1);
+}
+
+// //older version
 int Server::pong(t_msg *message, class Client &client) {
 
 	// std::string pong_msg = recv_from_client_socket(client);
@@ -154,7 +161,7 @@ int Server::pong(t_msg *message, class Client &client) {
 		// numReply(409, message, client); //ERR_NOOIRIGIN means, no parameter fpr /PONG
 		return (1);
 	}
-	if (message->paramVec[0] == "1234567890") {
+	if (message->paramVec[0] == "ft_irc") {
 		if (client.getStatus() == USERNAME) {
 			numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
 			numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
@@ -164,8 +171,8 @@ int Server::pong(t_msg *message, class Client &client) {
 			client.setStatus(NICKNAME);
 		return (0);
 	}
-	else if (message->paramVec[0] != "1234567890")
-		// numReply(005, message, client);
+	else if (message->paramVec[0] != "ft_irc")
+		numReply(client, message->paramVec[0]);
 		return (1);
 	return (0);
 }
@@ -286,7 +293,7 @@ std::vector<std::string> parse_join_kick(std::string commaToken) {
 
 void Server::join(t_msg &parsedMsg, Client &client) {
 	if (parsedMsg.paramVec.empty()) {
-		numReply(461, &parsedMsg, client);
+		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), parsedMsg.command));
 		return ;
 	}
 	if (parsedMsg.paramVec[0].at(0) == 0) {
@@ -382,7 +389,7 @@ int Server::topic(t_msg *parsedMsg, Client &client) {
 	// if there is an empty string the Topic will be deleted (operator)
 	// else the topic will be set if there is a non-empty string (operator)	
 	bool privileges = _channels[i].is_operator(client.getNickName());
-	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin();
+	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin() + 1;
 
 	if (it == parsedMsg->paramVec.end()){}
 		// numReply(RPL_TOPIC, parsedMsg, client);

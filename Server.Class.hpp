@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/28 11:19:22 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/28 15:40:21 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ class Server{
 		void runServer();
 		void ping(class Client &client);
 		int pong(t_msg *message, class Client &client);
+		int handshake(t_msg *message, class Client &client);
 		
 		//Messages
 		std::string recv_from_client_socket(Client &client);
