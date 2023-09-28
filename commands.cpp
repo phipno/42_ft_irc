@@ -28,10 +28,10 @@
         //    parameters.
 
 int Server::pass(t_msg *message, Client &client){
-	if (client.getRegistrationStatus() >= REGISTERED)
-		numReply(462, message, client);
-	else if (message->paramVec.empty() || message->paramVec[0].empty())
-		numReply(461, message, client);
+	if (client.getRegistrationStatus() >= REGISTERED){}
+		// numReply(ERR_ALREADYREGISTRED, message, client);
+	else if (message->paramVec.empty() || message->paramVec[0].empty()){}
+		// numReply(ERR_NEEDMOREPARAMS, message, client);
 	else if (message->paramVec[0].compare(this->_password) == 0){
         client.registerClient(true);
 		std::cout << "Registering succesfull: Client status is " << client.getStatus() << std::endl;
@@ -100,7 +100,7 @@ int Server::nick(t_msg *message, Client &client){
 	if (client.getRegistrationStatus() < REGISTERED)
 		return 1; //send error message
 	if (message->paramVec.empty() || message->paramVec[0].empty()){
-		numReply(431, message, client);
+		// numReply(431, message, client);
 		return 1;
 	}
     // check if characters of chosen nickname are valid
@@ -111,7 +111,7 @@ int Server::nick(t_msg *message, Client &client){
 
         }
         else{
-			numReply(432, message, client);
+			// numReply(432, message, client);
 			return 1;
         }
 	}
@@ -119,15 +119,15 @@ int Server::nick(t_msg *message, Client &client){
 	std::vector<Client>::iterator it = _clients.begin();
 	for (;it != _clients.end(); it++){
 		if (it->getNickName() == message->paramVec[0]){
-			numReply(433, message, client);
+			// numReply(433, message, client);
 			return 1;
         }
 	}
 
 	client.setNickName(message->paramVec[0]);
 	if (client.getNickName() == "superuser") {
-		numReply(001, message, client); // welcome
-		numReply(002, message, client); // your host
+		// numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // welcome
+		// numReply(002, message, client); // your host
 		client.setSu(true);
 		client.registerClient(SUPERUSER);
 		return (0);
@@ -150,11 +150,11 @@ int Server::user(t_msg *message, Client &client){
         std::cout << "user()" << std::endl;
 
 	if (client.getRegistrationStatus() >= USERNAME){
-		numReply(462, message, client); //already registered
+		// numReply(462, message, client); //already registered
 		return 1;
 	}
 	if (message->paramVec.empty() || message->paramVec[0].empty()){
-		numReply(461, message, client); // need more params
+		// numReply(461, message, client); // need more params
 		return 1;
 	}
 	if (message->paramVec[0].length() <= USERLEN)
@@ -165,12 +165,13 @@ int Server::user(t_msg *message, Client &client){
 	}
 	
 	if (client.getStatus() == NICKNAME) {
-		numReply(001, message, client); // welcome
-		numReply(002, message, client); // your host
+		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // welcome
+		// numReply(002, message, client); // your host
 		client.registerClient(WELCOMED);
 	}
 	else 
 		client.registerClient(USERNAME);
+	numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // welcome
     return (0); //eventually other value
 }
 
@@ -209,13 +210,13 @@ int Server::pong(t_msg *message, class Client &client) {
 
 	// std::string pong_msg = recv_from_client_socket(client);
 	if (message->paramVec[0] == "") {
-		numReply(409, message, client); //ERR_NOOIRIGIN means, no parameter fpr /PONG
+		// numReply(409, message, client); //ERR_NOOIRIGIN means, no parameter fpr /PONG
 		return (1);
 	}
 	if (message->paramVec[0] == "1234567890") {
 		if (client.getStatus() == USERNAME) {
-			numReply(001, message, client); // welcome
-			numReply(002, message, client); // your host
+			// numReply(001, message, client); // welcome
+			// numReply(002, message, client); // your host
 			client.setStatus(WELCOMED);
 		}
 		else 
@@ -223,8 +224,9 @@ int Server::pong(t_msg *message, class Client &client) {
 		return (0);
 	}
 	else if (message->paramVec[0] != "1234567890")
-		numReply(005, message, client);
+		// numReply(005, message, client);
 		return (1);
+	return (0);
 }
 // PRIVMSG
 // PRIVMSEG <msgtarget> <text to be sent>
@@ -254,15 +256,15 @@ int Server::pong(t_msg *message, class Client &client) {
 
 int Server::privmsg(t_msg *message, Client &client){
 	if (client.getRegistrationStatus() < USERNAME){
-		numReply(462, message, client); // not sure which message to send, if user is not fully registered
+		// numReply(462, message, client); // not sure which message to send, if user is not fully registered
 		return 1;
 	}
 	else if (message->paramVec.empty() || message->paramVec[0].empty()){
-		numReply(411, message, client); // ERR_NORECIPIENT
+		// numReply(411, message, client); // ERR_NORECIPIENT
 		return 1;
 	}
 	else if (message->paramVec[1].empty()){
-		numReply(412, message, client); // ERR_NOTEXTTOSEND
+		// numReply(412, message, client); // ERR_NOTEXTTOSEND
 		return 1;		
 	}
 	std::string msg = message->paramVec[1];
@@ -272,8 +274,8 @@ int Server::privmsg(t_msg *message, Client &client){
 			int i = channel_exists(message->paramVec[0]);
 			if (i != -1)
 				send_message_to_channel(message->paramVec[1], this->_channels[i]);
-			else
-				numReply(403, message, client); // ERR_ NOSUCHCHANNEL
+			else{}
+				// numReply(403, message, client); // ERR_ NOSUCHCHANNEL
 		}
 		else {
 			std::vector<Client>::iterator clientit = _clients.begin();
@@ -282,7 +284,7 @@ int Server::privmsg(t_msg *message, Client &client){
 					send_msg_to_client_socket(*clientit, msg);
 					break;	
 				}
-				numReply(412, message, client); // ERR_NOSUCHNICK			
+				// numReply(412, message, client); // ERR_NOSUCHNICK			
 			}
 		}
 	}
@@ -375,13 +377,13 @@ int Server::topic(t_msg *parsedMsg, Client &client) {
 	int i = channel_exists(parsedMsg->paramVec[0]);
 	//if channel does not exist, return USER not on channel
 	if (i == -1) { 
-		numReply(ERR_NOTONCHANNEL, parsedMsg, client);
+		// numReply(ERR_NOTONCHANNEL, parsedMsg, client);
 		return (1);
 	}
 
 	//checks if the client is on that channel
 	if (!_channels[i].is_in_channel(client.getNickName())) {
-		numReply(ERR_NOTONCHANNEL, parsedMsg, client);
+		// numReply(ERR_NOTONCHANNEL, parsedMsg, client);
 		return (1);
 	}
 
@@ -391,16 +393,16 @@ int Server::topic(t_msg *parsedMsg, Client &client) {
 	bool privileges = _channels[i].is_operator(client.getNickName());
 	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin();
 
-	if (it == parsedMsg->paramVec.end())
-		numReply(RPL_TOPIC, parsedMsg, client);
+	if (it == parsedMsg->paramVec.end()){}
+		// numReply(RPL_TOPIC, parsedMsg, client);
 	else if (is_empty_string(*(++it)) && (privileges || !_channels[i].get_topic_restriction()))
 		_channels[i].set_topic(" :No topic set");
-	else if (is_empty_string(*(++it)) && _channels[i].get_topic_restriction() && !privileges)
-		numReply(ERR_CHANOPRIVSNEEDED, parsedMsg, client);
+	else if (is_empty_string(*(++it)) && _channels[i].get_topic_restriction() && !privileges){}
+		// numReply(ERR_CHANOPRIVSNEEDED, parsedMsg, client);
 	else if (!is_empty_string(*(++it)) && (privileges || !_channels[i].get_topic_restriction()))
 		_channels[i].set_topic(*it);
-	else if (!is_empty_string(*(++it)) && _channels[i].get_topic_restriction() && !privileges)
-		numReply(ERR_CHANOPRIVSNEEDED, parsedMsg, client);
+	else if (!is_empty_string(*(++it)) && _channels[i].get_topic_restriction() && !privileges){}
+		// numReply(ERR_CHANOPRIVSNEEDED, parsedMsg, client);
 	return (0);
 }
 

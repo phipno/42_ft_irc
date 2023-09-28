@@ -111,22 +111,22 @@ int Channel::add_user(std::string client, bool operatorflag) {
    users to clients.  This is necessarily to maintain backward
    compatibility with old client software.
 */
-int Channel::kick(std::string to_kick) {
+// int Channel::kick(std::string to_kick) {
 	
-	if (VERBOSE)
-		std::cout << "kick" << std::endl;
+// 	if (VERBOSE)
+// 		std::cout << "kick" << std::endl;
 
-	std::map<std::string, bool>::iterator it = _users.find(to_kick);
-	if (it != _users.end()) {
-		_users.erase(to_kick);
-		return (1);
-	}
-	else {
-		if (DEBUG)
-			std::cout << "User not found, returned 0" << std::endl;
-		return (0);
-	}
-}
+// 	std::map<std::string, bool>::iterator it = _users.find(to_kick);
+// 	if (it != _users.end()) {
+// 		_users.erase(to_kick);
+// 		return (1);
+// 	}
+// 	else {
+// 		if (DEBUG)
+// 			std::cout << "User not found, returned 0" << std::endl;
+// 		return (0);
+// 	}
+// }
 
 
 
@@ -138,23 +138,23 @@ int Channel::kick(std::string to_kick) {
    requesting it.  If the <topic> parameter is an empty string, the
    topic for that channel will be removed.
 */
-int Channel::topic(std::string topic_message) {
+// int Channel::topic(std::string topic_message) {
 	
-	if (VERBOSE)
-		std::cout << "Set new topic message" << std::endl;
+// 	if (VERBOSE)
+// 		std::cout << "Set new topic message" << std::endl;
 
-	set_topic(topic_message);
-	return (1);
-}
+// 	set_topic(topic_message);
+// 	return (1);
+// }
 
-int Channel::view_topic(void) {
+// int Channel::view_topic(void) {
 	
-	if (VERBOSE)
-		std::cout << "Display topic message" << std::endl;
+// 	if (VERBOSE)
+// 		std::cout << "Display topic message" << std::endl;
 
-	std::cout << get_topic() << std::endl;
-	return (1);
-}
+// 	std::cout << get_topic() << std::endl;
+// 	return (1);
+// }
 
 /*
 3.2.3 Channel mode message
@@ -248,6 +248,7 @@ void Channel::set_topic_restriction(bool restriction) {_topic_restricted = restr
 void Channel::set_invite_only(bool restriction) {_invite_only = restriction;}
 void Channel::set_passphrase(std::string passphrase) {_passPhrase = passphrase;}
 void Channel::set_userlimit(int limit) {_userlimit = limit;}
+void Channel::set_invitee(std::string nickname) { this->_invited.push_back(nickname);}
 
 //getter
 std::map<std::string, bool> Channel::get_users(void) {return (_users);}

@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 14:11:56 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/28 09:52:45 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/28 11:06:57 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,34 +34,42 @@
 int Server::invite(t_msg *message, Client &client) {
 	if (VERBOSE)
 		std::cout << "invite" << std::endl;
-	(void) client;
+	
+	std::string channelName = message->paramVec[1];
+	std::string inviteNick = message->paramVec[0];
+	
 	std::vector<Channel>::iterator it = _channels.begin();
 	for (; it != _channels.end(); it++){
-		if (it->get_name() == message->paramVec[1]){
+		if (it->get_name() == channelName){
 			Channel channel = *it;
-			if (it->is_in_channel(message->paramVec[0])){
-				numReply(ERR_USERONCHANNEL, message, client);
+			if (channel.is_in_channel(inviteNick)){
+				numReply(client, ERR_USERONCHANNEL());
 				return 1;
 			}
 			if (channel.get_invite_only()){
-				// if client is channel operator -> function to be buil in channel class
-				// RPL_INVITING
-				// client add to invite vector
-			// else
-				// ERR_CHANOPRIVSNEEDED
+				if (channel.is_operator(client.getNickName())){
+					numReply(RPL_INVITING, message, client);
+					it->set_invitee(inviteNick);
+					return 0;
+				}
+				else
+					numReply(ERR_CHANOPRIVSNEEDED, message, client);
 			}
 			else{
 				if (channel.is_in_channel(client.getNickName())){
-					// RPL_INVITING
+					numReply(RPL_INVITING, message, client);
+					it->set_invitee(inviteNick);
+					return 0;
 				}
-				else {
-					// ERR_NOTONCHANNEL
-				}
-				
+				else
+					numReply(ERR_NOTONCHANNEL, message, client);
 			}
 			break;
+			}
 		}
-	}
+	numReply(RPL_INVITING, message, client);
+	return 0;
+}
 	
 
 	
@@ -75,5 +83,5 @@ int Server::invite(t_msg *message, Client &client) {
 	// else {
 	// 	if (DEBUG)
 	// 		std::cout << "User not found, returned 0" << std::endl;
-	return (0);
-}
+// 	return (0);
+// }

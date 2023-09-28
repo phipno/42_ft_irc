@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/28 09:59:29 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/28 11:19:22 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ class Server{
 
 		//misc
 		void signal_handler(int binary);
-		std::string numReply(int errorCode, t_msg *message, Client &client);
+		void numReply(Client &client, std::string message);
 		
 		//parsing
 		void parsing_msg(std::string &message, Client &client);

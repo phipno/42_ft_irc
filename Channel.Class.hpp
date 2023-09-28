@@ -46,6 +46,7 @@ class Channel {
 		void set_invite_only(bool restriction);
 		void set_passphrase(std::string passphrase);
 		void set_userlimit(int limit);
+		void set_invitee(std::string);
 		
 		//getters
 		std::map<std::string, bool> get_users(void);
