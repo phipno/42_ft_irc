@@ -41,4 +41,3 @@ void Server::numReply(Client &client, std::string message){
 	// 	std::cout << reply << std::endl;
 	// return "NULL";
 }
-

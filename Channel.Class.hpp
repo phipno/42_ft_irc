@@ -30,7 +30,7 @@ class Channel {
 		
 		int give_priveleges(std::string cli); 
 		int rm_priveleges(std::string cli); 
-		int add_user(std::string cli, bool operatorflag); 
+		int add_user(std::string client, std::string pass, bool operatorflag); 
 		bool is_in_channel(std::string name); 
 		bool is_operator(std::string name); 
 

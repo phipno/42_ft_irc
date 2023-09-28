@@ -74,7 +74,7 @@ int Channel::rm_priveleges(std::string cli) {
    a PART command (See Section 3.2.2) for each channel he is a member
    of.
 */
-int Channel::add_user(std::string client, bool operatorflag) {
+int Channel::add_user(std::string client, std::string pass, bool operatorflag) {
 
 	if (VERBOSE)
 		std::cout << "add_user" << std::endl;
@@ -85,8 +85,12 @@ int Channel::add_user(std::string client, bool operatorflag) {
 			std::cout << "ADD_USER()" << std::endl;
 			std::cout << "clientname = " << client << std::endl;
 		// }
-
-		this->_users[client] = operatorflag;
+		if (pass == this->_passPhrase)
+			this->_users[client] = operatorflag;
+		else {
+			// numReply(475, )
+			return 1;
+		}
 			list_clients_in_channel();
 			list_channel_attributes();
 		return (1);
