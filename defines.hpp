@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 11:03:14 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/28 15:12:26 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/28 15:21:24 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #define MAX_CONNECTIONS 100
 #define MAX_EVENTS 100
 
-#define RPL_WELCOME(hostname, nickname, username) (std::string(": " + hostname + " 001 " + nickname + " :Welcome to the Internet Relay Network, " + client.getNickName() + "!" +client.getUserName() + "@" + this->_hostname))
+#define RPL_WELCOME(hostname, nickname, username) (std::string(": " + hostname + " 001 " + nickname + " :Welcome to the Internet Relay Network, " +nickname + "!" +username + "@" +hostname))
 #define RPL_YOURHOST(hostname, nickname) (std::string(": " + hostname + " 002 " + nickname + " :Your host is " + hostname + ", running on version 1.0 !"))
 // what is content of RPL_INVITING?
 #define RPL_INVITING(hostname, nickname, channel) (std::string(": " + hostname + " 341 " + nickname + " " + channel))
