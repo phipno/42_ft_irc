@@ -24,7 +24,7 @@ void  Server::executeCommands(Client &client) {
   } else if (this->_parMsg.command == "PRIVMSG") {
     
   } else if (this->_parMsg.command == "KICK") {
-    
+    this->kick(this->_parMsg, client);
   } else if (this->_parMsg.command == "TOPIC") {
    
   } else if (this->_parMsg.command == "MODE") {

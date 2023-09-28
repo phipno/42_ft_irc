@@ -288,6 +288,7 @@ void Server::join(t_msg &parsedMsg, Client &client) {
 	}
 	if (parsedMsg.paramVec[0].at(0) == 0) {
 		//TODO kick client out of any channel
+		return;
 	}
 	std::vector<std::string> channelsToJoin, keyForChannel;
 	std::vector<Channel> joinChannel;
@@ -336,6 +337,57 @@ int Server::channel_exists(std::string channelName) {
 			return (i);
 	}
 	return (-1);
+}
+
+void Server::kick(t_msg &parsedMsg, Client &client) {
+	if (parsedMsg.paramVec.empty()) {
+		numReply(461, &parsedMsg, client);
+		return ;
+	}
+	
+	std::vector<std::string> channelsToKick, userToKick;
+	std::vector<Channel> joinChannel;
+
+	channelsToKick = parse_join_kick(parsedMsg.paramVec[0]);
+	if (parsedMsg.paramVec.size() >= 2)
+		userToKick = parse_join_kick(parsedMsg.paramVec[1]);
+
+	for (size_t j = 0; j < channelsToKick.size(); j++) {
+		int i = channel_exists(channelsToKick[j]);
+		if (i == -1)
+				; //TODO numReply channel doesnt exist ERR_NOSUCHCHANNEL
+		// ? is this client.getNickName good, or what NAME is saved inside the channels 
+		else if (this->_channels[i].is_in_channel(client.getNickName()) == false)
+			;//TODO error kicker is not in channel
+		else if (this->_channels[i].has_permission(client.getNickName()) == false)
+			;//TODO error has no permission
+		else if (channelsToKick.size() == 1) {
+			std::vector<std::string>::iterator it = userToKick.begin();
+			for (; it != userToKick.end(); ++it) {
+				if (this->_channels[i].is_in_channel(*it) == false)
+					;//TODO error user to kick is not in channel
+				else {
+					if (parsedMsg.paramVec.size() >= 3) {
+						this->_channels[i].kick_user(userToKick[j]);
+						send_msg_to_client_socket(client, "You were kicked out of #" + this->_channels[i].get_name() + "\nReason: " + parsedMsg.paramVec[2]);
+					} else {
+						this->_channels[i].kick_user(userToKick[j]);
+						send_msg_to_client_socket(client, "You were kicked out of #" + this->_channels[i].get_name() + "\nNo Reason given");
+			}
+				}
+			}
+		} else if (j > userToKick.size()){
+			if (parsedMsg.paramVec.size() >= 3) {
+				this->_channels[i].kick_user(userToKick[j]);
+				send_msg_to_client_socket(client, "You were kicked out of #" + this->_channels[i].get_name() + "\nReason: " + parsedMsg.paramVec[2]);
+			}
+			else {
+				this->_channels[i].kick_user(userToKick[j]);
+				send_msg_to_client_socket(client, "You were kicked out of #" + this->_channels[i].get_name() + "\nNo Reason given");
+			}
+		} else
+			; //TODO error missing params
+	}
 }
 /* --------------------------------------------------------------------------------------*/
 

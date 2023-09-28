@@ -1,4 +1,5 @@
 #include "Channel.Class.hpp"
+#include "Server.Class.hpp"
 
 Channel::Channel() : _channelName("Unknown"), _topicMessage("None"), \
 					 _topic_restricted(true), _invite_only(false), \
@@ -47,6 +48,14 @@ int Channel::rm_priveleges(std::string cli) {
 			std::cout << "No User found, returned 0" << std::endl;
 		return (0);
 	}
+}
+
+bool Channel::has_permission(std::string name) {
+	if (is_in_channel(name)) {
+		if (this->_users[name] == true)
+			return true;
+	}
+	return false;
 }
 
 /*
@@ -113,7 +122,7 @@ int Channel::add_user(std::string client, std::string pass, bool operatorflag) {
    users to clients.  This is necessarily to maintain backward
    compatibility with old client software.
 */
-int Channel::kick(std::string to_kick) {
+int Channel::kick_user(std::string to_kick) {
 	
 	if (VERBOSE)
 		std::cout << "kick" << std::endl;
@@ -124,6 +133,7 @@ int Channel::kick(std::string to_kick) {
 		return (1);
 	}
 	else {
+		//TODO Error Mesasge 
 		if (DEBUG)
 			std::cout << "User not found, returned 0" << std::endl;
 		return (0);

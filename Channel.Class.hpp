@@ -30,9 +30,10 @@ class Channel {
 		int rm_priveleges(std::string cli); //changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
 		int add_user(std::string client, std::string pass, bool operatorflag); //a client gets added with its appropriate privilieges
 		bool is_in_channel(std::string name);
+		bool has_permission(std::string name);
 
 		//operator functions
-		int kick(std::string to_kick); //returns 1 if successfull
+		int kick_user(std::string to_kick); //returns 1 if successfull
 		int invite(std::string to_invite); //returns 1 if successfull
 		int topic(std::string topic_message); //If an empty string is given, the topic will be removed, otherwise it will be changed to new mesage
 		int view_topic(); //second topic function for the case, that no topic_parameter is entered, it displays the latest topic message

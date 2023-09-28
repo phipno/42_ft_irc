@@ -84,6 +84,7 @@ class Server{
 		int user(t_msg *message, Client &client);
 		int privmseg(t_msg *message, Client &client);
 		void join(t_msg &parsedMsg, Client &client);
+		void kick(t_msg &parsedMsg, Client &client);
 
 		//misc
 		void signal_handler(int binary);
