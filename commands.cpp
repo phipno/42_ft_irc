@@ -324,17 +324,73 @@ void Server::join_channel(std::string channelName, class Client &client) {
 	std::cout << "Channel already exists? " << i << std::endl;
 	if (i == -1) {
 		Channel channel(channelName);
-		channel.add_user(client.getNickName(), true);
+		channel.add_user(client.getNickName(), "", true);
 		this->_channels.push_back(channel);
 	}
-	else {
-		this->_channels[i].add_user(client.getNickName(), false);
+	else{
+		this->_channels[i].add_user(client.getNickName(), "", false);
 	}
 }
 
+std::vector<std::string> parse_join_kick(std::string commaToken) {
+	std::vector<std::string>	splitToken;
+	size_t	pos;
+
+	while ((pos = commaToken.find(',')) != std::string::npos) {
+		splitToken.push_back(commaToken.substr(0, pos));
+		commaToken.erase(0, pos + 1);
+	}
+	if (pos == std::string::npos)
+		splitToken.push_back(commaToken);
+
+	return splitToken;
+}
+
 void Server::join(t_msg &parsedMsg, Client &client) {
-	(void)parsedMsg;
-	(void)client;
+	if (parsedMsg.paramVec.empty()) {
+		numReply(461, &parsedMsg, client);
+		return ;
+	}
+	if (parsedMsg.paramVec[0].at(0) == 0) {
+		//TODO kick client out of any channel
+	}
+	std::vector<std::string> channelsToJoin, keyForChannel;
+	std::vector<Channel> joinChannel;
+
+	channelsToJoin = parse_join_kick(parsedMsg.paramVec[0]);
+	if (parsedMsg.paramVec.size() >= 2)
+		keyForChannel = parse_join_kick(parsedMsg.paramVec[1]);
+
+	for (size_t j = 0; j < channelsToJoin.size(); j++) {
+		int i = channel_exists(channelsToJoin[j]);
+		if (i == -1) {
+			Channel channel(channelsToJoin[j]);
+			if (j < keyForChannel.size() && keyForChannel[j] != "") {
+				channel.set_passphrase(keyForChannel[j]);
+				channel.add_user(client.getNickName(), keyForChannel[j], true); 
+				//TODO channel mode needs to be adjusted 
+			}
+			else
+				channel.add_user(client.getNickName(), "", true); 
+			//TODO add_user needs also numericReply
+			this->_channels.push_back(channel);
+		} else {
+			if (j < keyForChannel.size() && keyForChannel[j] != "")
+				this->_channels[i].add_user(client.getNickName(), keyForChannel[j], false);
+			else
+				this->_channels[i].add_user(client.getNickName(), "", false);
+		} 
+	}
+	if (DEBUG) {
+		for (std::vector<std::string>::iterator It = channelsToJoin.begin();
+				 It != channelsToJoin.end(); ++It) {
+			std::cout << "Channel: " << *It << std::endl;
+		}
+		for (std::vector<std::string>::iterator It = keyForChannel.begin();
+				 It != keyForChannel.end(); ++It) {
+			std::cout << "Keys: " << *It << std::endl;
+		}
+	}
 }
 
 int Server::channel_exists(std::string channelName) {

@@ -28,7 +28,7 @@ class Channel {
 		
 		int give_priveleges(std::string cli); //changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
 		int rm_priveleges(std::string cli); //changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
-		int add_user(std::string cli, bool operatorflag); //a client gets added with its appropriate privilieges
+		int add_user(std::string client, std::string pass, bool operatorflag); //a client gets added with its appropriate privilieges
 		bool is_in_channel(std::string name);
 
 		//operator functions

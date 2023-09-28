@@ -54,6 +54,8 @@ std::string Server::numReply(int errorCode, t_msg *message, Client &client){
 			reply = ": To connect, type PONG 1234567890";
 			send_msg_to_client_socket(client, reply);
 			break;
+		case ERR_BADCHANNELKEY:
+			reply = "<Channel> :Cannot join channel (+k)";
 		default:
 			std::cout << "unkown error\n";
 	}
@@ -61,4 +63,3 @@ std::string Server::numReply(int errorCode, t_msg *message, Client &client){
 		std::cout << reply << std::endl;
 	return "NULL";
 }
-
