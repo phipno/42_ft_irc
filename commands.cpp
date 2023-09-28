@@ -40,7 +40,6 @@ when connecting for the first time, choose a nickname
 */
 
 int Server::nick(t_msg *message, Client &client){
-// TODO(albert) - sending a message to the according client, wether the name exists, must be implemented
     
     if (VERBOSE)
         std::cout << "nick()" << std::endl;
@@ -69,8 +68,7 @@ int Server::nick(t_msg *message, Client &client){
 			return 1;
         }
 	}
-
-	client.setNickName(message->paramVec[0]);
+	//if superuser, he will be welcomed.
 	if (client.getNickName() == "superuser") {
 		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
 		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
@@ -78,7 +76,19 @@ int Server::nick(t_msg *message, Client &client){
 		client.registerClient(SUPERUSER);
 		return (0);
 	}
-	ping(client);
+	
+	// if client typed om username, he will be welcomed after nickname
+	if (client.getStatus() == USERNAME) {
+		client.setNickName(message->paramVec[0]);
+		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+		client.registerClient(WELCOMED);
+		return (0);
+	}
+	else {
+		client.setNickName(message->paramVec[0]);
+		client.registerClient(NICKNAME);
+	}
 	return 0;
 }
 
@@ -105,14 +115,19 @@ int Server::user(t_msg *message, Client &client){
 		client.setFullName(name);
 	}
 	
+	// if client typed in nickname, he will be welcomed after username
 	if (client.getStatus() == NICKNAME) {
 		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
 		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
 		client.registerClient(WELCOMED);
+		return (0);
 	}
-	else 
+	else {
+		std::string name = message->paramVec[0].substr(0,9);
+		client.setFullName(name);
 		client.registerClient(USERNAME);
-	numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // rethink logic
+	}
+	// numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // rethink logic
     return 0;
 }
 
@@ -240,7 +255,8 @@ int Server::privmsg(t_msg *message, Client &client){
 					send_msg_to_client_socket(*clientit, msg);
 					break;	
 				}
-				numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));			
+				// (albert), mb not neccessary
+				// numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));			
 			}
 		}
 	}
