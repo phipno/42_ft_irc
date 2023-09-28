@@ -27,7 +27,7 @@ void  Server::executeCommands(Client &client) {
   } else if (this->_parMsg.command == "KICK") {
     
   } else if (this->_parMsg.command == "TOPIC") {
-   
+      this->topic(&this->_parMsg, client);
   } else if (this->_parMsg.command == "MODE") {
     
   } else if (this->_parMsg.command == "INVITE") {
@@ -37,9 +37,9 @@ void  Server::executeCommands(Client &client) {
   } else if (this->_parMsg.command == "CAP") {
       this->handshake(&this->_parMsg, client);
   } 
-  else if (this->_parMsg.command == "PONG") {
-    this->pong(&this->_parMsg, client);
-  } 
+  // else if (this->_parMsg.command == "PONG") {
+  //   this->pong(&this->_parMsg, client);
+  // } 
   else {
     throw(std::runtime_error("Command not found"));
   }

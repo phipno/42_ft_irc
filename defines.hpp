@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 11:03:14 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/28 16:22:12 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/28 19:33:17 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,17 @@
 #define ERR_ALREADYREGISTERED(hostname, nickname) (std::string(":" + hostname + " 462 " + nickname + " :You may not reregister\n"))
 #define ERR_CHANOPRIVSNEEDED(hostname, nickname, channel) (std::string(":" + hostname + " 482 " + nickname + " " + channel + " :You're not channel operator"))
 
+//TOPIC
+#define RPL_NOTOPIC(hostname, nickname, channel) (std::string(":" + hostname + " 331 " + nickname + " " + channel + " :No topic is set"))         
+#define RPL_TOPIC(hostname, nickname, channel, topic) (std::string(":" + hostname + " 332 " + nickname + " " + channel + " :" + topic))
 
-// #define ERR_NOCHANMODES 477 //"<channel> :Channel doesn't support modes"
-
-//TOPIC errors              
-// #define RPL_NOTOPIC 331 //"<channel> :No topic is set"              
-// #define RPL_TOPIC 332 //topic is set
+//MODES
+// #define ERR_NOCHANMODES 477 //"<channel> :Channel doesn't support modes"       
 
 //custom errors
 #define ERR_PING 005
 
 //Ping/Pong Message
-#define PONG 1234567890
 #define ERR_NOORIGIN 409 //":No origin specified"
 
 //debugflags

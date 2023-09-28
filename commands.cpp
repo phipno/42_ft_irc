@@ -169,28 +169,28 @@ int Server::handshake(t_msg *message, class Client &client) {
 }
 
 // //older version
-int Server::pong(t_msg *message, class Client &client) {
+// int Server::pong(t_msg *message, class Client &client) {
 
-	// std::string pong_msg = recv_from_client_socket(client);
-	if (message->paramVec[0] == "") {
-		// numReply(409, message, client); //ERR_NOOIRIGIN means, no parameter fpr /PONG
-		return (1);
-	}
-	if (message->paramVec[0] == "ft_irc") {
-		if (client.getStatus() == USERNAME) {
-			numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
-			numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
-			client.setStatus(WELCOMED);
-		}
-		else 
-			client.setStatus(NICKNAME);
-		return (0);
-	}
-	else if (message->paramVec[0] != "ft_irc")
-		numReply(client, message->paramVec[0]);
-		return (1);
-	return (0);
-}
+// 	// std::string pong_msg = recv_from_client_socket(client);
+// 	if (message->paramVec[0] == "") {
+// 		// numReply(409, message, client); //ERR_NOOIRIGIN means, no parameter fpr /PONG
+// 		return (1);
+// 	}
+// 	if (message->paramVec[0] == "ft_irc") {
+// 		if (client.getStatus() == USERNAME) {
+// 			numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+// 			numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+// 			client.setStatus(WELCOMED);
+// 		}
+// 		else 
+// 			client.setStatus(NICKNAME);
+// 		return (0);
+// 	}
+// 	else if (message->paramVec[0] != "ft_irc")
+// 		numReply(client, message->paramVec[0]);
+// 		return (1);
+// 	return (0);
+// }
 
 /* PRIVMSG
 PRIVMSEG <msgtarget> <text to be sent>
@@ -255,7 +255,6 @@ int Server::privmsg(t_msg *message, Client &client){
 					send_msg_to_client_socket(*clientit, msg);
 					break;	
 				}
-				// (albert), mb not neccessary
 				// numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));			
 			}
 		}
@@ -391,13 +390,15 @@ int Server::topic(t_msg *parsedMsg, Client &client) {
 	int i = channel_exists(parsedMsg->paramVec[0]);
 	//if channel does not exist, return USER not on channel
 	if (i == -1) { 
-		// numReply(ERR_NOTONCHANNEL, parsedMsg, client);
+		//TO-DO: check if segfault, when try to join a channel that does not exist, mb try empty string, see below
+		// numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), ""));
+		numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), _channels[i].get_name()));
 		return (1);
 	}
 
 	//checks if the client is on that channel
 	if (!_channels[i].is_in_channel(client.getNickName())) {
-		// numReply(ERR_NOTONCHANNEL, parsedMsg, client);
+		numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), _channels[i].get_name()));
 		return (1);
 	}
 
@@ -406,17 +407,20 @@ int Server::topic(t_msg *parsedMsg, Client &client) {
 	// else the topic will be set if there is a non-empty string (operator)	
 	bool privileges = _channels[i].is_operator(client.getNickName());
 	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin() + 1;
-
-	if (it == parsedMsg->paramVec.end()){}
-		// numReply(RPL_TOPIC, parsedMsg, client);
-	else if (is_empty_string(*(++it)) && (privileges || !_channels[i].get_topic_restriction()))
-		_channels[i].set_topic(" :No topic set");
-	else if (is_empty_string(*(++it)) && _channels[i].get_topic_restriction() && !privileges){}
-		// numReply(ERR_CHANOPRIVSNEEDED, parsedMsg, client);
-	else if (!is_empty_string(*(++it)) && (privileges || !_channels[i].get_topic_restriction()))
+	
+	if (it == parsedMsg->paramVec.end()) {
+		numReply(client, RPL_TOPIC(this->_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].get_topic()));
+		return(0);
+	}
+	it++;
+	if (is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction()))
+		_channels[i].set_topic("No topic is set");
+	else if (is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
+		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
+	else if (!is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction()))
 		_channels[i].set_topic(*it);
-	else if (!is_empty_string(*(++it)) && _channels[i].get_topic_restriction() && !privileges){}
-		// numReply(ERR_CHANOPRIVSNEEDED, parsedMsg, client);
+	else if (!is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
+		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
 	return (0);
 }
 

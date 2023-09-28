@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/28 15:40:21 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/28 19:23:30 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ class Server{
 
 		void runServer();
 		void ping(class Client &client);
-		int pong(t_msg *message, class Client &client);
+		// int pong(t_msg *message, class Client &client);
 		int handshake(t_msg *message, class Client &client);
 		
 		//Messages

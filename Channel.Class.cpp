@@ -1,15 +1,15 @@
 #include "Channel.Class.hpp"
 
-Channel::Channel() : _channelName("Unknown"), _topicMessage("None"), \
+Channel::Channel() : _channelName("Unknown"), _topicMessage("No topic is set"), \
 					 _topic_restricted(true), _invite_only(false), \
 					_passPhrase(""), _userlimit(-1) {}
 
-Channel::Channel(std::string name) : _channelName(name), _topicMessage("None"), \
+Channel::Channel(std::string name) : _channelName(name), _topicMessage("No topic is set"), \
 					 _topic_restricted(false), _invite_only(false), \
 					_passPhrase(""), _userlimit(-1) {}
 
 Channel::Channel(std::string name, bool topic, bool invite, std::string pass, int userlimit) : \
-					_channelName(name),  _topicMessage("None"), \
+					_channelName(name),  _topicMessage("No topic is set"), \
 					_topic_restricted(topic), _invite_only(invite), \
 					_passPhrase(pass), _userlimit(userlimit) {}
 

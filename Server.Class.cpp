@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/27 17:28:52 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/28 19:52:56 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ void Server::runServer() {
 			//3. server sends a response		
 			if(_fds[j].revents & POLLIN) {
 				recv_from_client_socket(_clients[i]);
-				send_msg_to_client_socket(_clients[i], "hello from server");
+				// send_msg_to_client_socket(_clients[i], "hello from server");
 				list_clients();
 				list_channels_all();
 				std::cout << "========================" << std::endl;
@@ -187,8 +187,10 @@ void Server::send_msg_to_client_socket(Client &client, std::string message) {
 //an empty string is, when there is only a : in the token
 bool Server::is_empty_string(std::string token) {
 	
-	if (token == ":")
+	if (token == ":") {
+		std::cout << "empty string()" << std::endl;
 		return (true);
+	}
 	return (false);
 }
 
