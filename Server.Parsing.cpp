@@ -19,7 +19,7 @@ void  Server::executeCommands(Client &client) {
   } else if (this->_parMsg.command == "USER") {
       this->user(&this->_parMsg, client);
   } else if (this->_parMsg.command == "JOIN") {
-      this->join_channel("#Testchannel", client);
+      this->join(this->_parMsg, client);
   } else if (this->_parMsg.command == "OP") {
     // setOperator(Message);
   } else if (this->_parMsg.command == "PRIVMSG") {
@@ -27,14 +27,17 @@ void  Server::executeCommands(Client &client) {
   } else if (this->_parMsg.command == "KICK") {
     
   } else if (this->_parMsg.command == "TOPIC") {
-      this->topic(&this->_parMsg, client);
+   
   } else if (this->_parMsg.command == "MODE") {
     
   } else if (this->_parMsg.command == "INVITE") {
    
   } else if (this->_parMsg.command == "LIST") {
       this->list(this->_parMsg, client);
-  } else if (this->_parMsg.command == "PONG") {
+  } else if (this->_parMsg.command == "CAP") {
+      this->handshake(&this->_parMsg, client);
+  } 
+  else if (this->_parMsg.command == "PONG") {
     this->pong(&this->_parMsg, client);
   } 
   else {
@@ -63,6 +66,7 @@ t_msg tokenize_msg(std::string Message) {
      s_tempMsg.paramVec.push_back(String);
   return s_tempMsg;
 }
+
 
 void Server::parsing_msg(std::string &Message, Client &client) {
   try {
