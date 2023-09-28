@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/26 14:11:56 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/28 11:06:57 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/09/28 15:19:17 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,45 +43,33 @@ int Server::invite(t_msg *message, Client &client) {
 		if (it->get_name() == channelName){
 			Channel channel = *it;
 			if (channel.is_in_channel(inviteNick)){
-				numReply(client, ERR_USERONCHANNEL());
+				numReply(client, ERR_USERONCHANNEL(this->_hostname, client.getNickName(), channel.get_name()));
 				return 1;
 			}
 			if (channel.get_invite_only()){
 				if (channel.is_operator(client.getNickName())){
-					numReply(RPL_INVITING, message, client);
+					numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), channel.get_name()));
 					it->set_invitee(inviteNick);
 					return 0;
 				}
-				else
-					numReply(ERR_CHANOPRIVSNEEDED, message, client);
+				else{
+					numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), channel.get_name()));
+					return 1;
+				}
 			}
-			else{
+			else {
 				if (channel.is_in_channel(client.getNickName())){
-					numReply(RPL_INVITING, message, client);
+					numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), channel.get_name()));
 					it->set_invitee(inviteNick);
 					return 0;
 				}
-				else
-					numReply(ERR_NOTONCHANNEL, message, client);
-			}
-			break;
+				else {
+					numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), channel.get_name()));					// numReply(ERR_NOTONCHANNEL, message, client);
+					return 1;
+				}
 			}
 		}
-	numReply(RPL_INVITING, message, client);
+		numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), channelName));
+	}
 	return 0;
 }
-	
-
-	
-	
-	
-	// std::map<std::string, bool>::iterator it = _users.find(to_invite);
-	// if (it != _users.end()) {
-	// 	_users.(to_kick);
-	// 	return (1);
-	// }
-	// else {
-	// 	if (DEBUG)
-	// 		std::cout << "User not found, returned 0" << std::endl;
-// 	return (0);
-// }

@@ -3,93 +3,41 @@
 #include "Client.Class.hpp"
 #include "Channel.Class.hpp"
 
-/* Commands for all users*/
+/* --------------- Commands for all users ------------------------------------*/
 
 
-// PASS
-// first step, even before connecting with a nickname
-// entry from client: PASS YourServerPassword
-// variables in t_msg struct:
-//      message.command = PASS
-//      message.paramVec[0] = YourServerPassword
+/* PASS
+first step, even before connecting with a nickname
+entry from client: PASS <YourServerPassword>
+variables in t_msg struct:
+	message.command = PASS
+	message.paramVec[0] = YourServerPassword
 
-    //    462    ERR_ALREADYREGISTRED
-    //           ":Unauthorized command (already registered)"
-
-    //      - Returned by the server to any link which tries to
-    //        change part of the registered details (such as
-    //        password or user details from second USER message).
-
-        //    461    ERR_NEEDMOREPARAMS
-        //       "<command> :Not enough parameters"
-
-        //  - Returned by the server by numerous commands to
-        //    indicate to the client that it didn't supply enough
-        //    parameters.
+	462	ERR_ALREADYREGISTRED
+	461	ERR_NEEDMOREPARAMS
+*/
 
 int Server::pass(t_msg *message, Client &client){
-	if (client.getRegistrationStatus() >= REGISTERED){}
-		// numReply(ERR_ALREADYREGISTRED, message, client);
-	else if (message->paramVec.empty() || message->paramVec[0].empty()){}
-		// numReply(ERR_NEEDMOREPARAMS, message, client);
+	if (client.getRegistrationStatus() >= REGISTERED)
+		numReply(client, ERR_ALREADYREGISTERED(this->_hostname, client.getNickName()));
+	else if (message->paramVec.empty() || message->paramVec[0].empty())
+		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
 	else if (message->paramVec[0].compare(this->_password) == 0){
-        client.registerClient(true);
+		client.registerClient(true);
 		std::cout << "Registering succesfull: Client status is " << client.getStatus() << std::endl;
 		return 0;
 	}
 	return 1;
 }
 
-// NICK
-// NICK <your-nick>
-// when connecting for the first time, choose a nickname
+/* NICK
+NICK <your-nick>
+when connecting for the first time, choose a nickname
 
-        //    ERR_NONICKNAMEGIVEN             ERR_ERRONEUSNICKNAME
-        //    ERR_NICKNAMEINUSE               ERR_NICKCOLLISION
-        //    ERR_UNAVAILRESOURCE             ERR_RESTRICTED
-
-    //    431    ERR_NONICKNAMEGIVEN
-    //           ":No nickname given"
-
-    //      - Returned when a nickname parameter expected for a
-    //        command and isn't found.
-
-    //    432    ERR_ERRONEUSNICKNAME
-    //           "<nick> :Erroneous nickname"
-
-    //      - Returned after receiving a NICK message which contains
-    //        characters which do not fall in the defined set.  See
-    //        section 2.3.1 for details on valid nicknames.
-
-    //    433    ERR_NICKNAMEINUSE
-    //           "<nick> :Nickname is already in use"
-
-    //      - Returned when a NICK message is processed that results
-    //        in an attempt to change to a currently existing
-    //        nickname.
-
-    //        436    ERR_NICKCOLLISION
-    //           "<nick> :Nickname collision KILL from <user>@<host>"
-
-    //      - Returned by a server to a client when it detects a
-    //        nickname collision (registered of a NICK that
-    //        already exists by another server).
-
-    //    437    ERR_UNAVAILRESOURCE
-    //           "<nick/channel> :Nick/channel is temporarily unavailable"
-
-    //      - Returned by a server to a user trying to join a channel
-    //        currently blocked by the channel delay mechanism.
-
-    //      - Returned by a server to a user trying to change nickname
-    //        when the desired nickname is blocked by the nick delay
-    //        mechanism.
-
-    //    484    ERR_RESTRICTED
-    //       ":Your connection is restricted!"
-
-    //      - Sent by the server to a user upon connection to indicate
-    //      the restricted nature of the connection (user mode "+r").
+	ERR_NONICKNAMEGIVEN		ERR_ERRONEUSNICKNAME
+	ERR_NICKNAMEINUSE		ERR_NICKCOLLISION
+	ERR_UNAVAILRESOURCE		ERR_RESTRICTED
+*/
 
 int Server::nick(t_msg *message, Client &client){
 // TODO(albert) - sending a message to the according client, wether the name exists, must be implemented
@@ -98,20 +46,18 @@ int Server::nick(t_msg *message, Client &client){
         std::cout << "nick()" << std::endl;
 
 	if (client.getRegistrationStatus() < REGISTERED)
-		return 1; //send error message
+		return 1; //send error message?
 	if (message->paramVec.empty() || message->paramVec[0].empty()){
-		// numReply(431, message, client);
+			numReply(client, ERR_NONICKNAMEGIVEN(this->_hostname));
 		return 1;
 	}
     // check if characters of chosen nickname are valid
     std::string allowed_chars = "abcdefghijklmnopqrstuvwxyz0123456789{}[]\\|";
 	for (size_t i = 0; i < message->paramVec[0].length(); ++i){
         char ch = message->paramVec[0][i];
-		if (allowed_chars.find(ch) != std::string::npos){
-
-        }
+		if (allowed_chars.find(ch) != std::string::npos){}
         else{
-			// numReply(432, message, client);
+			numReply(client, ERR_ERRONEUSNICKNAME(this->_hostname, client.getNickName()));
 			return 1;
         }
 	}
@@ -119,15 +65,15 @@ int Server::nick(t_msg *message, Client &client){
 	std::vector<Client>::iterator it = _clients.begin();
 	for (;it != _clients.end(); it++){
 		if (it->getNickName() == message->paramVec[0]){
-			// numReply(433, message, client);
+			numReply(client, ERR_NICKNAMEINUSE(this->_hostname, client.getNickName()));
 			return 1;
         }
 	}
 
 	client.setNickName(message->paramVec[0]);
 	if (client.getNickName() == "superuser") {
-		// numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // welcome
-		// numReply(002, message, client); // your host
+		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
 		client.setSu(true);
 		client.registerClient(SUPERUSER);
 		return (0);
@@ -136,13 +82,8 @@ int Server::nick(t_msg *message, Client &client){
 	return 0;
 }
 
-// USER <your-username> <your-hostname> <your-servername> :<your-realname>
-// ex:
-// USER MyUsername MyHostname MyServername :John Doe
-
-// JOIN
-// JOIN #channelname
-
+/* USER <your-username> <your-hostname> <your-servername> :<your-realname>
+*/
 
 int Server::user(t_msg *message, Client &client){
 
@@ -150,11 +91,11 @@ int Server::user(t_msg *message, Client &client){
         std::cout << "user()" << std::endl;
 
 	if (client.getRegistrationStatus() >= USERNAME){
-		// numReply(462, message, client); //already registered
+		numReply(client, ERR_ALREADYREGISTERED(this->_hostname, client.getNickName()));
 		return 1;
 	}
 	if (message->paramVec.empty() || message->paramVec[0].empty()){
-		// numReply(461, message, client); // need more params
+		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
 		return 1;
 	}
 	if (message->paramVec[0].length() <= USERLEN)
@@ -165,14 +106,14 @@ int Server::user(t_msg *message, Client &client){
 	}
 	
 	if (client.getStatus() == NICKNAME) {
-		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // welcome
-		// numReply(002, message, client); // your host
+		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
 		client.registerClient(WELCOMED);
 	}
 	else 
 		client.registerClient(USERNAME);
-	numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // welcome
-    return (0); //eventually other value
+	numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // rethink logic
+    return 0;
 }
 
 /*
@@ -215,8 +156,8 @@ int Server::pong(t_msg *message, class Client &client) {
 	}
 	if (message->paramVec[0] == "1234567890") {
 		if (client.getStatus() == USERNAME) {
-			// numReply(001, message, client); // welcome
-			// numReply(002, message, client); // your host
+			numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+			numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
 			client.setStatus(WELCOMED);
 		}
 		else 
@@ -228,54 +169,62 @@ int Server::pong(t_msg *message, class Client &client) {
 		return (1);
 	return (0);
 }
-// PRIVMSG
-// PRIVMSEG <msgtarget> <text to be sent>
 
-//    Parameters: <msgtarget> <text to be sent>
+/* PRIVMSG
+PRIVMSEG <msgtarget> <text to be sent>
+PRIVMSG is used to send private messages between users, as well as to
+send messages to channels.  <msgtarget> is usually the nickname of
+the recipient of the message, or a channel name.
 
-//    PRIVMSG is used to send private messages between users, as well as to
-//    send messages to channels.  <msgtarget> is usually the nickname of
-//    the recipient of the message, or a channel name.
+The <msgtarget> parameter may also be a host mask (#<mask>) or server
+mask ($<mask>).  In both cases the server will only send the PRIVMSG
+to those who have a server or host matching the mask.  The mask MUST
+have at least 1 (one) "." in it and no wildcards following the last
+".".  This requirement exists to prevent people sending messages to
+"#*" or "$*", which would broadcast to all users.  Wildcards are the
+'*' and '?'  characters.  This extension to the PRIVMSG command is
+only available to operators.
 
-//    The <msgtarget> parameter may also be a host mask (#<mask>) or server
-//    mask ($<mask>).  In both cases the server will only send the PRIVMSG
-//    to those who have a server or host matching the mask.  The mask MUST
-//    have at least 1 (one) "." in it and no wildcards following the last
-//    ".".  This requirement exists to prevent people sending messages to
-//    "#*" or "$*", which would broadcast to all users.  Wildcards are the
-//    '*' and '?'  characters.  This extension to the PRIVMSG command is
-//    only available to operators.
+Numeric Replies:
 
-//    Numeric Replies:
-
-//            ERR_NORECIPIENT                 ERR_NOTEXTTOSEND
-//            ERR_CANNOTSENDTOCHAN            ERR_NOTOPLEVEL
-//            ERR_WILDTOPLEVEL                ERR_TOOMANYTARGETS
-//            ERR_NOSUCHNICK
-//            RPL_AWAY
+	ERR_NORECIPIENT			ERR_NOTEXTTOSEND
+	ERR_CANNOTSENDTOCHAN	ERR_NOTOPLEVEL
+	ERR_WILDTOPLEVEL		ERR_TOOMANYTARGETS
+	ERR_NOSUCHNICK
+	RPL_AWAY
+*/
 
 int Server::privmsg(t_msg *message, Client &client){
 	if (client.getRegistrationStatus() < USERNAME){
-		// numReply(462, message, client); // not sure which message to send, if user is not fully registered
 		return 1;
 	}
 	else if (message->paramVec.empty() || message->paramVec[0].empty()){
-		// numReply(411, message, client); // ERR_NORECIPIENT
+		numReply(client, ERR_NORECIPIENT(this->_hostname, client.getNickName(), message->command));
 		return 1;
 	}
 	else if (message->paramVec[1].empty()){
-		// numReply(412, message, client); // ERR_NOTEXTTOSEND
+		numReply(client, ERR_NOTEXTTOSEND(this->_hostname, client.getNickName()));
 		return 1;		
 	}
 	std::string msg = message->paramVec[1];
+
 	if (!message->paramVec[0].empty())
 	{
 		if (message->paramVec[0].at(0) == '#'){
 			int i = channel_exists(message->paramVec[0]);
-			if (i != -1)
-				send_message_to_channel(message->paramVec[1], this->_channels[i]);
-			else{}
-				// numReply(403, message, client); // ERR_ NOSUCHCHANNEL
+			if (i == -1)
+				numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));	
+			else {
+			std::string channelName = message->paramVec[0];
+			
+			std::vector<Channel>::iterator it = this->_channels.begin();
+			for (; it < _channels.end(); it++){
+				if (it->get_name() == channelName && it->is_in_channel(client.getNickName())){
+					send_message_to_channel(message->paramVec[1], *it);
+				}
+			}
+			numReply(client, ERR_CANNOTSENDTOCHAN(this->_hostname, client.getNickName(), it->get_name()));
+			}
 		}
 		else {
 			std::vector<Client>::iterator clientit = _clients.begin();
@@ -284,27 +233,13 @@ int Server::privmsg(t_msg *message, Client &client){
 					send_msg_to_client_socket(*clientit, msg);
 					break;	
 				}
-				// numReply(412, message, client); // ERR_NOSUCHNICK			
+				numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));			
 			}
 		}
 	}
 	return (0);
 }
 
-
-// 001    RPL_WELCOME
-//               "Welcome to the Internet Relay Network
-//                <nick>!<user>@<host>"
-//        002    RPL_YOURHOST
-//               "Your host is <servername>, running version <ver>"
-//        003    RPL_CREATED
-//               "This server was created <date>"
-//        004    RPL_MYINFO
-//               "<servername> <version> <available user modes>
-//                <available channel modes>"
-
-//          - The server sends Replies 001 to 004 to a user upon
-//            successful registration.
 
 void Server::list(t_msg &message, Client &client) {
 	std::vector<Channel>::iterator it = _channels.begin();
