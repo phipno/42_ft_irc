@@ -125,6 +125,7 @@ int Server::user(t_msg *message, Client &client){
 		return (0);
 	}
 	else {
+		client.registerClient(WELCOMED);
 	}
 	// numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // rethink logic
     return 0;
@@ -485,12 +486,14 @@ int Server::topic(t_msg *parsedMsg, Client &client) {
 	// else the topic will be set if there is a non-empty string (operator)	
 	bool privileges = _channels[i].is_operator(client.getNickName());
 	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin() + 1;
-	
+	// if (it[0] == ":")
+	// 	*it = it->substr(1);
+	std::cout << "ITERATOR in TOPIC:" << *it << std::endl;
+
 	if (it == parsedMsg->paramVec.end()) {
 		numReply(client, RPL_TOPIC(this->_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].get_topic()));
 		return(0);
 	}
-	it++;
 	if (is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction()))
 		_channels[i].set_topic("No topic is set");
 	else if (is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
