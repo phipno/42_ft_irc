@@ -286,7 +286,7 @@ std::vector<std::string> parse_join_kick(std::string commaToken) {
 
 void Server::join(t_msg &parsedMsg, Client &client) {
 	if (parsedMsg.paramVec.empty()) {
-		numReply(461, &parsedMsg, client);
+		// numReply(461, &parsedMsg, client);
 		return ;
 	}
 	if (parsedMsg.paramVec[0].at(0) == 0) {
