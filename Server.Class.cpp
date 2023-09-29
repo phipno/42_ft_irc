@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/27 17:28:52 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/29 09:37:20 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,6 +204,11 @@ void Server::send_message_to_channel(std::string message, class Channel &channel
 		}
 	}
 }
+
+void Server::numReply(Client &client, std::string message){
+	send_msg_to_client_socket(client, message);
+}
+
 
 void Server::list_channels(void) {
 
