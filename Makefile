@@ -16,8 +16,7 @@ SRC				= 	main \
 					Server.Class \
 					Server.Parsing \
 					commands \
-					numericReplies \
-					commands.operator 
+					numericReplies 
 					
 DEPS 			= Channel.Class.hpp \
 						Client.Class.hpp \
