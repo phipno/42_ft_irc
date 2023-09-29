@@ -467,7 +467,7 @@ int Server::topic(t_msg *parsedMsg, Client &client) {
 		return (1);
 	}
 	int i = channel_exists(parsedMsg->paramVec[0]);
-	//if channel does not exist, return USER not on channel
+	//TO-DO: if channel does not exist, return USER not on channel
 	if (i == -1) { 
 		//TO-DO: check if segfault, when try to join a channel that does not exist, mb try empty string, see below
 		// numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), ""));
@@ -486,9 +486,6 @@ int Server::topic(t_msg *parsedMsg, Client &client) {
 	// else the topic will be set if there is a non-empty string (operator)	
 	bool privileges = _channels[i].is_operator(client.getNickName());
 	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin() + 1;
-	// if (it[0] == ":")
-	// 	*it = it->substr(1);
-	std::cout << "ITERATOR in TOPIC:" << *it << std::endl;
 
 	if (it == parsedMsg->paramVec.end()) {
 		numReply(client, RPL_TOPIC(this->_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].get_topic()));
@@ -505,9 +502,10 @@ int Server::topic(t_msg *parsedMsg, Client &client) {
 	return (0);
 }
 
-// int Server::mode(t_msg *message, Client &client){
+int Server::mode(t_msg *message, Client &client){
 
-// }
+	
+}
 // ERR_PING(client)
 // define ERR_PING(client){"": To connect, type PONG 1234567890"}
 // send_msg_to_client_socket(client, ERR_PING(client));

@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/29 12:54:02 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/29 14:52:23 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,7 @@ class Server{
 		int privmsg(t_msg *message, Client &client);
 		void join(t_msg &parsedMsg, Client &client);
 		int topic(t_msg *parsedMsg, Client &client);
-		
-		//Operator Commands
+		int mode(t_msg *parsedMsg, Client &client);
 		int invite(t_msg *message, Client &client);
 
 		//misc
