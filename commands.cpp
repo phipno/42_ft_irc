@@ -23,7 +23,7 @@ int Server::pass(t_msg *message, Client &client){
 	else if (message->paramVec.empty() || message->paramVec[0].empty())
 		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
 	else if (message->paramVec[0].compare(this->_password) == 0){
-		client.registerClient(true);
+		client.registerClient(REGISTERED);
 		std::cout << "Registering succesfull: Client status is " << client.getStatus() << std::endl;
 		return 0;
 	}
@@ -98,12 +98,11 @@ int Server::nick(t_msg *message, Client &client){
 */
 
 int Server::user(t_msg *message, Client &client){
-
-    if (VERBOSE)
+	if (VERBOSE)
         std::cout << "user()" << std::endl;
 
-	if (client.getRegistrationStatus() >= USERNAME){
-		numReply(client, ERR_ALREADYREGISTERED(this->_hostname, client.getNickName()));
+	if (client.getRegistrationStatus() < REGISTERED){
+		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
 		return 1;
 	}
 	if (message->paramVec.empty()){
@@ -124,9 +123,8 @@ int Server::user(t_msg *message, Client &client){
 		client.registerClient(WELCOMED);
 		return (0);
 	}
-	else {
-	}
-	// numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // rethink logic
+	if (client.getStatus() < WELCOMED)
+		client.registerClient(USERNAME);
     return 0;
 }
 
