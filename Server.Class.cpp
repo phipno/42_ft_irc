@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/29 14:29:54 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/29 14:31:18 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,9 @@ void Server::send_msg_to_client_socket(Client &client, std::string message) {
 //an empty string is, when there is only a : in the token
 bool Server::is_empty_string(std::string token) {
 	
-	if (token == ":") {
+	std::cout << "TOKEN: " << token << std::endl;
+	// Last token has always a space at the end(should be fixed)
+	if (token == ": ") {
 		std::cout << "empty string()" << std::endl;
 		return (true);
 	}
@@ -229,8 +231,9 @@ void Server::list_channels_all(void) {
 	for ( ; it != _channels.end(); it++) {	
 		std::cout << "------- channels_name() -------" << std::endl;
 		std::cout << it->get_name() << std::endl;
+		it->list_channel_attributes();
 		std::cout << "------- clients -------" << std::endl;
-		it->list_clients_in_channel(); // segfaults
+		it->list_clients_in_channel();
 	}
 	std::cout << "--------------------------------" << std::endl;
 }
