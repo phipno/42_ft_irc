@@ -237,10 +237,11 @@ int Server::privmsg(t_msg *message, Client &client){
 
 	if (!msg.empty())
 	{
-		msg = msg.substr(1);
-		if (msg[msg.size() - 1] != '\n'){
-			msg += '\n';
-		}
+		msg = msg.substr(1, msg.size());
+		// msg += "\r\n";
+		std::cout << msg << std::endl;
+		// if (msg[msg.size() - 1] != '\n'){
+		// }
 		if (recipient.at(0) == '#') {
 			int i = channel_exists(recipient);
 			if (i == -1)
@@ -261,6 +262,7 @@ int Server::privmsg(t_msg *message, Client &client){
 			std::vector<Client>::iterator clientit = _clients.begin();
 			for ( ; clientit < _clients.end(); clientit++){
 				if (clientit->getNickName() == recipient){
+					std::cout << msg <<std::endl;
 					send_msg_to_client_socket(*clientit, msg);
 					break;
 				}
@@ -488,7 +490,7 @@ int Server::topic(t_msg *parsedMsg, Client &client) {
 	std::cout << "ITERATOR in TOPIC:" << *it << std::endl;
 
 	if (it == parsedMsg->paramVec.end()) {
-		numReply(client, RPL_TOPIC(this->_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].get_topic()));
+		// numReply(client, RPL_TOPIC(this->_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].get_topic()));
 		return(0);
 	}
 	if (is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction()))

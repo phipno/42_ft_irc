@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/29 14:31:18 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/29 16:32:53 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,7 +165,9 @@ std::string Server::recv_from_client_socket(Client &client) {
 	} 
 	else {
 		// Process the received data.
-		std::string message(buffer); 
+		std::string message(buffer);
+		message = message.substr(0, message.size() -1);
+		message += "\r\n";
 		std::cout << "Received: " << message << std::endl;
 		parsing_msg(message, client);
 		return (message);

@@ -60,6 +60,7 @@ t_msg tokenize_msg(std::string Message) {
     else
       String += Token + " ";
   }
+  String = String.substr(0, String.size() - 1);
   if (ignore_space == true)
      s_tempMsg.paramVec.push_back(String);
   return s_tempMsg;
