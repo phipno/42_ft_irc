@@ -57,7 +57,7 @@ int Server::nick(t_msg *message, Client &client){
 	for (size_t i = 0; i < message->paramVec[0].length(); ++i){
         char ch = message->paramVec[0][i];
 		if (allowed_chars.find(ch) != std::string::npos){}
-        else{
+        else {
 			numReply(client, ERR_ERRONEUSNICKNAME(this->_hostname, client.getNickName()));
 			return 1;
         }
@@ -167,29 +167,35 @@ int Server::handshake(t_msg *message, class Client &client) {
 	return (1);
 }
 
-// //older version
 int Server::pong(t_msg *message, class Client &client) {
 
-	// std::string pong_msg = recv_from_client_socket(client);
-	if (message->paramVec[0] == "") {
-		// numReply(409, message, client); //ERR_NOOIRIGIN means, no parameter fpr /PONG
-		return (1);
-	}
-	if (message->paramVec[0] == "ft_irc") {
-		if (client.getStatus() == USERNAME) {
-			numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
-			numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
-			client.setStatus(WELCOMED);
-		}
-		else 
-			client.setStatus(NICKNAME);
-		return (0);
-	}
-	else if (message->paramVec[0] != "ft_irc")
-		numReply(client, message->paramVec[0]);
-		return (1);
-	return (0);
+	send_msg_to_client_socket(client, "PONG: " + message->paramVec[0] + " " + message->paramVec[1]);
+	return (1);
 }
+
+// //older version
+// int Server::pong(t_msg *message, class Client &client) {
+
+// 	// std::string pong_msg = recv_from_client_socket(client);
+// 	if (message->paramVec[0] == "") {
+// 		// numReply(409, message, client); //ERR_NOOIRIGIN means, no parameter fpr /PONG
+// 		return (1);
+// 	}
+// 	if (message->paramVec[0] == "ft_irc") {
+// 		if (client.getStatus() == USERNAME) {
+// 			numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+// 			numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+// 			client.setStatus(WELCOMED);
+// 		}
+// 		else 
+// 			client.setStatus(NICKNAME);
+// 		return (0);
+// 	}
+// 	else if (message->paramVec[0] != "ft_irc")
+// 		numReply(client, message->paramVec[0]);
+// 		return (1);
+// 	return (0);
+// }
 
 /* PRIVMSG
 PRIVMSEG <msgtarget> <text to be sent>
@@ -237,7 +243,7 @@ int Server::privmsg(t_msg *message, Client &client){
 		if (msg[msg.size() - 1] != '\n'){
 			msg += '\n';
 		}
-		if (msg.at(0) == '#'){
+		if (recipient.at(0) == '#') {
 			int i = channel_exists(recipient);
 			if (i == -1)
 				numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));	
@@ -246,21 +252,23 @@ int Server::privmsg(t_msg *message, Client &client){
 				for (; it < _channels.end(); it++){
 					if (it->get_name() == recipient && it->is_in_channel(client.getNickName())){
 						send_message_to_channel(msg, *it);
+						break ;
 					}
-			}
-			numReply(client, ERR_CANNOTSENDTOCHAN(this->_hostname, client.getNickName(), it->get_name()));
+				}
+				if (it == _channels.end())
+					numReply(client, ERR_CANNOTSENDTOCHAN(this->_hostname, client.getNickName(), it->get_name()));
 			}
 		}
 		else {
 			std::vector<Client>::iterator clientit = _clients.begin();
-			for (; clientit < _clients.end(); clientit++){
+			for ( ; clientit < _clients.end(); clientit++){
 				if (clientit->getNickName() == recipient){
 					send_msg_to_client_socket(*clientit, msg);
-					break;	
+					break;
 				}
-				// (albert), mb not neccessary
-				// numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));			
 			}
+			if (clientit == _clients.end())
+				numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));			
 		}
 	}
 	return (0);

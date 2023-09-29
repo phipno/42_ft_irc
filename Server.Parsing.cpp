@@ -36,11 +36,9 @@ void  Server::executeCommands(Client &client) {
       this->list(this->_parMsg, client);
   } else if (this->_parMsg.command == "CAP") {
       this->handshake(&this->_parMsg, client);
-  } 
-  else if (this->_parMsg.command == "PONG") {
+  } else if (this->_parMsg.command == "PING") {
     this->pong(&this->_parMsg, client);
-  } 
-  else {
+  } else {
     throw(std::runtime_error("Command not found"));
   }
 }
