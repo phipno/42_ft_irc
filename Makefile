@@ -3,7 +3,7 @@
 
 SHELL 			=	/bin/bash
 CPPFLAGS		= 	-Wall -Wextra -Werror -std=c++98 -g 
-# CPPFLAGS		+=	-fsanitize=address
+CPPFLAGS		+=	-fsanitize=address
 CXX 			= 	c++
 # ---------------------------------------#
 

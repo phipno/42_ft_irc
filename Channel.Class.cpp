@@ -2,16 +2,16 @@
 
 Channel::Channel() : _channelName("Unknown"), _topicMessage("No topic is set"), \
 					 _topic_restricted(true), _invite_only(false), \
-					_passPhrase(""), _userlimit(-1) {}
+					_pw_restricted(false), _userlimit(-1) {}
 
 Channel::Channel(std::string name) : _channelName(name), _topicMessage("No topic is set"), \
-					 _topic_restricted(false), _invite_only(false), \
-					_passPhrase(""), _userlimit(-1) {}
+					 _topic_restricted(true), _invite_only(false), \
+					_pw_restricted(false), _userlimit(-1) {}
 
 Channel::Channel(std::string name, bool topic, bool invite, std::string pass, int userlimit) : \
 					_channelName(name),  _topicMessage("No topic is set"), \
 					_topic_restricted(topic), _invite_only(invite), \
-					_passPhrase(pass), _userlimit(userlimit) {}
+					_pw_restricted(false), _passPhrase(pass), _userlimit(userlimit) {}
 
 
 //changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
@@ -79,99 +79,51 @@ int Channel::add_user(std::string client, std::string pass, bool operatorflag) {
 	if (VERBOSE)
 		std::cout << "add_user" << std::endl;
 
+	//sets the channel creator name;
+	if(_users.empty()) {
+		operatorflag = true;
+		_creator = client;
+	}
+
+	//add new users to channel
+	//returns 0, when ading works
+	//returns 1, when wrong password 
+	//returns 2, when invite only
+	//returns 3, when channel full
+
 	std::map<std::string, bool>::iterator it = _users.find(client);
 	if (it == _users.end()) {
-		// if (DEBUG) {
+		if (DEBUG) {
 			std::cout << "ADD_USER()" << std::endl;
 			std::cout << "clientname = " << client << std::endl;
-		// }
-		if (pass == this->_passPhrase)
-			this->_users[client] = operatorflag;
-		else {
-			// numReply(475, )
-			return 1;
 		}
-			list_clients_in_channel();
-			list_channel_attributes();
-		return (1);
+		if (_pw_restricted && pass != this->_passPhrase) {
+			return (1);
+		}
+		else
+			this->_users[client] = operatorflag;
+		list_clients_in_channel();
+		list_channel_attributes();
+		return (0);
 	}
 	else {
 		if (DEBUG)
-			std::cout << "User already exists, returned 0" << std::endl;
+			std::cout << "Do nothing if the user is already in channel" << std::endl;
 		return (0);
 	}
 }
+std::string Channel::make_memberlist(void) {
 
-/*
-   The KICK command can be used to request the forced removal of a user
-   from a channel.  It causes the <user> to PART from the <channel> by
-   force.  For the message to be syntactically correct, there MUST be
-   either one channel parameter and multiple user parameter, or as many
-   channel parameters as there are user parameters.  If a "comment" is
-   given, this will be sent instead of the default message, the nickname
-   of the user issuing the KICK.
+	std::string memberlist;
+	std::map<std::string, bool>::iterator it = _users.begin();
 
-   The server MUST NOT send KICK messages with multiple channels or
-   users to clients.  This is necessarily to maintain backward
-   compatibility with old client software.
-*/
-// int Channel::kick(std::string to_kick) {
-	
-// 	if (VERBOSE)
-// 		std::cout << "kick" << std::endl;
+	for ( ; it != _users.end(); it++) {
+		if (it->first != _creator)
+			memberlist += it->first + " ";
+	}
+	return (memberlist);
+}
 
-// 	std::map<std::string, bool>::iterator it = _users.find(to_kick);
-// 	if (it != _users.end()) {
-// 		_users.erase(to_kick);
-// 		return (1);
-// 	}
-// 	else {
-// 		if (DEBUG)
-// 			std::cout << "User not found, returned 0" << std::endl;
-// 		return (0);
-// 	}
-// }
-
-
-
-/*
-   The TOPIC command is used to change or view the topic of a channel.
-   The topic for channel <channel> is returned if there is no <topic>
-   given.  If the <topic> parameter is present, the topic for that
-   channel will be changed, if this action is allowed for the user
-   requesting it.  If the <topic> parameter is an empty string, the
-   topic for that channel will be removed.
-*/
-// int Channel::topic(std::string topic_message) {
-	
-// 	if (VERBOSE)
-// 		std::cout << "Set new topic message" << std::endl;
-
-// 	set_topic(topic_message);
-// 	return (1);
-// }
-
-// int Channel::view_topic(void) {
-	
-// 	if (VERBOSE)
-// 		std::cout << "Display topic message" << std::endl;
-
-// 	std::cout << get_topic() << std::endl;
-// 	return (1);
-// }
-
-/*
-3.2.3 Channel mode message
-
-      Command: MODE
-   Parameters: <channel> *( ( "-" / "+" ) *<modes> *<modeparams> )
-
-   The MODE command is provided so that users may query and change the
-   characteristics of a channel.  For more details on available modes
-   and their uses, see "Internet Relay Chat: Channel Management" [IRC-
-   CHAN].  Note that there is a maximum limit of three (3) changes per
-   command for modes that take a parameter.
-*/
 // Channel& Channel::modes(bool privileges, char alter, std::string mode) {
 
 // }
@@ -247,12 +199,20 @@ void Channel::list_channel_attributes(void) {
 //setter
 void Channel::set_users(std::map<std::string, bool> users) {_users = users;}
 void Channel::set_name(std::string name) {_channelName = name;}
-void Channel::set_topic(std::string message) {_topicMessage = message;}
+void Channel::set_topic(std::string message) {
+
+	if (message.find(":") == 0)
+		_topicMessage = message.substr(1, message.size());
+	else
+		_topicMessage = message;
+}
+
 void Channel::set_topic_restriction(bool restriction) {_topic_restricted = restriction;}
 void Channel::set_invite_only(bool restriction) {_invite_only = restriction;}
 void Channel::set_passphrase(std::string passphrase) {_passPhrase = passphrase;}
 void Channel::set_userlimit(int limit) {_userlimit = limit;}
 void Channel::set_invitee(std::string nickname) { this->_invited.push_back(nickname);}
+void Channel::set_passrestriction(bool restriction) { _pw_restricted = restriction;}
 
 //getter
 std::map<std::string, bool> Channel::get_users(void) {return (_users);}
@@ -262,3 +222,5 @@ bool Channel::get_topic_restriction(void) {return (_topic_restricted);}
 bool Channel::get_invite_only(void) {return (_invite_only);}
 std::string Channel::get_passphrase(void) {return (_passPhrase);}
 int Channel::get_userlimit(void) {return (_userlimit);}
+bool Channel::get_passrestriction(void) {return (_pw_restricted);}
+std::string Channel::get_creator(void){return (_creator);}

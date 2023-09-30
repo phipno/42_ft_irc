@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/29 14:31:18 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/30 18:55:00 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ void Server::runServer() {
 			if(_fds[j].revents & POLLIN) {
 				recv_from_client_socket(_clients[i]);
 				// send_msg_to_client_socket(_clients[i], "hello from server");
-				list_clients();
+				// list_clients();
 				list_channels_all();
 				std::cout << "========================" << std::endl;
 			}
@@ -155,29 +155,29 @@ std::string Server::recv_from_client_socket(Client &client) {
 	
 	memset(buffer, 0, sizeof(buffer));
 	int bytesRead = recv(client.getClientSocket(), buffer, sizeof(buffer), 0);
-	
 	if (bytesRead == -1) {
 			// Handle other errors.
 			perror("recv");
 	} 
-	else if (bytesRead == 0) {
-		// The client has sent an empty string.
-	} 
 	else {
-		// Process the received data.
-		std::string message(buffer); 
-		std::cout << "Received: " << message << std::endl;
+		std::string message(buffer);
+		std::cout << "<<<<<<<" << message << std::endl;
 		parsing_msg(message, client);
 		return (message);
 	}
-	std::cout << "recv_from_client_socket():" << bytesRead << std::endl;
 	return (message);
 }
 
 //A message is written to a client's socket
 void Server::send_msg_to_client_socket(Client &client, std::string message) {
 
-	int bytesRead = send(client.getClientSocket(), (message + "\r\n").c_str() , message.length() + 2, 0);
+	//make the message ready for kvirc
+	
+	int bytesRead = 0;
+	
+	bytesRead = send(client.getClientSocket(), (message + "\r\n").c_str() , message.length() + 2, 0);
+	std::cout << ">>>>>>>" << message + "\r\n" << std::endl;
+	
 	if (bytesRead == -1)
 		perror("send message to client");
 }
@@ -189,7 +189,7 @@ bool Server::is_empty_string(std::string token) {
 	
 	std::cout << "TOKEN: " << token << std::endl;
 	// Last token has always a space at the end(should be fixed)
-	if (token == ": ") {
+	if (token == ":") {
 		std::cout << "empty string()" << std::endl;
 		return (true);
 	}
@@ -212,7 +212,6 @@ void Server::send_message_to_channel(std::string message, class Channel &channel
 void Server::numReply(Client &client, std::string message){
 	send_msg_to_client_socket(client, message);
 }
-
 
 void Server::list_channels(void) {
 

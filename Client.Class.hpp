@@ -6,13 +6,14 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/27 14:12:48 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/30 19:10:48 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <iostream>
+#include <cstring>
 #include <string>
 #include <unistd.h>
 #include <poll.h>

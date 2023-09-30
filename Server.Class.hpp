@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/29 14:52:23 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/09/30 19:48:05 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,8 @@ class Server{
 		void ping(class Client &client);
 		int pong(t_msg *message, class Client &client);
 		int handshake(t_msg *message, class Client &client);
-		
+		std::string make_msg_ready(t_msg *message, Client &client, size_t channelnumber, std::string topic_message);
+
 		//Messages
 		std::string recv_from_client_socket(Client &client);
 		void send_msg_to_client_socket(Client &client, std::string message);
