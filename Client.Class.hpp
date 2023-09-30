@@ -22,10 +22,10 @@
 #include <map>
 
 #include "defines.hpp"
-#define REGISTERED 1 //correct password entered
-#define NICKNAME 2	 //nick name entered
-#define USERNAME 3   //user name entered
-#define WELCOMED 4   //once the user typed in his credentials and answered with PONG, he can use all commands
+#define REGISTERED 1 //correct password
+#define NICKNAME 2
+#define USERNAME 3  
+#define WELCOMED 4   
 #define SUPERUSER 5
 #define USERLEN 9
 
@@ -38,7 +38,7 @@ class Client{
 			std::string			_userName;
 			std::string			_nickName;
 			int					_status;
-			bool				_superUser; //TO-DO(albert):nick must be superuser to be the serveradmin. For testing purposes only.
+			bool				_superUser;
 			
 		public:
 			Client();
