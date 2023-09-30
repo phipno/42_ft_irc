@@ -95,6 +95,7 @@ int Server::nick(t_msg *message, Client &client){
 }
 
 /* USER <your-username> <your-hostname> <your-servername> :<your-realname>
+TO-DO: 4 Names must be set for Username
 */
 
 int Server::user(t_msg *message, Client &client){
@@ -125,7 +126,8 @@ int Server::user(t_msg *message, Client &client){
 		return (0);
 	}
 	else {
-		client.registerClient(WELCOMED);
+		client.setUserName(message->paramVec[0]);
+		client.registerClient(USERNAME);
 	}
 	// numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // rethink logic
     return 0;
