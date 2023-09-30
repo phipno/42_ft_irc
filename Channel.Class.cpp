@@ -14,7 +14,6 @@ Channel::Channel(std::string name, bool topic, bool invite, std::string pass, in
 					_pw_restricted(false), _passPhrase(pass), _userlimit(userlimit) {}
 
 
-//changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
 int Channel::give_priveleges(std::string cli) {
 
 	if (VERBOSE)
@@ -32,7 +31,6 @@ int Channel::give_priveleges(std::string cli) {
 	}
 }
 
-//changes operator/kick-flag or adds a user if not in the container, returns 1 if succesfull
 int Channel::rm_priveleges(std::string cli) {
 
 	if (VERBOSE)
@@ -86,7 +84,7 @@ int Channel::add_user(std::string client, std::string pass, bool operatorflag) {
 	}
 
 	//add new users to channel
-	//returns 0, when ading works
+	//returns 0, when adding works
 	//returns 1, when wrong password 
 	//returns 2, when invite only
 	//returns 3, when channel full
@@ -112,6 +110,7 @@ int Channel::add_user(std::string client, std::string pass, bool operatorflag) {
 		return (0);
 	}
 }
+
 std::string Channel::make_memberlist(void) {
 
 	std::string memberlist;
@@ -123,10 +122,6 @@ std::string Channel::make_memberlist(void) {
 	}
 	return (memberlist);
 }
-
-// Channel& Channel::modes(bool privileges, char alter, std::string mode) {
-
-// }
 
 bool Channel::is_in_channel(std::string name) {
 	
