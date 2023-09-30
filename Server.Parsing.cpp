@@ -11,7 +11,7 @@
 
 
 void  Server::executeCommands(Client &client) {
-
+//switch case
   if (this->_parMsg.command == "PASS") {
     this->pass(&this->_parMsg, client);
   } else if (this->_parMsg.command == "NICK") {
