@@ -450,6 +450,7 @@ void Server::join(t_msg &parsedMsg, Client &client) {
 			else
 				code = _channels[i].add_user(client.getNickName(), "", false);
 				
+			//switchcase
 			if (code)
 				std::cout << std::endl;//REPLY with adequate numReply
 			else {
