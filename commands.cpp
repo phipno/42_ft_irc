@@ -548,52 +548,6 @@ int Server::topic(t_msg *parsedMsg, Client &client) {
 	return (0);
 }
 
-/*
-	i: invite only
-	t: topic restriction
-	k: channel key
-	o: operator privilege
-	l: user limit
-*/
-
-// int Server::mode(t_msg *message, Client &client){
-
-// 	std::vector<std::string>::iterator modes = message->paramVec.begin();
-// 	if (modes == paramVec.end())
-// 		//numReply: do nothing maybe
-// 		return (0);
-	
-// 	if (is_channel(*modes) == -1)
-// 		//numReply: no channel
-// 		return(0);
-	
-// 	std::string channel = *modes;
-// 	if (++modes == message->paramVec.end())
-// 		//numReply: no arguments
-// 		return (0);
-
-// 	int bitnbr = 1;
-// 	for (int i = 0; modes != message->paramVec.end(); modes++) {
-
-		
-// 		//int mode = modes_arguments_function(*modes)
-// 		//mode = -1, invalid string
-// 		//mode = 0, argument
-// 		//mode = 1, mode
-		
-// 		if (modes.find("+") && mode) { 
-// 			bitnbr << 1;
-// 			i++;
-// 		}
-// 		else if (modes.find("-") && mode)
-// 			i++;
-	
-// 		int change = 
-// 		switch (change)
-// 	} 
-	
-// }
-
 // ERR_PING(client)
 // define ERR_PING(client){"": To connect, type PONG 1234567890"}
 // send_msg_to_client_socket(client, ERR_PING(client));

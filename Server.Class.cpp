@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/03 13:50:00 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/03 14:34:38 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,25 +161,25 @@ void Server::runServer() {
 	}
 };
 
-void Server::remove_client(Client &client, int client_id) {
+// void Server::remove_client(Client &client, int client_id) {
 	
-	remove_client_from_channels(client);
-	(void) client_id;
-	// close(_clients[client_id].getClientSocket());
-	// _clients.erase(_clients.begin() + client_id);
-	// _fds.erase(_fds.begin() + client_id + 1);
-}
+// 	remove_client_from_channels(client);
+// 	(void) client_id;
+// 	// close(_clients[client_id].getClientSocket());
+// 	// _clients.erase(_clients.begin() + client_id);
+// 	// _fds.erase(_fds.begin() + client_id + 1);
+// }
 
 //TO-DO Removing works for _clients-vector, but cant remove clients from channels prperly
-void Server::remove_client_from_channels(class Client &client) {
+// void Server::remove_client_from_channels(class Client &client) {
 
-	std::vector<Channel>::iterator it_chan = _channels.begin();
+// 	std::vector<Channel>::iterator it_chan = _channels.begin();
 	
-	for (int i = 0 ; it_chan != _channels.end(); it_chan++, i++) {
-		if (it_chan->get_users().find(client.getNickName()) != it_chan->get_users().end())
-			_channels[i].get_users().erase(_channels[i].get_users().find(client.getNickName()));
-	}
-}
+// 	for (int i = 0 ; it_chan != _channels.end(); it_chan++, i++) {
+// 		if (it_chan->get_users().find(client.getNickName()) != it_chan->get_users().end())
+// 			_channels[i].get_users().erase(_channels[i].get_users().find(client.getNickName()));
+// 	}
+// }
 
 //receives a message from a client's socket
 std::string Server::recv_from_client_socket(Client &client) {

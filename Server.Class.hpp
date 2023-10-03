@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/10/03 13:50:10 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/03 18:18:19 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,15 @@ class Server{
 		int mode(t_msg *parsedMsg, Client &client);
 		int invite(t_msg *message, Client &client);
 
+		//Modes
+		bool is_in_modes(std::string param);
+		int operator_mode(std::string operatormode, std::string param, std::string channel);
+		int topic_invite_restriction(std::string topicmode, std::string param, std::string channel);
+		int user_limit(std::string usermode, std::string param, std::string channel);
+			int valid_number(std::string param);
+		int key_mode(std::string keymode, std::string param, std::string channel);
+			bool valid_passphrase(std::string param);
+			
 		//misc
 		void signal_handler(int binary);
 		void numReply(Client &client, std::string message);
