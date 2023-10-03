@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/29 12:54:02 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/03 13:50:10 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,11 @@ class Server{
 	 t_msg					_parMsg; //added this to private, just because :)
 	
 	 Server();
-	 int setupServer();
-	 void acceptNewClient();
-		
+	int setupServer();
+	void acceptNewClient();
+	void remove_client(Client &client, int client_id);
+		void remove_client_from_channels(class Client &client);
+	
 	public:
 		~Server();
 		Server(int port, std::string password);
@@ -68,7 +70,8 @@ class Server{
 		void ping(class Client &client);
 		int pong(t_msg *message, class Client &client);
 		int handshake(t_msg *message, class Client &client);
-		
+		std::string make_msg_ready(t_msg *message, Client &client, size_t channelnumber, std::string topic_message);
+
 		//Messages
 		std::string recv_from_client_socket(Client &client);
 		void send_msg_to_client_socket(Client &client, std::string message);
@@ -83,8 +86,7 @@ class Server{
 		int privmsg(t_msg *message, Client &client);
 		void join(t_msg &parsedMsg, Client &client);
 		int topic(t_msg *parsedMsg, Client &client);
-		
-		//Operator Commands
+		int mode(t_msg *parsedMsg, Client &client);
 		int invite(t_msg *message, Client &client);
 
 		//misc

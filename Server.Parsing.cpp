@@ -11,7 +11,7 @@
 
 
 void  Server::executeCommands(Client &client) {
-
+//switch case
   if (this->_parMsg.command == "PASS") {
     this->pass(&this->_parMsg, client);
   } else if (this->_parMsg.command == "NICK") {
@@ -31,7 +31,7 @@ void  Server::executeCommands(Client &client) {
   } else if (this->_parMsg.command == "MODE") {
     
   } else if (this->_parMsg.command == "INVITE") {
-   
+  
   } else if (this->_parMsg.command == "LIST") {
       this->list(this->_parMsg, client);
   } else if (this->_parMsg.command == "CAP") {
@@ -60,6 +60,8 @@ t_msg tokenize_msg(std::string Message) {
     else
       String += Token + " ";
   }
+  //removes space from last token
+  String = String.substr(0, String.size() - 1);
   if (ignore_space == true)
      s_tempMsg.paramVec.push_back(String);
   return s_tempMsg;
