@@ -2,12 +2,14 @@
 #include "Channel.Class.hpp"
 #include "Client.Class.hpp"
 
-bool g_sigint = false;
+extern bool g_sigint;
 void signal_handler(int binary) {
 
-    if (binary == SIGINT)
+        std::cout << "Binary: " << binary << std::endl;
+    if (binary == SIGINT) {
         std::cout << "Closing Server and disconnecting clients" << std::endl;
         g_sigint = true;
+    }
 }
 
 //server
@@ -17,13 +19,16 @@ int main(int argc, char **argv) {
     int port = std::atoi(argv[1]); 
     Server server(port, "pw");
     signal(SIGINT, signal_handler);
-    while(!g_sigint)
+    while(!g_sigint) {
+
+    std::cout << "main()" << g_sigint << std::endl;
         server.runServer();
-    for (unsigned int i = 0; i < server.get_clients().size(); i++) {
-		int j = close(server.get_clients()[i].getClientSocket());
-        std::cout << "J" << j << std::endl;
     }
-	close(server.get_serversocket());
+    // for (unsigned int i = 0; i < server.get_clients().size(); i++) {
+	// 	int j = close(server.get_clients()[i].getClientSocket());
+    //     std::cout << "J" << j << std::endl;
+    // }
+	// close(server.get_serversocket());
     return (0);
 }
 

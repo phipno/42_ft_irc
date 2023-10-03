@@ -6,12 +6,12 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/30 18:55:00 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/03 13:50:00 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.Class.hpp"
-extern bool g_sigint;
+bool g_sigint = false;
 
 /* ---------------- CANONICAL FORM ---------------------------*/
 Server::Server() : _port(0), _password("no_pw"), _hostname("Ingwer.Radish.Cherry"){
@@ -121,32 +121,65 @@ void Server::runServer() {
 	setupServer();
 	
 	while (!g_sigint) {
+		// std::cout << "run_Server()" << g_sigint << std::endl;
 		// set poll with unlimited time
 		int PollResult = poll(_fds.data(), _fds.size(), -1);
 		if (PollResult == -1) {
 			perror("poll");
 			continue;
 		}
+		// std::cout << "poll_result" << PollResult << std::endl;
+		
 		
 		//used for connecting a client to a server
 		if (this->_fds[0].revents & POLLIN){
 			acceptNewClient();
 		}
+		if (this->_fds[0].revents & POLLHUP){
+			// for (unsigned int i = 0; i < get_clients().size(); i++) {
+			// 	close(get_clients()[i].getClientSocket());
+			// }
+			close(get_serversocket());
+		}
 		for (i = 0, j = 1; j < _fds.size() && i < _clients.size(); i++, j++) {
-			
-			//1. messages from the client are sent directly to the server's socket
-			//2. ther server is processing the command
-			//3. server sends a response		
+					
 			if(_fds[j].revents & POLLIN) {
 				recv_from_client_socket(_clients[i]);
-				// send_msg_to_client_socket(_clients[i], "hello from server");
-				// list_clients();
+				list_clients();
 				list_channels_all();
 				std::cout << "========================" << std::endl;
+			}
+			if (_fds[j].revents & POLLHUP) {
+				
+				// remove_client(_clients[i], i);
+				close(_clients[i].getClientSocket());
+				_clients.erase(_clients.begin() + i);
+				_fds.erase(_fds.begin() + j);
+				std::cout << "Deleting client" << std::endl;
 			}
 		}
 	}
 };
+
+void Server::remove_client(Client &client, int client_id) {
+	
+	remove_client_from_channels(client);
+	(void) client_id;
+	// close(_clients[client_id].getClientSocket());
+	// _clients.erase(_clients.begin() + client_id);
+	// _fds.erase(_fds.begin() + client_id + 1);
+}
+
+//TO-DO Removing works for _clients-vector, but cant remove clients from channels prperly
+void Server::remove_client_from_channels(class Client &client) {
+
+	std::vector<Channel>::iterator it_chan = _channels.begin();
+	
+	for (int i = 0 ; it_chan != _channels.end(); it_chan++, i++) {
+		if (it_chan->get_users().find(client.getNickName()) != it_chan->get_users().end())
+			_channels[i].get_users().erase(_channels[i].get_users().find(client.getNickName()));
+	}
+}
 
 //receives a message from a client's socket
 std::string Server::recv_from_client_socket(Client &client) {
@@ -196,7 +229,7 @@ bool Server::is_empty_string(std::string token) {
 	return (false);
 }
 
-//sends a message to all memebers of the channel
+//sends a message to all memebers of the channel, except for oneself
 void Server::send_message_to_channel(std::string message, class Channel &channel) {
 
 	std::vector<Client>::iterator it = _clients.begin();

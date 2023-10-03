@@ -126,7 +126,7 @@ int Server::user(t_msg *message, Client &client){
 		return (0);
 	}
 	else {
-		client.setUserName(message->paramVec[0]);
+		client.setFullName(message->paramVec[0]);
 		client.registerClient(USERNAME);
 	}
 	// numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // rethink logic
@@ -266,10 +266,9 @@ int Server::privmsg(t_msg *message, Client &client){
 		return 1;		
 	}
 	std::string recipient = message->paramVec[0];
-	
 	//make MESSAGE comply with KVirc
 	std::string msg = make_msg_ready(message, client, 0, "");
-	std::cout << "MESSAGE: " << msg <<std::endl;
+	// std::cout << "MESSAGE: " << msg <<std::endl;
 
 	// if a channel
 	if (recipient.at(0) == '#') {
@@ -279,7 +278,7 @@ int Server::privmsg(t_msg *message, Client &client){
 		else {
 			std::vector<Channel>::iterator it = this->_channels.begin();
 			for (; it < _channels.end(); it++){
-				if (it->get_name() == recipient && it->is_in_channel(client.getNickName())){
+				if (it->get_name() == recipient && it->is_in_channel(client.getNickName())) {
 					send_message_to_channel(msg, *it);
 					break ;
 				}
@@ -558,43 +557,43 @@ int Server::topic(t_msg *parsedMsg, Client &client) {
 	l: user limit
 */
 
-int Server::mode(t_msg *message, Client &client){
+// int Server::mode(t_msg *message, Client &client){
 
-	std::vector<std::string>::iterator modes = message->paramVec.begin();
-	if (modes == paramVec.end())
-		//numReply: do nothing maybe
-		return (0);
+// 	std::vector<std::string>::iterator modes = message->paramVec.begin();
+// 	if (modes == paramVec.end())
+// 		//numReply: do nothing maybe
+// 		return (0);
 	
-	if (is_channel(*modes) == -1)
-		//numReply: no channel
-		return(0);
+// 	if (is_channel(*modes) == -1)
+// 		//numReply: no channel
+// 		return(0);
 	
-	std::string channel = *modes;
-	if (++modes == message->paramVec.end())
-		//numReply: no arguments
-		return (0);
+// 	std::string channel = *modes;
+// 	if (++modes == message->paramVec.end())
+// 		//numReply: no arguments
+// 		return (0);
 
-	int bitnbr = 1;
-	for (int i = 0; modes != message->paramVec.end(); modes++) {
+// 	int bitnbr = 1;
+// 	for (int i = 0; modes != message->paramVec.end(); modes++) {
 
 		
-		//int mode = modes_arguments_function(*modes)
-		//mode = -1, invalid string
-		//mode = 0, argument
-		//mode = 1, mode
+// 		//int mode = modes_arguments_function(*modes)
+// 		//mode = -1, invalid string
+// 		//mode = 0, argument
+// 		//mode = 1, mode
 		
-		if (modes.find("+") && mode) { 
-			bitnbr << 1;
-			i++;
-		}
-		else if (modes.find("-") && mode)
-			i++;
+// 		if (modes.find("+") && mode) { 
+// 			bitnbr << 1;
+// 			i++;
+// 		}
+// 		else if (modes.find("-") && mode)
+// 			i++;
 	
-		int change = 
-		switch (change)
-	} 
+// 		int change = 
+// 		switch (change)
+// 	} 
 	
-}
+// }
 
 // ERR_PING(client)
 // define ERR_PING(client){"": To connect, type PONG 1234567890"}
