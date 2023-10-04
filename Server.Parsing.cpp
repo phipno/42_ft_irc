@@ -31,7 +31,7 @@ void  Server::executeCommands(Client &client) {
   } else if (this->_parMsg.command == "MODE") {
     
   } else if (this->_parMsg.command == "INVITE") {
-  
+    this->invite(&this->_parMsg, client);
   } else if (this->_parMsg.command == "LIST") {
       this->list(this->_parMsg, client);
   } else if (this->_parMsg.command == "CAP") {
