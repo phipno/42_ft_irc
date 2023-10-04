@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 11:03:14 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/03 14:31:13 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/04 11:58:56 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 // #define ERR_NICKNAMEINUSE(hostname, nickname) (std::string(":" + hostname + " 433 " + nickname + " :Nickname is already in use"))
 #define ERR_NOTONCHANNEL(hostname, nickname, channel) (std::string(":" + hostname + " 442 " + nickname + " " + channel + " :You're not on that channel"))
 #define ERR_USERONCHANNEL(hostname, nickname, channel) (std::string(":" + hostname + " 443 " + nickname + " " + channel + " :is already on channel"))
+#define ERR_USERNOTINCHANNEL(hostname, nickname, user, channel) (std::string(":" + hostname + " 441 " + nickname + " " + user + " " + channel + " :They aren't on that channel"))
 #define ERR_NOTREGISTERED(hostname, nickname) (std::string(":" + hostname + " 451 " + nickname + " :You have not registered"))
 #define ERR_NEEDMOREPARAMS(hostname, nickname, command) (std::string(":" + hostname + " 461 " + nickname + " :" +command + " :Not enough parameters"))
 #define ERR_ALREADYREGISTERED(hostname, nickname) (std::string(":" + hostname + " 462 " + nickname + " :You may not reregister"))

@@ -11,7 +11,7 @@
 
 
 void  Server::executeCommands(Client &client) {
-//switch case
+  
   if (this->_parMsg.command == "PASS") {
     this->pass(&this->_parMsg, client);
   } else if (this->_parMsg.command == "NICK") {
@@ -29,7 +29,7 @@ void  Server::executeCommands(Client &client) {
   } else if (this->_parMsg.command == "TOPIC") {
       this->topic(&this->_parMsg, client);
   } else if (this->_parMsg.command == "MODE") {
-    
+       this->mode(&this->_parMsg, client);
   } else if (this->_parMsg.command == "INVITE") {
   
   } else if (this->_parMsg.command == "LIST") {

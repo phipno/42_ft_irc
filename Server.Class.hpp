@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/10/03 18:21:49 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/04 13:51:32 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,16 +86,16 @@ class Server{
 		int privmsg(t_msg *message, Client &client);
 		void join(t_msg &parsedMsg, Client &client);
 		int topic(t_msg *parsedMsg, Client &client);
-		int mode(t_msg *parsedMsg, Client &client);
 		int invite(t_msg *message, Client &client);
 
 		//Modes
+		int mode(t_msg *message, Client &client);
 		bool is_in_modes(std::string param);
-		int operator_mode(std::string operatormode, std::string param, std::string channel);
-		int topic_invite_restriction(std::string topicmode, std::string param, std::string channel);
-		int user_limit(std::string usermode, std::string param, std::string channel);
+		int operator_mode(std::string operatormode, std::string param, std::string channel, class Client &client);
+		int topic_invite_restriction(std::vector<std::string> paramVec, std::string channel, class Client &client);
+		int user_limit(std::string usermode, std::string param, std::string channel, class Client &client);
 		int valid_number(std::string param);
-		int key_mode(std::string keymode, std::string param, std::string channel);
+		int key_mode(std::string keymode, std::string param, std::string channel, class Client &client);
 		bool valid_passphrase(std::string param);
 			
 		//misc
