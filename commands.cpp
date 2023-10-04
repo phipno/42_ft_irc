@@ -106,7 +106,7 @@ int Server::user(t_msg *message, Client &client){
 		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
 		return 1;
 	}
-	if (message->paramVec.empty()){
+	if (message->paramVec.empty()){ // to be added || message.paramVec.size() < 3
 		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
 		return 1;
 	}
@@ -128,7 +128,6 @@ int Server::user(t_msg *message, Client &client){
 		client.setFullName(message->paramVec[0]);
 		client.registerClient(USERNAME);
 	}
-	// numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName())); // rethink logic
     return 0;
 }
 
@@ -342,7 +341,7 @@ int Server::invite(t_msg *message, Client &client) {
 	}
 	if (clientit == _clients.end())
 		numReply(client, ERR_NOSUCHNICK(this->_hostname, inviteNick));
-		
+
 	std::vector<Channel>::iterator it = _channels.begin();
 	for (; it != _channels.end(); it++){
 		if (it->get_name() == channelName){
