@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Client.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/29 13:39:43 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/03 14:30:31 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <iostream>
+#include <cstring>
 #include <string>
 #include <unistd.h>
 #include <poll.h>
@@ -21,10 +22,10 @@
 #include <map>
 
 #include "defines.hpp"
-#define REGISTERED 1 //correct password entered
-#define NICKNAME 2	 //nick name entered
-#define USERNAME 3   //user name entered
-#define WELCOMED 4   //once the user typed in his credentials and answered with PONG, he can use all commands
+#define REGISTERED 1 //correct password
+#define NICKNAME 2
+#define USERNAME 3  
+#define WELCOMED 4   
 #define SUPERUSER 5
 #define USERLEN 9
 
@@ -37,7 +38,7 @@ class Client{
 			std::string			_userName;
 			std::string			_nickName;
 			int					_status;
-			bool				_superUser; //TO-DO(albert):nick must be superuser to be the serveradmin. For testing purposes only.
+			bool				_superUser;
 			
 		public:
 			Client();

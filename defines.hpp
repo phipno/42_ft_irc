@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   defines.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 11:03:14 by kczichow          #+#    #+#             */
-/*   Updated: 2023/09/29 14:38:00 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/03 14:31:13 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #define MAX_CONNECTIONS 100
 #define MAX_EVENTS 100
 
-#define RPL_WELCOME(hostname, nickname, username) (std::string(":" + hostname + " 001 " + nickname + " :Welcome to the Internet Relay Network, " +nickname + "!" +username + "@" +hostname))
+#define RPL_WELCOME(hostname, nickname, username) (std::string(":" + hostname + " 001 " + nickname + " :Welcome to the Internet Relay Network, " + nickname + "!" +username + "@" +hostname))
 #define RPL_YOURHOST(hostname, nickname) (std::string(":" + hostname + " 002 " + nickname + " :Your host is " + hostname + ", running on version 1.0 !"))
 // what is content of RPL_INVITING?
 #define RPL_INVITING(hostname, nickname, channel) (std::string(":" + hostname + " 341 " + nickname + " " + channel))
@@ -35,12 +35,16 @@
 #define ERR_USERONCHANNEL(hostname, nickname, channel) (std::string(":" + hostname + " 443 " + nickname + " " + channel + " :is already on channel"))
 #define ERR_NOTREGISTERED(hostname, nickname) (std::string(":" + hostname + " 451 " + nickname + " :You have not registered"))
 #define ERR_NEEDMOREPARAMS(hostname, nickname, command) (std::string(":" + hostname + " 461 " + nickname + " :" +command + " :Not enough parameters"))
-#define ERR_ALREADYREGISTERED(hostname, nickname) (std::string(":" + hostname + " 462 " + nickname + " :You may not reregister\n"))
+#define ERR_ALREADYREGISTERED(hostname, nickname) (std::string(":" + hostname + " 462 " + nickname + " :You may not reregister"))
 #define ERR_CHANOPRIVSNEEDED(hostname, nickname, channel) (std::string(":" + hostname + " 482 " + nickname + " " + channel + " :You're not channel operator"))
 
 //TOPIC
 #define RPL_NOTOPIC(hostname, nickname, channel) (std::string(":" + hostname + " 331 " + nickname + " " + channel + " :No topic is set"))         
 #define RPL_TOPIC(hostname, nickname, channel, topic) (std::string(":" + hostname + " 332 " + nickname + " " + channel + " :" + topic))
+
+//CHANNELS
+#define RPL_NAMREPLY(hostname, nickname, channel, memberlist, creator) (std::string(":" + hostname + " 353 " + nickname + " = " + channel + " :" + memberlist + "@" + creator + " "))
+#define RPL_ENDOFNAMES(hostname, creator, channel) (std::string(":" + hostname + " 366 " + creator + " " + channel + " :END of /NAMES list."))
 
 //MODES
 // #define ERR_NOCHANMODES 477 //"<channel> :Channel doesn't support modes"       
