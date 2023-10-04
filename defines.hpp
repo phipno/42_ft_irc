@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   defines.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 11:03:14 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/03 14:31:13 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/04 13:50:39 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #define RPL_WELCOME(hostname, nickname, username) (std::string(":" + hostname + " 001 " + nickname + " :Welcome to the Internet Relay Network, " + nickname + "!" +username + "@" +hostname))
 #define RPL_YOURHOST(hostname, nickname) (std::string(":" + hostname + " 002 " + nickname + " :Your host is " + hostname + ", running on version 1.0 !"))
 // what is content of RPL_INVITING?
-#define RPL_INVITING(hostname, nickname, channel) (std::string(":" + hostname + " 341 " + nickname + " " + channel))
+#define RPL_INVITING(hostname, nickname, target, channel) (std::string(":" + hostname + " 341 " + nickname + " " + target + " " + channel))
 
 #define ERR_NOSUCHNICK(hostname, nickname) (std::string(":" + hostname + " 401 " + nickname + " :No such nick/channel"))
 #define ERR_CANNOTSENDTOCHAN(hostname, nickname, channel) (std::string(":" + hostname + " 404 " + nickname + " " + channel + " :Cannot send to channel"))
