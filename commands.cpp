@@ -17,18 +17,18 @@ variables in t_msg struct:
 	461	ERR_NEEDMOREPARAMS
 */
 
-int Server::pass(t_msg *message, Client &client){
-	if (client.getRegistrationStatus() >= REGISTERED)
-		numReply(client, ERR_ALREADYREGISTERED(this->_hostname, client.getNickName()));
-	else if (message->paramVec.empty() || message->paramVec[0].empty())
-		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
-	else if (message->paramVec[0].compare(this->_password) == 0){
-		client.registerClient(REGISTERED);
-		std::cout << "Registering succesfull: Client status is " << client.getStatus() << std::endl;
-		return 0;
-	}
-	return 1;
-}
+// int Server::pass(t_msg *message, Client &client){
+// 	if (client.getRegistrationStatus() >= REGISTERED)
+// 		numReply(client, ERR_ALREADYREGISTERED(this->_hostname, client.getNickName()));
+// 	else if (message->paramVec.empty() || message->paramVec[0].empty())
+// 		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
+// 	else if (message->paramVec[0].compare(this->_password) == 0){
+// 		client.registerClient(REGISTERED);
+// 		std::cout << "Registering succesfull: Client status is " << client.getStatus() << std::endl;
+// 		return 0;
+// 	}
+// 	return 1;
+// }
 
 /* NICK
 NICK <your-nick>
@@ -41,17 +41,17 @@ when connecting for the first time, choose a nickname
 
 int Server::nick(t_msg *message, Client &client){
     
-    if (VERBOSE)
-        std::cout << "nick()" << std::endl;
+    // if (VERBOSE)
+    //     std::cout << "nick()" << std::endl;
 
-	if (client.getRegistrationStatus() < REGISTERED){
-		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-		return 1;
-	}
-	if (message->paramVec.empty()){
-			numReply(client, ERR_NONICKNAMEGIVEN(this->_hostname));
-		return 1;
-	}
+	// if (client.getRegistrationStatus() < REGISTERED){
+	// 	numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+	// 	return 1;
+	// }
+	// if (message->paramVec.empty()){
+	// 		numReply(client, ERR_NONICKNAMEGIVEN(this->_hostname));
+	// 	return 1;
+	// }
     // check if characters of chosen nickname are valid
     std::string allowed_chars = "abcdefghijklmnopqrstuvwxyz0123456789{}[]\\|";
 	for (size_t i = 0; i < message->paramVec[0].length(); ++i){
@@ -377,7 +377,7 @@ int Server::invite(t_msg *message, Client &client) {
 				}
 			}
 		}
-		numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, channel.get_name()));
+		numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, it->get_name()));
 		std::string msg = make_msg_ready(message, client, 0, "");
 		numReply(*clientit, msg);
 	}

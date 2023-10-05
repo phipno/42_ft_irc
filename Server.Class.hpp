@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/10/03 18:21:49 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/05 13:49:37 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #include <vector>
 #include <unistd.h>
 #include <signal.h>
+#include <sstream>
 
 #include "defines.hpp"
 #include "Channel.Class.hpp"
@@ -54,13 +55,13 @@ class Server{
 	 std::vector<pollfd>	_fds;
 	 t_msg					_parMsg; //added this to private, just because :)
 	
-	 Server();
 	int setupServer();
 	void acceptNewClient();
 	void remove_client(Client &client, int client_id);
 		void remove_client_from_channels(class Client &client);
 	
 	public:
+	 	Server();
 		~Server();
 		Server(int port, std::string password);
 		Server (Server const &src);
@@ -104,7 +105,7 @@ class Server{
 		
 		//parsing
 		void parsing_msg(std::string &message, Client &client);
-	 	void executeCommands(Client &client);
+	 	void executeCommands(Client &client, std::string Message);
 		int channel_exists(std::string channelName);
 		bool is_empty_string(std::string token);
 
@@ -118,4 +119,7 @@ class Server{
 		std::vector<pollfd> get_fds(void);
 		int get_serversocket(void);
 		t_msg get_parsedMsg();
+		std::string getPassword();
+		std::string getHostname();
+		std::vector<Client> getClients();
 };

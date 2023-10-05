@@ -6,12 +6,17 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 11:03:14 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/04 13:50:39 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/05 11:18:44 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include <string>
+
+#define DARK_GREEN	"\x01\033[1;32m\x02"
+#define GRASS_GREEN "\x01\033[38;2;0;255;0m\x02"
+#define MAGENTA		"\x01\033[1;35m\x02"
+#define RESET		"\033[0m"
 
 //protocol errors
 #define MAX_CONNECTIONS 100
@@ -22,7 +27,7 @@
 // what is content of RPL_INVITING?
 #define RPL_INVITING(hostname, nickname, target, channel) (std::string(":" + hostname + " 341 " + nickname + " " + target + " " + channel))
 
-#define ERR_NOSUCHNICK(hostname, nickname) (std::string(":" + hostname + " 401 " + nickname + " :No such nick/channel"))
+#define ERR_NOSUCHNICK(hostname, nickname) (std::string(":" + std::string(hostname) + " 401 " + nickname + " :No such nick/channel"))
 #define ERR_CANNOTSENDTOCHAN(hostname, nickname, channel) (std::string(":" + hostname + " 404 " + nickname + " " + channel + " :Cannot send to channel"))
 #define ERR_NORECIPIENT(hostname, nickname, command) (std::string(":" + hostname + " 411 " + nickname + " " + command + " :No recipient given"))
 // #define ERR_NOTEXTTOSEND(hostname, nickname) (std::string(":irc42 412 " + nick + " :No text to send"))
@@ -34,8 +39,8 @@
 #define ERR_NOTONCHANNEL(hostname, nickname, channel) (std::string(":" + hostname + " 442 " + nickname + " " + channel + " :You're not on that channel"))
 #define ERR_USERONCHANNEL(hostname, nickname, channel) (std::string(":" + hostname + " 443 " + nickname + " " + channel + " :is already on channel"))
 #define ERR_NOTREGISTERED(hostname, nickname) (std::string(":" + hostname + " 451 " + nickname + " :You have not registered"))
-#define ERR_NEEDMOREPARAMS(hostname, nickname, command) (std::string(":" + hostname + " 461 " + nickname + " :" +command + " :Not enough parameters"))
-#define ERR_ALREADYREGISTERED(hostname, nickname) (std::string(":" + hostname + " 462 " + nickname + " :You may not reregister"))
+#define ERR_NEEDMOREPARAMS(hostname, nickname, command) (std::string(":" + std::string(hostname) + " 461 " + std::string(nickname) + " :" +std::string(command) + " :Not enough parameters"))
+#define ERR_ALREADYREGISTERED(hostname, nickname) (std::string(":" + std::string(hostname) + " 462 " + std::string(nickname) + " :You may not reregister"))
 #define ERR_CHANOPRIVSNEEDED(hostname, nickname, channel) (std::string(":" + hostname + " 482 " + nickname + " " + channel + " :You're not channel operator"))
 
 //TOPIC
@@ -56,7 +61,7 @@
 #define ERR_NOORIGIN 409 //":No origin specified"
 
 //debugflags
-#define VERBOSE 0 //used for constructors and function calls
+#define VERBOSE 1 //used for constructors and function calls
 #define LOOP 0 //used for printing when inside a loop
 #define DEBUG 1 // generic print flag
 

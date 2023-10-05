@@ -15,6 +15,9 @@ SRC				= 	main \
 					Channel.Class \
 					Server.Class \
 					Server.Parsing \
+					Command.Class \
+					Pass.Class \
+					Nick.Class \
 					commands
 					
 DEPS 			= Channel.Class.hpp \

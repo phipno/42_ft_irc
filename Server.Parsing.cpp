@@ -7,15 +7,22 @@
 #include <sstream>
 
 #include "Server.Class.hpp"
+#include "Pass.Class.hpp"
+#include "Nick.Class.hpp"
 
 
 
-void  Server::executeCommands(Client &client) {
+void  Server::executeCommands(Client &client, std::string Message) {
 //switch case
   if (this->_parMsg.command == "PASS") {
-    this->pass(&this->_parMsg, client);
+    Command *command = new Pass(*this, client, Message);
+    command->executeCommand();
+    delete command;
+    // this->pass(&this->_parMsg, client);
   } else if (this->_parMsg.command == "NICK") {
-      this->nick(&this->_parMsg, client);
+    Command *command = new Nick(*this, client, Message);
+    command->executeCommand();
+    delete command;
   } else if (this->_parMsg.command == "USER") {
       this->user(&this->_parMsg, client);
   } else if (this->_parMsg.command == "JOIN") {
@@ -77,7 +84,7 @@ void Server::parsing_msg(std::string &Message, Client &client) {
         std::cout << i << ".Tok: " << this->_parMsg.paramVec[i] << std::endl;
       }
     }
-    executeCommands(client);
+    executeCommands(client, Message);
     (void)client;
   }
   catch (std::exception &e) {

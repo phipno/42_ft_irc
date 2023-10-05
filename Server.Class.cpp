@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/04 09:23:42 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/05 13:50:10 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,37 @@
 bool g_sigint = false;
 
 /* ---------------- CANONICAL FORM ---------------------------*/
-Server::Server() : _port(0), _password("no_pw"), _hostname("Ingwer.Radish.Cherry"){
+Server::Server(){
+	if (VERBOSE)
+		std::cout << MAGENTA << "Hello from Server constructor\n" << RESET;
 	this->_fds[MAX_EVENTS];
 };
 
 Server::Server(int port, std::string password) : _port(port), _password(password), _hostname("Ingwer.Radish.Cherry"){
 };
 
-Server::~Server(){};
+Server::~Server(){
+	if (VERBOSE)
+		std::cout << MAGENTA << "Hello from Server destructor\n" << RESET;
+};
 
-Server::Server (Server const &src){ (void) src;};
+Server::Server (Server const &src){
+	if (VERBOSE)
+		std::cout << MAGENTA << "Hello from Server copy constructor\n" << RESET;
+	*this = src;
+};
 
 Server &Server::operator= (Server const &src){
-    this->_serverSocket = src._serverSocket;
     this->_port = src._port;
     this->_password = src._password;
+	this->_hostname = src._hostname;
+    this->_serverSocket = src._serverSocket;
+	this->_serverAddr = src._serverAddr;
+	this->_serverPollfd = src._serverPollfd;
+	this->_channels = src._channels;
+	this->_clients = src._clients;
+	this->_fds = src._fds;
+	this->_parMsg = src._parMsg;
     return (*this);
 };
 
@@ -298,4 +314,15 @@ int Server::get_serversocket(void) {
 
 t_msg Server::get_parsedMsg() {
 	return _parMsg;
+}
+std::string Server::getPassword(){
+	return this->_password;
+}
+
+std::string Server::getHostname(){
+	return this->_hostname;
+}
+
+std::vector<Client> Server::getClients(){
+	return this->_clients;
 }
