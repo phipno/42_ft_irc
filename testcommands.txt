@@ -1,0 +1,57 @@
+//join
+JOIN #qwe
+JOIN
+JOIN #
+JOIN #test #qweqdsa
+JOIN #test #qweqdsa
+
+//invite
+INVITE #qwe nick
+INVITE
+INVITE nick #
+INVITE nick1 nick2 # 
+INVITE #qweqw #eqweq
+INVITE 
+
+//kick
+KICK #qwe nick
+KICK
+KICK nick #
+KICK nick1 nick2 # 
+KICK 
+
+//privmsg
+PRIVMSG #test nick1 nick2 wqeqasd
+PRIVMSG nick1 nick2 qweasdad
+PRIVMSG #
+PRIVMSG
+
+//topic
+TOPIC nick #qwe
+TOPIC
+TOPIC #
+TOPIC #test :msg
+TOPIC #test :
+TOPIC #test
+
+//mode
+MODE
+MODE #
+MODE #test
+MODE +o
+MODE -o
+MODE #test +o nick1 nick2 nick3
+MODE #test -o nick1 nick2 nick3
+MODE +l
+MODE -l
+MODE #test +l a1
+MODE #test +l 1a
+MODE #test -l 10
+MODE #test -i 1
+MODE #test +i 1
+MODE #test -i
+MODE #test +i
+MODE #test -t 1
+MODE #test +t 1
+MODE #test -t
+MODE #test +t
