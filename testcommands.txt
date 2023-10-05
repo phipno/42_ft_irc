@@ -1,5 +1,13 @@
+//pass,nick,user
+wrong pw
+same nick
+nick and user in different order
+change nickname and watch status after registering
+check if all commands only work when welcomed
+
 //join
 JOIN #qwe
+JOIN 32
 JOIN
 JOIN #
 JOIN #test #qweqdsa
