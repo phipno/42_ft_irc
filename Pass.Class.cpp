@@ -21,7 +21,7 @@ Pass::~Pass() {};
 int Pass::executeCommand(){
 
 	Command::tokenizeMsg();
-	if (Command::checkRegistrationStatus())
+	if (checkRegistrationStatus())
 		return 1;
 	if (checkEmptyParamter())
 		return 1;
@@ -37,6 +37,16 @@ int Pass::checkEmptyParamter(){
 	std::cout << MAGENTA << "EMPTYPARAM\n" << RESET;
 	if (this->_paramVec.empty() || this->_paramVec[0].empty()){
 		Command::returnMsgToServer(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), this->_command));
+		return (1);
+	}
+	return (0);
+}
+
+int Pass::checkRegistrationStatus(){
+	std::cout << MAGENTA << "REGSTATUS\n" << RESET;
+	// std::cout << MAGENTA << this->_client->getRegistrationStatus() << RESET;
+	if (this->_client->getRegistrationStatus() >= REGISTERED){
+		returnMsgToServer(ERR_ALREADYREGISTERED(this->_server->getHostname(), this->_client->getNickName()));
 		return (1);
 	}
 	return (0);

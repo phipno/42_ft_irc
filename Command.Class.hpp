@@ -28,6 +28,7 @@ class Command{
 		std::string makeMsgReady(Client &client, size_t channelnumber, std::string topic_message);
 		int checkRegistrationStatus();
 		int checkEmptyParamter();
+		int isValidNickname();
 
 		virtual int executeCommand() = 0;
 };

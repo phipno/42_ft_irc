@@ -67,7 +67,7 @@ std::string Command::returnMsgToServer(std::string message){
 int Command::checkRegistrationStatus(){
 	std::cout << MAGENTA << "REGSTATUS\n" << RESET;
 	// std::cout << MAGENTA << this->_client->getRegistrationStatus() << RESET;
-	if (this->_client->getRegistrationStatus() >= REGISTERED){
+	if (this->_client->getRegistrationStatus() < REGISTERED){
 		returnMsgToServer(ERR_ALREADYREGISTERED(this->_server->getHostname(), this->_client->getNickName()));
 		return (1);
 	}
@@ -82,3 +82,14 @@ int Command::checkEmptyParamter(){
 	return (0);
 }
 
+int Command::isValidNickname(){
+	std::vector<Client> clients = this->_server->getClients();
+	std::vector<Client>::iterator it = clients.begin();
+
+	for (;it != clients.end(); it++){
+		if (it->getNickName() == this->_paramVec[0]){
+			return 1;
+        }
+	}
+	return 0;
+}

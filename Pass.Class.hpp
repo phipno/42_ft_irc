@@ -13,4 +13,5 @@ class Pass : public Command{
 
 		virtual int executeCommand();
 		int checkEmptyParamter();
+		int checkRegistrationStatus();
 };
