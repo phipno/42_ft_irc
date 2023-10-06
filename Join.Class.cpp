@@ -23,14 +23,14 @@ int Join::executeCommand(){
 	if (this->_paramVec.size() >= 2)
 		keyForChannel = parse_join_kick(this->_paramVec[1]);
 
-    std::vector<Channel> channels = this->_server->getChannels();
+    std::vector<Channel> channels = *this->_server->getChannels();
 	for (size_t j = 0; j < channelsToJoin.size(); j++) {
 		int i = this->_server->channel_exists(channelsToJoin[j]);
 		if (i == -1) {
 
 			Channel channel(channelsToJoin[j]);
 			channel.add_user(this->_client->getNickName(), "", true);
-			this->_server->getChannels().push_back(channel);
+			this->_server->getChannels()->push_back(channel);
 			std::string msg = make_msg_ready(j, "");
 			
 			this->_server->send_message_to_channel(msg, channel);

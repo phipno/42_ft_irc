@@ -412,19 +412,19 @@ void Server::join_channel(std::string channelName, class Client &client) {
 	}
 }
 
-std::vector<std::string> parse_join_kick(std::string commaToken) {
-	std::vector<std::string>	splitToken;
-	size_t	pos;
+// std::vector<std::string> parse_join_kick(std::string commaToken) {
+// 	std::vector<std::string>	splitToken;
+// 	size_t	pos;
 
-	while ((pos = commaToken.find(',')) != std::string::npos) {
-		splitToken.push_back(commaToken.substr(0, pos));
-		commaToken.erase(0, pos + 1);
-	}
-	if (pos == std::string::npos)
-		splitToken.push_back(commaToken);
+// 	while ((pos = commaToken.find(',')) != std::string::npos) {
+// 		splitToken.push_back(commaToken.substr(0, pos));
+// 		commaToken.erase(0, pos + 1);
+// 	}
+// 	if (pos == std::string::npos)
+// 		splitToken.push_back(commaToken);
 
-	return splitToken;
-}
+// 	return splitToken;
+// }
 
 
 //TO-DO: Send channelmessge:
@@ -433,67 +433,67 @@ std::vector<std::string> parse_join_kick(std::string commaToken) {
 	// :London.UK.EU.StarLink.Org 353 nick3 * #channel2 :nick3 nick2 @nick1 ^M$ ---> 353, list all users in that channel, @is the channel creator
 	// :London.UK.EU.StarLink.Org 366 nick1 #test :End of /NAMES list.^M$ ---> 366
 
-void Server::join(t_msg &parsedMsg, Client &client) {
-	if (client.getRegistrationStatus() < WELCOMED){
-		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-		return ;
-	}
-	if (parsedMsg.paramVec.empty()) {
-		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), parsedMsg.command));
-		return ;
-	}
-	if (parsedMsg.paramVec[0].at(0) == 0) {
-		//TODO kick client out of any channel
-	}
-	std::vector<std::string> channelsToJoin, keyForChannel;
-	std::vector<Channel> joinChannel;
+// void Server::join(t_msg &parsedMsg, Client &client) {
+// 	// if (client.getRegistrationStatus() < WELCOMED){
+// 	// 	numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+// 	// 	return ;
+// 	// }
+// 	// if (parsedMsg.paramVec.empty()) {
+// 	// 	numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), parsedMsg.command));
+// 	// 	return ;
+// 	// }
+// 	if (parsedMsg.paramVec[0].at(0) == 0) {
+// 		//TODO kick client out of any channel
+// 	}
+// 	std::vector<std::string> channelsToJoin, keyForChannel;
+// 	std::vector<Channel> joinChannel;
 	
-	channelsToJoin = parse_join_kick(parsedMsg.paramVec[0]);
-	if (parsedMsg.paramVec.size() >= 2)
-		keyForChannel = parse_join_kick(parsedMsg.paramVec[1]);
+// 	channelsToJoin = parse_join_kick(parsedMsg.paramVec[0]);
+// 	if (parsedMsg.paramVec.size() >= 2)
+// 		keyForChannel = parse_join_kick(parsedMsg.paramVec[1]);
 
-	for (size_t j = 0; j < channelsToJoin.size(); j++) {
-		int i = channel_exists(channelsToJoin[j]);
-		if (i == -1) {
+// 	for (size_t j = 0; j < channelsToJoin.size(); j++) {
+// 		int i = channel_exists(channelsToJoin[j]);
+// 		if (i == -1) {
 
-			Channel channel(channelsToJoin[j]);
-			channel.add_user(client.getNickName(), "", true);
-			this->_channels.push_back(channel);
-			std::string msg = make_msg_ready(&parsedMsg, client, j, "");
+// 			Channel channel(channelsToJoin[j]);
+// 			channel.add_user(client.getNickName(), "", true);
+// 			this->_channels.push_back(channel);
+// 			std::string msg = make_msg_ready(&parsedMsg, client, j, "");
 			
-			send_message_to_channel(msg, channel);
-			numReply(client, RPL_NAMREPLY(_hostname, client.getNickName(), channel.get_name(), "", channel.get_creator()));
-			numReply(client, RPL_ENDOFNAMES(_hostname, channel.get_creator(), channel.get_name()));
-		} 
-		else {
-			int code;
-			if (j < keyForChannel.size()) 
-				code = _channels[i].add_user(client.getNickName(), keyForChannel[j], false);
-			else
-				code = _channels[i].add_user(client.getNickName(), "", false);
+// 			send_message_to_channel(msg, channel);
+// 			numReply(client, RPL_NAMREPLY(_hostname, client.getNickName(), channel.get_name(), "", channel.get_creator()));
+// 			numReply(client, RPL_ENDOFNAMES(_hostname, channel.get_creator(), channel.get_name()));
+// 		} 
+// 		else {
+// 			int code;
+// 			if (j < keyForChannel.size()) 
+// 				code = _channels[i].add_user(client.getNickName(), keyForChannel[j], false);
+// 			else
+// 				code = _channels[i].add_user(client.getNickName(), "", false);
 				
-			//switchcase
-			if (code)
-				std::cout << std::endl;//REPLY with adequate numReply
-			else {
-				std::string msg = make_msg_ready(&parsedMsg, client, j, "");
-				send_message_to_channel(msg, _channels[i]);
-				numReply(client, RPL_NAMREPLY(_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].make_memberlist(), _channels[i].get_creator()));
-				numReply(client, RPL_ENDOFNAMES(_hostname, _channels[i].get_creator(), _channels[i].get_name()));
-			} 
-		}
-	}
-	if (DEBUG) {
-		for (std::vector<std::string>::iterator It = channelsToJoin.begin();
-				 It != channelsToJoin.end(); ++It) {
-			std::cout << "Channel: " << *It << std::endl;
-		}
-		for (std::vector<std::string>::iterator It = keyForChannel.begin();
-				 It != keyForChannel.end(); ++It) {
-			std::cout << "Keys: " << *It << std::endl;
-		}
-	}
-}
+// 			//switchcase
+// 			if (code)
+// 				std::cout << std::endl;//REPLY with adequate numReply
+// 			else {
+// 				std::string msg = make_msg_ready(&parsedMsg, client, j, "");
+// 				send_message_to_channel(msg, _channels[i]);
+// 				numReply(client, RPL_NAMREPLY(_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].make_memberlist(), _channels[i].get_creator()));
+// 				numReply(client, RPL_ENDOFNAMES(_hostname, _channels[i].get_creator(), _channels[i].get_name()));
+// 			} 
+// 		}
+// 	}
+// 	if (DEBUG) {
+// 		for (std::vector<std::string>::iterator It = channelsToJoin.begin();
+// 				 It != channelsToJoin.end(); ++It) {
+// 			std::cout << "Channel: " << *It << std::endl;
+// 		}
+// 		for (std::vector<std::string>::iterator It = keyForChannel.begin();
+// 				 It != keyForChannel.end(); ++It) {
+// 			std::cout << "Keys: " << *It << std::endl;
+// 		}
+// 	}
+// }
 
 int Server::channel_exists(std::string channelName) {
 
