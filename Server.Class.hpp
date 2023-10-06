@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kczichowsky <kczichowsky@student.42.fr>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/10/05 13:49:37 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/06 14:29:30 by kczichowsky      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,5 +122,7 @@ class Server{
 		std::string getPassword();
 		std::string getHostname();
 		std::vector<Client> getClients();
-		std::vector<Channel> *getChannels();
+		std::vector<Channel> getChannels();
+
+		void addChannel(Channel channel);
 };
