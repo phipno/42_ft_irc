@@ -39,97 +39,97 @@ when connecting for the first time, choose a nickname
 	ERR_UNAVAILRESOURCE		ERR_RESTRICTED
 */
 
-int Server::nick(t_msg *message, Client &client){
+// int Server::nick(t_msg *message, Client &client){
     
-    // if (VERBOSE)
-    //     std::cout << "nick()" << std::endl;
+//     // if (VERBOSE)
+//     //     std::cout << "nick()" << std::endl;
 
-	// if (client.getRegistrationStatus() < REGISTERED){
-	// 	numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-	// 	return 1;
-	// }
-	// if (message->paramVec.empty()){
-	// 		numReply(client, ERR_NONICKNAMEGIVEN(this->_hostname));
-	// 	return 1;
-	// }
-    // check if characters of chosen nickname are valid
-    std::string allowed_chars = "abcdefghijklmnopqrstuvwxyz0123456789{}[]\\|";
-	for (size_t i = 0; i < message->paramVec[0].length(); ++i){
-        char ch = message->paramVec[0][i];
-		if (allowed_chars.find(ch) != std::string::npos){}
-        else {
-			numReply(client, ERR_ERRONEUSNICKNAME(this->_hostname, client.getNickName()));
-			return 1;
-        }
-	}
-    // check if nickname already exists on same server
-	std::vector<Client>::iterator it = _clients.begin();
-	for (;it != _clients.end(); it++){
-		if (it->getNickName() == message->paramVec[0]){
-			numReply(client, ERR_NICKNAMEINUSE(this->_hostname, client.getNickName()));
-			return 1;
-        }
-	}
-	//if superuser, he will be welcomed.
-	if (client.getNickName() == "superuser") {
-		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
-		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
-		client.setSu(true);
-		client.registerClient(SUPERUSER);
-		return (0);
-	}
+// 	// if (client.getRegistrationStatus() < REGISTERED){
+// 	// 	numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+// 	// 	return 1;
+// 	// }
+// 	// if (message->paramVec.empty()){
+// 	// 		numReply(client, ERR_NONICKNAMEGIVEN(this->_hostname));
+// 	// 	return 1;
+// 	// }
+//     // check if characters of chosen nickname are valid
+//     std::string allowed_chars = "abcdefghijklmnopqrstuvwxyz0123456789{}[]\\|";
+// 	for (size_t i = 0; i < message->paramVec[0].length(); ++i){
+//         char ch = message->paramVec[0][i];
+// 		if (allowed_chars.find(ch) != std::string::npos){}
+//         else {
+// 			numReply(client, ERR_ERRONEUSNICKNAME(this->_hostname, client.getNickName()));
+// 			return 1;
+//         }
+// 	}
+//     // check if nickname already exists on same server
+// 	std::vector<Client>::iterator it = _clients.begin();
+// 	for (;it != _clients.end(); it++){
+// 		if (it->getNickName() == message->paramVec[0]){
+// 			numReply(client, ERR_NICKNAMEINUSE(this->_hostname, client.getNickName()));
+// 			return 1;
+//         }
+// 	}
+// 	//if superuser, he will be welcomed.
+// 	if (client.getNickName() == "superuser") {
+// 		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+// 		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+// 		client.setSu(true);
+// 		client.registerClient(SUPERUSER);
+// 		return (0);
+// 	}
 	
-	// if client typed om username, he will be welcomed after nickname
-	if (client.getStatus() == USERNAME) {
-		client.setNickName(message->paramVec[0]);
-		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
-		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
-		client.registerClient(WELCOMED);
-		return (0);
-	}
-	else {
-		client.setNickName(message->paramVec[0]);
-		client.registerClient(NICKNAME);
-	}
-	return 0;
-}
+// 	// if client typed om username, he will be welcomed after nickname
+// 	if (client.getStatus() == USERNAME) {
+// 		client.setNickName(message->paramVec[0]);
+// 		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+// 		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+// 		client.registerClient(WELCOMED);
+// 		return (0);
+// 	}
+// 	else {
+// 		client.setNickName(message->paramVec[0]);
+// 		client.registerClient(NICKNAME);
+// 	}
+// 	return 0;
+// }
 
 /* USER <your-username> <your-hostname> <your-servername> :<your-realname>
 TO-DO: 4 Names must be set for Username
 */
 
-int Server::user(t_msg *message, Client &client){
-	if (VERBOSE)
-        std::cout << "user()" << std::endl;
+// int Server::user(t_msg *message, Client &client){
+// 	if (VERBOSE)
+//         std::cout << "user()" << std::endl;
 
-	if (client.getRegistrationStatus() < REGISTERED){
-		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-		return 1;
-	}
-	if (message->paramVec.empty()){ // to be added || message.paramVec.size() < 3
-		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
-		return 1;
-	}
-	if (message->paramVec[0].length() <= USERLEN)
-		client.setFullName(message->paramVec[0]);
-	else{
-		std::string name = message->paramVec[0].substr(0,9);
-		client.setFullName(name);
-	}
+// 	if (client.getRegistrationStatus() < REGISTERED){
+// 		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+// 		return 1;
+// 	}
+// 	if (message->paramVec.empty()){ // to be added || message.paramVec.size() < 3
+// 		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
+// 		return 1;
+// 	}
+// 	if (message->paramVec[0].length() <= USERLEN)
+// 		client.setFullName(message->paramVec[0]);
+// 	else{
+// 		std::string name = message->paramVec[0].substr(0,9);
+// 		client.setFullName(name);
+// 	}
 	
-	// if client typed in nickname, he will be welcomed after username
-	if (client.getStatus() == NICKNAME) {
-		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
-		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
-		client.registerClient(WELCOMED);
-		return (0);
-	}
-	else {
-		client.setFullName(message->paramVec[0]);
-		client.registerClient(USERNAME);
-	}
-    return 0;
-}
+// 	// if client typed in nickname, he will be welcomed after username
+// 	if (client.getStatus() == NICKNAME) {
+// 		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+// 		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+// 		client.registerClient(WELCOMED);
+// 		return (0);
+// 	}
+// 	else {
+// 		client.setFullName(message->paramVec[0]);
+// 		client.registerClient(USERNAME);
+// 	}
+//     return 0;
+// }
 
 /*
 3.7.2 Ping message
@@ -254,55 +254,55 @@ std::string Server::make_msg_ready(t_msg *message, Client &client, size_t channe
 	return (msg);
 }
 
-int Server::privmsg(t_msg *message, Client &client){
+// int Server::privmsg(t_msg *message, Client &client){
 	
-	if (client.getRegistrationStatus() < WELCOMED){
-		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-		return 1;
-	}
-	else if (message->paramVec.empty()){
-		numReply(client, ERR_NORECIPIENT(this->_hostname, client.getNickName(), message->command));
-		return 1;
-	}
-	else if (message->paramVec.size() == 1){
-		numReply(client, ERR_NOTEXTTOSEND(this->_hostname, client.getNickName()));
-		return 1;		
-	}
-	std::string recipient = message->paramVec[0];
-	//make MESSAGE comply with KVirc
-	std::string msg = make_msg_ready(message, client, 0, "");
-	// std::cout << "MESSAGE: " << msg <<std::endl;
+// 	if (client.getRegistrationStatus() < WELCOMED){
+// 		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+// 		return 1;
+// 	}
+// 	else if (message->paramVec.empty()){
+// 		numReply(client, ERR_NORECIPIENT(this->_hostname, client.getNickName(), message->command));
+// 		return 1;
+// 	}
+// 	else if (message->paramVec.size() == 1){
+// 		numReply(client, ERR_NOTEXTTOSEND(this->_hostname, client.getNickName()));
+// 		return 1;		
+// 	}
+// 	std::string recipient = message->paramVec[0];
+// 	//make MESSAGE comply with KVirc
+// 	std::string msg = make_msg_ready(message, client, 0, "");
+// 	// std::cout << "MESSAGE: " << msg <<std::endl;
 
-	// if a channel
-	if (recipient.at(0) == '#') {
-		int i = channel_exists(recipient);
-		if (i == -1)
-			numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));	
-		else {
-			std::vector<Channel>::iterator it = this->_channels.begin();
-			for (; it < _channels.end(); it++){
-				if (it->get_name() == recipient && it->is_in_channel(client.getNickName())) {
-					send_message_to_channel(msg, *it);
-					break ;
-				}
-			}
-			if (it == _channels.end())
-				numReply(client, ERR_CANNOTSENDTOCHAN(this->_hostname, client.getNickName(), it->get_name()));
-		}
-	}
-	else {
-		std::vector<Client>::iterator clientit = _clients.begin();
-		for ( ; clientit < _clients.end(); clientit++){
-			if (clientit->getNickName() == recipient){
-				send_msg_to_client_socket(*clientit, msg);
-				break;
-			}
-		}
-		if (clientit == _clients.end())
-			numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));			
-	}
-	return (0);
-}
+// 	// if a channel
+// 	if (recipient.at(0) == '#') {
+// 		int i = channel_exists(recipient);
+// 		if (i == -1)
+// 			numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));	
+// 		else {
+// 			std::vector<Channel>::iterator it = this->_channels.begin();
+// 			for (; it < _channels.end(); it++){
+// 				if (it->get_name() == recipient && it->is_in_channel(client.getNickName())) {
+// 					send_message_to_channel(msg, *it);
+// 					break ;
+// 				}
+// 			}
+// 			if (it == _channels.end())
+// 				numReply(client, ERR_CANNOTSENDTOCHAN(this->_hostname, client.getNickName(), it->get_name()));
+// 		}
+// 	}
+// 	else {
+// 		std::vector<Client>::iterator clientit = _clients.begin();
+// 		for ( ; clientit < _clients.end(); clientit++){
+// 			if (clientit->getNickName() == recipient){
+// 				send_msg_to_client_socket(*clientit, msg);
+// 				break;
+// 			}
+// 		}
+// 		if (clientit == _clients.end())
+// 			numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));			
+// 	}
+// 	return (0);
+// }
 
 /*
 	Parameters: <nickname> <channel>

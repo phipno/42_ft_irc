@@ -75,6 +75,16 @@ int Command::checkRegistrationStatus(){
 	return (0);
 }
 
+int Command::checkRegistrationStatusWelcomed(){
+	std::cout << MAGENTA << "REGSTATUS\n" << RESET;
+	// std::cout << MAGENTA << this->_client->getRegistrationStatus() << RESET;
+	if (this->_client->getRegistrationStatus() < WELCOMED){
+		returnMsgToServer(ERR_NOTREGISTERED(this->_server->getHostname(), this->_client->getNickName()));
+		return (1);
+	}
+	return (0);
+}
+
 int Command::checkEmptyParamter(){
 	if (this->_paramVec.empty()){
 		returnMsgToServer(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), this->_command));

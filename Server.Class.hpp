@@ -122,4 +122,5 @@ class Server{
 		std::string getPassword();
 		std::string getHostname();
 		std::vector<Client> getClients();
+		std::vector<Channel> getChannels();
 };

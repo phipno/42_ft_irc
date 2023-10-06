@@ -326,3 +326,7 @@ std::string Server::getHostname(){
 std::vector<Client> Server::getClients(){
 	return this->_clients;
 }
+
+std::vector<Channel> Server::getChannels(){
+	return this->_channels;
+}

@@ -10,6 +10,7 @@
 #include "Pass.Class.hpp"
 #include "Nick.Class.hpp"
 #include "User.Class.hpp"
+#include "PrivMsg.Class.hpp"
 
 
 
@@ -28,13 +29,16 @@ void  Server::executeCommands(Client &client, std::string Message) {
     Command *command = new User(*this, client, Message);
     command->executeCommand();
     delete command;
-      this->user(&this->_parMsg, client);
+      // this->user(&this->_parMsg, client);
   } else if (this->_parMsg.command == "JOIN") {
       this->join(this->_parMsg, client);
   } else if (this->_parMsg.command == "OP") {
     // setOperator(Message);
   } else if (this->_parMsg.command == "PRIVMSG") {
-      this->privmsg(&this->_parMsg, client);
+    Command *command = new PrivMsg(*this, client, Message);
+    command->executeCommand();
+    delete command;
+      // this->privmsg(&this->_parMsg, client);
   } else if (this->_parMsg.command == "KICK") {
     
   } else if (this->_parMsg.command == "TOPIC") {
