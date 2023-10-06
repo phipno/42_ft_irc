@@ -7,6 +7,12 @@
 #include <sstream>
 
 #include "Server.Class.hpp"
+<<<<<<< Updated upstream
+=======
+#include "Pass.Class.hpp"
+#include "Nick.Class.hpp"
+#include "User.Class.hpp"
+>>>>>>> Stashed changes
 
 
 
@@ -17,7 +23,10 @@ void  Server::executeCommands(Client &client) {
   } else if (this->_parMsg.command == "NICK") {
       this->nick(&this->_parMsg, client);
   } else if (this->_parMsg.command == "USER") {
-      this->user(&this->_parMsg, client);
+    Command *command = new User(*this, client, Message);
+    command->executeCommand();
+    delete command;
+      // this->user(&this->_parMsg, client);
   } else if (this->_parMsg.command == "JOIN") {
       this->join(this->_parMsg, client);
   } else if (this->_parMsg.command == "OP") {

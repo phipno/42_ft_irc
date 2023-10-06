@@ -15,6 +15,13 @@ SRC				= 	main \
 					Channel.Class \
 					Server.Class \
 					Server.Parsing \
+<<<<<<< Updated upstream
+=======
+					Command.Class \
+					Pass.Class \
+					Nick.Class \
+					User.Class \
+>>>>>>> Stashed changes
 					commands
 					
 DEPS 			= Channel.Class.hpp \

@@ -39,8 +39,9 @@ when connecting for the first time, choose a nickname
 	ERR_UNAVAILRESOURCE		ERR_RESTRICTED
 */
 
-int Server::nick(t_msg *message, Client &client){
+// int Server::nick(t_msg *message, Client &client){
     
+<<<<<<< Updated upstream
     if (VERBOSE)
         std::cout << "nick()" << std::endl;
 
@@ -78,21 +79,60 @@ int Server::nick(t_msg *message, Client &client){
 		client.registerClient(SUPERUSER);
 		return (0);
 	}
+=======
+//     // if (VERBOSE)
+//     //     std::cout << "nick()" << std::endl;
+
+// 	// if (client.getRegistrationStatus() < REGISTERED){
+// 	// 	numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+// 	// 	return 1;
+// 	// }
+// 	// if (message->paramVec.empty()){
+// 	// 		numReply(client, ERR_NONICKNAMEGIVEN(this->_hostname));
+// 	// 	return 1;
+// 	// }
+//     // check if characters of chosen nickname are valid
+//     std::string allowed_chars = "abcdefghijklmnopqrstuvwxyz0123456789{}[]\\|";
+// 	for (size_t i = 0; i < message->paramVec[0].length(); ++i){
+//         char ch = message->paramVec[0][i];
+// 		if (allowed_chars.find(ch) != std::string::npos){}
+//         else {
+// 			numReply(client, ERR_ERRONEUSNICKNAME(this->_hostname, client.getNickName()));
+// 			return 1;
+//         }
+// 	}
+//     // check if nickname already exists on same server
+// 	std::vector<Client>::iterator it = _clients.begin();
+// 	for (;it != _clients.end(); it++){
+// 		if (it->getNickName() == message->paramVec[0]){
+// 			numReply(client, ERR_NICKNAMEINUSE(this->_hostname, client.getNickName()));
+// 			return 1;
+//         }
+// 	}
+// 	//if superuser, he will be welcomed.
+// 	if (client.getNickName() == "superuser") {
+// 		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+// 		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+// 		client.setSu(true);
+// 		client.registerClient(SUPERUSER);
+// 		return (0);
+// 	}
+>>>>>>> Stashed changes
 	
-	// if client typed om username, he will be welcomed after nickname
-	if (client.getStatus() == USERNAME) {
-		client.setNickName(message->paramVec[0]);
-		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
-		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
-		client.registerClient(WELCOMED);
-		return (0);
-	}
-	else {
-		client.setNickName(message->paramVec[0]);
-		client.registerClient(NICKNAME);
-	}
-	return 0;
-}
+// 	// if client typed om username, he will be welcomed after nickname
+// 	if (client.getStatus() == USERNAME) {
+// 		client.setNickName(message->paramVec[0]);
+// 		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+// 		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+// 		client.registerClient(WELCOMED);
+// 		return (0);
+// 	}
+// 	else {
+// 		client.setNickName(message->paramVec[0]);
+// 		client.registerClient(NICKNAME);
+// 	}
+// 	return 0;
+// }
 
 /* USER <your-username> <your-hostname> <your-servername> :<your-realname>
 TO-DO: 4 Names must be set for Username
