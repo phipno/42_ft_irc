@@ -20,6 +20,7 @@ SRC				= 	main \
 					Nick.Class \
 					User.Class \
 					PrivMsg.Class \
+					Join.Class \
 					commands
 					
 DEPS 			= Channel.Class.hpp \

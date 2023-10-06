@@ -11,6 +11,7 @@
 #include "Nick.Class.hpp"
 #include "User.Class.hpp"
 #include "PrivMsg.Class.hpp"
+#include "Join.Class.hpp"
 
 
 
@@ -31,7 +32,10 @@ void  Server::executeCommands(Client &client, std::string Message) {
     delete command;
       // this->user(&this->_parMsg, client);
   } else if (this->_parMsg.command == "JOIN") {
-      this->join(this->_parMsg, client);
+    Command *command = new Join(*this, client, Message);
+    command->executeCommand();
+    delete command;   
+      // this->join(this->_parMsg, client);
   } else if (this->_parMsg.command == "OP") {
     // setOperator(Message);
   } else if (this->_parMsg.command == "PRIVMSG") {
