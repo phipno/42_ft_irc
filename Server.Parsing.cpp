@@ -12,6 +12,7 @@
 #include "User.Class.hpp"
 #include "PrivMsg.Class.hpp"
 #include "Join.Class.hpp"
+#include "Invite.Class.hpp"
 
 
 
@@ -50,7 +51,10 @@ void  Server::executeCommands(Client &client, std::string Message) {
   } else if (this->_parMsg.command == "MODE") {
     
   } else if (this->_parMsg.command == "INVITE") {
-    this->invite(&this->_parMsg, client);
+    Command *command = new Invite(*this, client, Message);
+    command->executeCommand();
+    delete command;
+    // this->invite(&this->_parMsg, client);
   } else if (this->_parMsg.command == "LIST") {
       this->list(this->_parMsg, client);
   } else if (this->_parMsg.command == "CAP") {

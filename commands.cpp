@@ -230,26 +230,26 @@ std::string Server::make_msg_ready(t_msg *message, Client &client, size_t channe
 
 	std::string msg;
 
-	if (message->command == "PRIVMSG") {
+	// if (message->command == "PRIVMSG") {
 
-		msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
-		 " " + message->command + " " + message->paramVec[0] + " " + message->paramVec[1];
-	}
-	else if (message->command == "JOIN") {
+	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
+	// 	 " " + message->command + " " + message->paramVec[0] + " " + message->paramVec[1];
+	// }
+	// else if (message->command == "JOIN") {
 
-		msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
-		 " " + message->command + " " + message->paramVec[channelnumber];
-	}
+	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
+	// 	 " " + message->command + " " + message->paramVec[channelnumber];
+	// }
 	else if (message->command == "TOPIC") {
 
 		msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
 		 " " + message->command + " " + message->paramVec[channelnumber] + " :"  + topic_message;
 	}
-	else if (message->command == "INVITE") {
+	// else if (message->command == "INVITE") {
 
-		msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
-		 " " + message->command + " " + message->paramVec[0] + " :"  + message->paramVec[1];
-	}
+	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
+	// 	 " " + message->command + " " + message->paramVec[0] + " :"  + message->paramVec[1];
+	// }
 
 	return (msg);
 }
@@ -319,70 +319,70 @@ std::string Server::make_msg_ready(t_msg *message, Client &client, size_t channe
    notified.  (This is unlike the MODE changes, and is occasionally the
    source of trouble for users.)
 */
-int Server::invite(t_msg *message, Client &client) {
-	if (VERBOSE)
-		std::cout << "invite" << std::endl;
-	if (client.getRegistrationStatus() < WELCOMED){
-		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-		return 1;
-	}
-	if (message->paramVec.empty() || message->paramVec.size() == 1){
-		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
-		return 1;
-	}
-	std::string channelName = message->paramVec[1];
-	std::string inviteNick = message->paramVec[0];
+// int Server::invite(t_msg *message, Client &client) {
+// 	if (VERBOSE)
+// 		std::cout << "invite" << std::endl;
+// 	if (client.getRegistrationStatus() < WELCOMED){
+// 		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+// 		return 1;
+// 	}
+// 	if (message->paramVec.empty() || message->paramVec.size() == 1){
+// 		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
+// 		return 1;
+// 	}
+// 	std::string channelName = message->paramVec[1];
+// 	std::string inviteNick = message->paramVec[0];
 
-	std::vector<Client>::iterator clientit = _clients.begin();
-	for ( ; clientit < _clients.end(); clientit++){
-		if (clientit->getNickName() == inviteNick){
-			break;
-		}
-	}
-	if (clientit == _clients.end())
-		numReply(client, ERR_NOSUCHNICK(this->_hostname, inviteNick));
+// 	std::vector<Client>::iterator clientit = _clients.begin();
+// 	for ( ; clientit < _clients.end(); clientit++){
+// 		if (clientit->getNickName() == inviteNick){
+// 			break;
+// 		}
+// 	}
+// 	if (clientit == _clients.end())
+// 		numReply(client, ERR_NOSUCHNICK(this->_hostname, inviteNick));
 
-	std::vector<Channel>::iterator it = _channels.begin();
-	for (; it != _channels.end(); it++){
-		if (it->get_name() == channelName){
-			Channel channel = *it;
-			if (channel.is_in_channel(inviteNick)){
-				numReply(client, ERR_USERONCHANNEL(this->_hostname, client.getNickName(), channel.get_name()));
-				return 1;
-			}
-			if (channel.get_invite_only()){
-				if (channel.is_operator(client.getNickName())){
-					numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, channel.get_name()));
-					std::string msg = make_msg_ready(message, client, 0, "");
-					numReply(*clientit, msg);
-					it->set_invitee(inviteNick);
-					return 0;
-				}
-				else{
-					numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), channel.get_name()));
-					return 1;
-				}
-			}
-			else {
-				if (channel.is_in_channel(client.getNickName())){
-					numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, channel.get_name()));
-					std::string msg = make_msg_ready(message, client, 0, "");
-					numReply(*clientit, msg);
-					it->set_invitee(inviteNick);
-					return 0;
-				}
-				else {
-					numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), channel.get_name()));
-					return 1;
-				}
-			}
-		}
-		numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, it->get_name()));
-		std::string msg = make_msg_ready(message, client, 0, "");
-		numReply(*clientit, msg);
-	}
-	return 0;
-}
+// 	std::vector<Channel>::iterator it = _channels.begin();
+// 	for (; it != _channels.end(); it++){
+// 		if (it->get_name() == channelName){
+// 			Channel channel = *it;
+// 			if (channel.is_in_channel(inviteNick)){
+// 				numReply(client, ERR_USERONCHANNEL(this->_hostname, client.getNickName(), channel.get_name()));
+// 				return 1;
+// 			}
+// 			if (channel.get_invite_only()){
+// 				if (channel.is_operator(client.getNickName())){
+// 					numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, channel.get_name()));
+// 					std::string msg = make_msg_ready(message, client, 0, "");
+// 					numReply(*clientit, msg);
+// 					it->set_invitee(inviteNick);
+// 					return 0;
+// 				}
+// 				else{
+// 					numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), channel.get_name()));
+// 					return 1;
+// 				}
+// 			}
+// 			else {
+// 				if (channel.is_in_channel(client.getNickName())){
+// 					numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, channel.get_name()));
+// 					std::string msg = make_msg_ready(message, client, 0, "");
+// 					numReply(*clientit, msg);
+// 					it->set_invitee(inviteNick);
+// 					return 0;
+// 				}
+// 				else {
+// 					numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), channel.get_name()));
+// 					return 1;
+// 				}
+// 			}
+// 		}
+// 		numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, it->get_name()));
+// 		std::string msg = make_msg_ready(message, client, 0, "");
+// 		numReply(*clientit, msg);
+// 	}
+// 	return 0;
+// }
 
 void Server::list(t_msg &message, Client &client) {
 	std::vector<Channel>::iterator it = _channels.begin();

@@ -1,5 +1,11 @@
 #include "Join.Class.hpp"
 
+//TO-DO: Send channelmessge:
+	//:nick1!~user1@188.244.102.158 JOIN :#test^M$ --->nick1 joined the channel (channelmessage)
+//additionally send a memberlist to that client only
+	// :London.UK.EU.StarLink.Org 353 nick3 * #channel2 :nick3 nick2 @nick1 ^M$ ---> 353, list all users in that channel, @is the channel creator
+	// :London.UK.EU.StarLink.Org 366 nick1 #test :End of /NAMES list.^M$ ---> 366
+
 Join::Join(Server &server, Client &client, std::string message) : Command(server, client , message){}
 
 Join::~Join() {};

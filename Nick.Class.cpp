@@ -1,14 +1,7 @@
 #include "Nick.Class.hpp"
 
-/* PASS
-first step, even before connecting with a nickname
-entry from client: PASS <YourServerPassword>
-variables:
-	command = PASS
-	paramVec[0] = YourServerPassword
+/* NICK
 
-	462	ERR_ALREADYREGISTRED
-	461	ERR_NEEDMOREPARAMS
 */
 
 Nick::Nick(Server &server, Client &client, std::string message) : Command(server, client , message){}
@@ -71,7 +64,7 @@ int Nick::executeCommand(){
 
 int Nick::checkEmptyParamter(){
 	std::cout << MAGENTA << "EMPTYPARAM\n" << RESET;
-	if (this->_paramVec.empty() || this->_paramVec[0].empty()){
+	if (this->_paramVec.empty()){
 		Command::returnMsgToServer(ERR_NONICKNAMEGIVEN(this->_server->getHostname()));
 		return (1);
 	}

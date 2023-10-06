@@ -35,7 +35,7 @@ int Pass::executeCommand(){
 
 int Pass::checkEmptyParamter(){
 	std::cout << MAGENTA << "EMPTYPARAM\n" << RESET;
-	if (this->_paramVec.empty() || this->_paramVec[0].empty()){
+	if (this->_paramVec.empty()){
 		Command::returnMsgToServer(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), this->_command));
 		return (1);
 	}
