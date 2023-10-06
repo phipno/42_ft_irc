@@ -90,6 +90,11 @@ int Channel::add_user(std::string client, std::string pass, bool operatorflag) {
 	//returns 3, when channel full
 
 	std::map<std::string, bool>::iterator it = _users.find(client);
+	std::vector<std::string>::iterator it_invite = _invited.begin();
+	for ( ; it_invite != _invited.end() ; it_invite++) {
+		if (*it_invite == client)
+			break ;
+	}
 	if (it == _users.end()) {
 		if (DEBUG) {
 			std::cout << "ADD_USER()" << std::endl;
@@ -98,10 +103,14 @@ int Channel::add_user(std::string client, std::string pass, bool operatorflag) {
 		if (_pw_restricted && pass != this->_passPhrase) {
 			return (1);
 		}
+		else if (_invite_only && it_invite == _invited.end()) {
+			return (2);
+		}
+		else if (_userlimit != -1 && _users.size() >= _userlimit) {
+			return (3);
+		}
 		else
 			this->_users[client] = operatorflag;
-		list_clients_in_channel();
-		list_channel_attributes();
 		return (0);
 	}
 	else {
@@ -183,9 +192,10 @@ void Channel::list_channel_attributes(void) {
 		std::cout << "TopicMessage: " << _topicMessage << std::endl;
 		std::cout << "Topic restricted?: " << _topic_restricted << std::endl;
 		std::cout << "Invite Only? " << _invite_only << std::endl;
+		std::cout << "pw restricted? " << _pw_restricted << std::endl;
 		std::cout << "Password: " << _passPhrase << std::endl;
 		std::cout << "Userlimit: " << _userlimit << std::endl;
-	std::cout << "--------------------" << std::endl;
+		std::cout << "--------------------" << std::endl;
 
 }
 

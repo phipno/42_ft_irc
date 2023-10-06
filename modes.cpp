@@ -47,8 +47,8 @@ int Server::mode(t_msg *message, Client &client) {
 		
 		if (*params == "+i" || *params == "-i" || *params == "+t" || *params == "-t" )
 			topic_invite_restriction(message->paramVec, i, client);
-		// else if (*params == "+k" || *params == "-k")
-		// 	key_mode(*params, *(params + 1), channel, client);
+		else if (*params == "+k" || *params == "-k")
+			key_mode(message->paramVec, i, client);
 		else if (*params == "+l" || *params == "-l")
 			user_limit(message->paramVec, i, client);
 		else if (*params == "+o" || *params == "-o")
@@ -164,29 +164,31 @@ int Server::valid_number(std::string param, int channelindex) {
 	return (integer);
 }
 
-int Server::key_mode(std::string keymode, std::string param, std::string channel, class Client &client) {
+int Server::key_mode(std::vector<std::string> params, int pos, class Client &client) {
 
-	int i = channel_exists(channel);
+	int i = channel_exists(params[0]);
+	std::vector<std::string>::iterator mode = params.begin() + pos;
+	std::vector<std::string>::iterator key = params.begin() + pos + 1;
 
-	if (_channels[i].get_passrestriction() && keymode == "+k") {
+	if (_channels[i].get_passrestriction() && *mode == "+k") {
 
-		// numReply(client, numReply(client, ERR_KEYSET()))
+		// numReply(client, numReply(client, ERR_KEYSET()));
 		return (467);
 	}
 	
-	if (keymode == "+k" && (param.empty() || is_in_modes(param) || !valid_passphrase(param))) {
+	if (*mode == "+k" && (key == params.end() || is_in_modes(*key) || !valid_passphrase(*key))) {
 
 		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), "+k"));
 		return(461);
 	}
 
-	if (keymode == "+k" && valid_passphrase(param)) {
+	if (*mode == "+k" && valid_passphrase(*key)) {
 		_channels[i].set_passrestriction(true);
-		_channels[i].set_passphrase(param);
+		_channels[i].set_passphrase(*key);
 		return (0);
 	}
 
-	if (keymode == "-k" && (is_in_modes(param) || param.empty())) {
+	if (*mode == "-k" && (is_in_modes(*key) || key == params.end())) {
 		_channels[i].set_passrestriction(false);
 		_channels[i].set_passphrase("");
 		return (0);
@@ -198,7 +200,6 @@ bool Server::valid_passphrase(std::string param) {
 
     if (param.size() < 15) {
 
-		// for (char c : param) {
 		for (unsigned long i = 0, c = param[i]; i < param.size(); i++) {
 			if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') ||
 				c == '!' || c == '@' || c == '#' || c == '$' || c == '%' || c == '^' ||

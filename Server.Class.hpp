@@ -95,7 +95,7 @@ class Server{
 		int topic_invite_restriction(std::vector<std::string> params, int pos, class Client &client);
 		int user_limit(std::vector<std::string> params, int pos, class Client &client);
 		int valid_number(std::string param, int channelindex);
-		int key_mode(std::string keymode, std::string param, std::string channel, class Client &client);
+		int key_mode(std::vector<std::string> params, int pos, class Client &client);
 		bool valid_passphrase(std::string param);
 			
 		//misc
