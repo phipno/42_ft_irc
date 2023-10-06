@@ -61,6 +61,7 @@ void Command::tokenizeMsg(){
 }
 
 std::string Command::returnMsgToServer(std::string message){
+	this->_server->send_msg_to_client_socket(*this->_client, message);
 	return (message);
 }
 

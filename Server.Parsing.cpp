@@ -9,6 +9,7 @@
 #include "Server.Class.hpp"
 #include "Pass.Class.hpp"
 #include "Nick.Class.hpp"
+#include "User.Class.hpp"
 
 
 
@@ -24,6 +25,9 @@ void  Server::executeCommands(Client &client, std::string Message) {
     command->executeCommand();
     delete command;
   } else if (this->_parMsg.command == "USER") {
+    Command *command = new User(*this, client, Message);
+    command->executeCommand();
+    delete command;
       this->user(&this->_parMsg, client);
   } else if (this->_parMsg.command == "JOIN") {
       this->join(this->_parMsg, client);

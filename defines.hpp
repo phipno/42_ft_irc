@@ -22,8 +22,8 @@
 #define MAX_CONNECTIONS 100
 #define MAX_EVENTS 100
 
-#define RPL_WELCOME(hostname, nickname, username) (std::string(":" + hostname + " 001 " + nickname + " :Welcome to the Internet Relay Network, " + nickname + "!" +username + "@" +hostname))
-#define RPL_YOURHOST(hostname, nickname) (std::string(":" + hostname + " 002 " + nickname + " :Your host is " + hostname + ", running on version 1.0 !"))
+#define RPL_WELCOME(hostname, nickname, username) (std::string(":" + std::string(hostname) + " 001 " + std::string(nickname) + " :Welcome to the Internet Relay Network, " + nickname + "!" +username + "@" +hostname))
+#define RPL_YOURHOST(hostname, nickname) (std::string(":" + std::string(hostname) + " 002 " + std::string(nickname) + " :Your host is " + std::string(hostname) + ", running on version 1.0 !"))
 // what is content of RPL_INVITING?
 #define RPL_INVITING(hostname, nickname, target, channel) (std::string(":" + hostname + " 341 " + nickname + " " + target + " " + channel))
 

@@ -18,6 +18,7 @@ SRC				= 	main \
 					Command.Class \
 					Pass.Class \
 					Nick.Class \
+					User.Class \
 					commands
 					
 DEPS 			= Channel.Class.hpp \
