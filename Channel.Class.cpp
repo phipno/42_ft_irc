@@ -177,7 +177,6 @@ void Channel::list_clients_in_channel(void) {
 
 void Channel::list_channel_attributes(void) {
 
-	if (VERBOSE)
 		std::cout << "list_channel_attributes" << std::endl;
 
 		std::cout << "ChannelName: " << _channelName << std::endl;

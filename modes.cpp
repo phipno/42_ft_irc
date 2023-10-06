@@ -150,6 +150,7 @@ int Server::valid_number(std::string param, int channelindex) {
 
 	int integer = 0;
 	int origin_limit = _channels[channelindex].get_userlimit();
+	(void) origin_limit;
 	unsigned long i = 0;
 
 	for(i = 0 ; i < param.size() ; i++)

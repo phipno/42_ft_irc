@@ -2,7 +2,7 @@
 #.~"~._.~"~._.~"~._.~"~.__.~"~._.~"~. VARS .~"~._.~"~.__.~"~._.~"~._.~"~._.~"~.#
 
 SHELL 			=	/bin/bash
-CPPFLAGS		= 	-Wall -Wextra -Werror -std=c++98 -g 
+#CPPFLAGS		= 	-Wall -Wextra -Werror -std=c++98 -g 
 CPPFLAGS		+=	-fsanitize=address
 CXX 			= 	c++
 # ---------------------------------------#
