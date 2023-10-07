@@ -60,25 +60,3 @@
 #define VERBOSE 0 //used for constructors and function calls
 #define LOOP 0 //used for printing when inside a loop
 #define DEBUG 1 // generic print flag
-
-// 	case ERR_PING:
-	// 		reply = ": To connect, type PONG 1234567890";
-	// 		send_msg_to_client_socket(client, reply);
-	// 		break;
-	// 	case ERR_NOORIGIN:
-	// 		reply = ": To connect, type PONG 1234567890";
-	// 		send_msg_to_client_socket(client, reply);
-	// 		break;
-
-	// 	case ERR_CHANOPRIVSNEEDED:
-	// 		reply = ": You're not channel operator";
-	// 		send_msg_to_client_socket(client, reply);
-	// 		break;
-	// 	case RPL_TOPIC:
-	// 		reply = ": <channel> :Topic is <TOPIC message>";
-	// 		send_msg_to_client_socket(client, reply);
-	// 		break;
-	// 	case RPL_NOTOPIC:
-	// 		reply = ": <channel> :No topic is set";
-	// 		send_msg_to_client_socket(client, reply);
-	// 		break;

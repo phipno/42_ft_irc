@@ -1,3 +1,7 @@
+-partial commands testing
+-change send msg to channel, so that the msg dont get sent to the sender, but to the other channel members 
+
+
 //pass,nick,user
 wrong pw
 same nick

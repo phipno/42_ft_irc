@@ -193,6 +193,8 @@ int Server::key_mode(std::vector<std::string> params, int pos, class Client &cli
 		_channels[i].set_passphrase("");
 		return (0);
 	}
+	// else
+		// numReply(cliet, numReply(client, ERR_UNKNOWNMODE())) 
 	return (0);
 }
 
