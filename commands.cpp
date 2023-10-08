@@ -246,6 +246,11 @@ std::string Server::make_msg_ready(t_msg *message, Client &client, size_t channe
 		msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
 		 " " + message->command + " " + message->paramVec[channelnumber] + " :"  + topic_message;
 	}
+	else if (message->command == "MODE") {
+
+		msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
+		" MODE " + message->paramVec[0] + " " + topic_message;
+	}
 
 	return (msg);
 }
@@ -265,9 +270,9 @@ int Server::privmsg(t_msg *message, Client &client){
 		return 1;		
 	}
 	std::string recipient = message->paramVec[0];
+	
 	//make MESSAGE comply with KVirc
 	std::string msg = make_msg_ready(message, client, 0, "");
-	// std::cout << "MESSAGE: " << msg <<std::endl;
 
 	// if a channel
 	if (recipient.at(0) == '#') {

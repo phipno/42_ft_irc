@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 11:03:14 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/04 11:58:56 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/08 15:54:24 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,9 @@
 #define RPL_ENDOFNAMES(hostname, creator, channel) (std::string(":" + hostname + " 366 " + creator + " " + channel + " :END of /NAMES list."))
 
 //MODES
-// #define ERR_NOCHANMODES 477 //"<channel> :Channel doesn't support modes"       
+#define ERR_UNKNOWNMODE(hostname, nickname, mode) (std::string(":" + hostname + " 472 " + nickname + " " + mode + " :is unknown mode char to me"))      
+#define ERR_KEYSET(hostname, nickname, channel) (std::string(":" + hostname + " 467 " + nickname + " " + channel + " :Channel key already set"))      
+#define RPL_CHANNELMODEIS(hostname, channel) (std::string(":" + hostname + " 324 " + channel + " :This channels modes are +-i +-k +-l +-t +-o"))      
 
 //custom errors
 #define ERR_PING 005

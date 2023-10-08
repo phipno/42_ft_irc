@@ -106,7 +106,7 @@ int Channel::add_user(std::string client, std::string pass, bool operatorflag) {
 		else if (_invite_only && it_invite == _invited.end()) {
 			return (2);
 		}
-		else if (_userlimit != -1 && _users.size() >= _userlimit) {
+		else if (_userlimit != -1 && (int)_users.size() >= _userlimit) {
 			return (3);
 		}
 		else

@@ -47,23 +47,27 @@ TOPIC #test :
 TOPIC #test
 
 //mode
-MODE
-MODE #
-MODE #test
-MODE +o
-MODE -o
-MODE #test +o nick1 nick2 nick3
-MODE #test -o nick1 nick2 nick3
-MODE +l
-MODE -l
-MODE #test +l a1
-MODE #test +l 1a
-MODE #test -l 10
-MODE #test -i 1
-MODE #test +i 1
-MODE #test -i
-MODE #test +i
-MODE #test -t 1
-MODE #test +t 1
-MODE #test -t
-MODE #test +t
+MODE ----> :London.UK.EU.StarLink.Org 461 nick2 MODE :Not enough parameters^M$
+MODE # :London.UK.EU.StarLink.Org 403 nick2 # :No such channel^M$
+MODE #test :London.UK.EU.StarLink.Org 324 nick1 #test +t +i +l 10 +k hi^M$
+MODE +o :London.UK.EU.StarLink.Org 472 nick1 a :is unknown mode char to me^M$
+MODE -o :London.UK.EU.StarLink.Org 472 nick1 a :is unknown mode char to me^M$
+MODE #test +o nick1 nick2 nick3 send channelcommand
+MODE #test -o nick1 nick2 nick3	send chanel command
+MODE +l :London.UK.EU.StarLink.Org 461 nick1 MODE +l :Not enough parameters^M$
+MODE -l send channel command like----> :nick1!~user@188.244.102.158 MODE #test +i ^M$
+MODE #test +l a1 :London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test +l 1a :London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test -l 10 :London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test -i 1 :London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test +i 1 :London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test -i :nick1!~user@188.244.102.158 MODE #test -i ^M$
+MODE #test +i :nick1!~user@188.244.102.158 MODE #test -i ^M$
+MODE #test -t 1 :London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test +t 1	:London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test -t :nick1!~user@188.244.102.158 MODE #test -t ^M$
+MODE #test +t :nick1!~user@188.244.102.158 MODE #test +t ^M$
+
+
+MODE #test +i +t +k :hi
+:London.UK.EU.StarLink.Org 324 nick2 #test +tik hi^M$
