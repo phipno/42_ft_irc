@@ -17,7 +17,7 @@ class Command{
 		std::vector<std::string>	_paramVec;
 		Client						*_client;
 		Server						*_server;
-		// std::vector<Channel>		*_channels;
+		std::vector<Channel>		*_channels;
 
 	public:
 		Command(Server &server, Client &client, std::string message);

@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/10/09 09:40:49 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/09 10:03:43 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ class Server{
 		std::string getPassword();
 		std::string getHostname();
 		std::vector<Client> getClients();
-		std::vector<Channel> getChannels();
+		std::vector<Channel> *getChannels();
 
 		void addChannel(Channel channel);
 };

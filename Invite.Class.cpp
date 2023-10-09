@@ -44,9 +44,9 @@ int Invite::executeCommand(){
 	if (clientit == clients.end())
         Command::returnMsgToServer(ERR_NOSUCHNICK(this->_server->getHostname(), inviteNick));
 
-	std::vector<Channel> channels = this->_server->getChannels();
-    std::vector<Channel>::iterator it = channels.begin();
-	for (; it != channels.end(); it++){
+	std::vector<Channel> *channels = this->_server->getChannels();
+    std::vector<Channel>::iterator it = channels->begin();
+	for (; it != channels->end(); it++){
 		if (it->get_name() == channelName){
 			Channel channel = *it;
 			if (channel.is_in_channel(inviteNick)){
@@ -55,26 +55,23 @@ int Invite::executeCommand(){
 			}
 			if (channel.get_invite_only()){
 				if (channel.is_operator(this->_client->getNickName())){
-					// numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, channel.get_name()));
 					Command::returnMsgToServer(RPL_INVITING(this->_server->getHostname(), this->_client->getNickName(), inviteNick, channel.get_name()));
                     std::string msg = make_msg_ready(0, "");
 					// numReply(*clientit, msg); can this one be replaced with send message to client socket?
-					// it->set_invitee(inviteNick); to figured out how the channel objects can be modified via the server class
+					it->set_invitee(inviteNick);
 					return 0;
 				}
 				else{
-					// numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), channel.get_name()));
 					Command::returnMsgToServer(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), channel.get_name()));
                     return 1;
 				}
 			}
 			else {
 				if (channel.is_in_channel(this->_client->getNickName())){
-					// numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, channel.get_name()));
 					Command::returnMsgToServer(RPL_INVITING(this->_server->getHostname(), this->_client->getNickName(), inviteNick, channel.get_name()));
                     std::string msg = make_msg_ready(0, "");
 					this->_server->send_msg_to_client_socket(*clientit, msg);
-					// it->set_invitee(inviteNick);
+					it->set_invitee(inviteNick);
 					return 0;
 				}
 				else {
@@ -100,10 +97,10 @@ int Invite::checkEmptyParamter(){
 }
 
 std::string Invite::make_msg_ready(size_t channelnumber, std::string topic_message){
-    std::string msg;
+	std::string msg;
 	(void) channelnumber;
 	(void) topic_message;
-    msg += ":" + this->_client->getNickName() + "!~" + this->_client->getUserName() + "@" + this->_server->getHostname() + \
+	msg += ":" + this->_client->getNickName() + "!~" + this->_client->getUserName() + "@" + this->_server->getHostname() + \
 	" " + this->_command + " " + this->_paramVec[0] + " :" + this->_paramVec[1];
-    return (msg);
+	return (msg);
 }

@@ -226,33 +226,33 @@ Numeric Replies:
 //PRIVMSG
 // JOIN
 // MODE
-std::string Server::make_msg_ready(t_msg *message, Client &client, size_t channelnumber, std::string topic_message) {
+// std::string Server::make_msg_ready(t_msg *message, Client &client, size_t channelnumber, std::string topic_message) {
 
-	std::string msg;
+// 	std::string msg;
 
-	// if (message->command == "PRIVMSG") {
+// 	// if (message->command == "PRIVMSG") {
 
-	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
-	// 	 " " + message->command + " " + message->paramVec[0] + " " + message->paramVec[1];
-	// }
-	// else if (message->command == "JOIN") {
+// 	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
+// 	// 	 " " + message->command + " " + message->paramVec[0] + " " + message->paramVec[1];
+// 	// }
+// 	// else if (message->command == "JOIN") {
 
-	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
-	// 	 " " + message->command + " " + message->paramVec[channelnumber];
-	// }
-	if (message->command == "TOPIC") {
+// 	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
+// 	// 	 " " + message->command + " " + message->paramVec[channelnumber];
+// 	// }
+// 	// if (message->command == "TOPIC") {
 
-		msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
-		 " " + message->command + " " + message->paramVec[channelnumber] + " :"  + topic_message;
-	}
-	// else if (message->command == "INVITE") {
+// 	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
+// 	// 	 " " + message->command + " " + message->paramVec[channelnumber] + " :"  + topic_message;
+// 	// }
+// 	// else if (message->command == "INVITE") {
 
-	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
-	// 	 " " + message->command + " " + message->paramVec[0] + " :"  + message->paramVec[1];
-	// }
+// 	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
+// 	// 	 " " + message->command + " " + message->paramVec[0] + " :"  + message->paramVec[1];
+// 	// }
 
-	return (msg);
-}
+// 	return (msg);
+// }
 
 // int Server::privmsg(t_msg *message, Client &client){
 	
@@ -527,50 +527,50 @@ topic for that channel will be removed.
    TOPIC #test                     ; Command to check the topic for
                                    #test.
 */
-int Server::topic(t_msg *parsedMsg, Client &client) {
+// int Server::topic(t_msg *parsedMsg, Client &client) {
 
-	if (client.getRegistrationStatus() < WELCOMED){
-		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-		return (1);
-	}
-	int i = channel_exists(parsedMsg->paramVec[0]);
-	if (i == -1) { 
-		numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), parsedMsg->paramVec[0]));
-		return (1);
-	}
+// 	if (client.getRegistrationStatus() < WELCOMED){
+// 		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+// 		return (1);
+// 	}
+// 	int i = channel_exists(parsedMsg->paramVec[0]);
+// 	if (i == -1) { 
+// 		numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), parsedMsg->paramVec[0]));
+// 		return (1);
+// 	}
 
-	//checks if the client is on that channel
-	if (!_channels[i].is_in_channel(client.getNickName())) {
-		numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), _channels[i].get_name()));
-		return (1);
-	}
+// 	//checks if the client is on that channel
+// 	if (!_channels[i].is_in_channel(client.getNickName())) {
+// 		numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), _channels[i].get_name()));
+// 		return (1);
+// 	}
 
-	// if no topic argument exists, the Topic will be displayed
-	// if there is an empty string the Topic will be deleted (operator)
-	// else the topic will be set if there is a non-empty string (operator)	
-	bool privileges = _channels[i].is_operator(client.getNickName());
-	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin() + 1;
+// 	// if no topic argument exists, the Topic will be displayed
+// 	// if there is an empty string the Topic will be deleted (operator)
+// 	// else the topic will be set if there is a non-empty string (operator)	
+// 	bool privileges = _channels[i].is_operator(client.getNickName());
+// 	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin() + 1;
 
-	// TO-DO: make topic available for multiple channels
-	//e.g: TOPIC #chan1,#chan2 :new_topic changes the topic for both channels into new_topic
-	//loop through the code below
-	if (it == parsedMsg->paramVec.end()) {
-		// numReply(client, RPL_TOPIC(this->_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].get_topic()));
-		return(0);
-	}
-	if (is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction()))
-		_channels[i].set_topic("No topic is set");
-	else if (is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
-		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
-	else if (!is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction())) {
-		_channels[i].set_topic(*it);
-		std::string msg = make_msg_ready(parsedMsg, client, 0, _channels[i].get_topic());
-		send_message_to_channel(msg, _channels[i]);
-	}
-	else if (!is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
-		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
-	return (0);
-}
+// 	// TO-DO: make topic available for multiple channels
+// 	//e.g: TOPIC #chan1,#chan2 :new_topic changes the topic for both channels into new_topic
+// 	//loop through the code below
+// 	if (it == parsedMsg->paramVec.end()) {
+// 		// numReply(client, RPL_TOPIC(this->_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].get_topic()));
+// 		return(0);
+// 	}
+// 	if (is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction()))
+// 		_channels[i].set_topic("No topic is set");
+// 	else if (is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
+// 		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
+// 	else if (!is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction())) {
+// 		_channels[i].set_topic(*it);
+// 		std::string msg = make_msg_ready(parsedMsg, client, 0, _channels[i].get_topic());
+// 		send_message_to_channel(msg, _channels[i]);
+// 	}
+// 	else if (!is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
+// 		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
+// 	return (0);
+// }
 
 // ERR_PING(client)
 // define ERR_PING(client){"": To connect, type PONG 1234567890"}

@@ -3,7 +3,7 @@
 
 Command::Command(){}
 
-Command::Command(Server &server, Client &client, std::string message) :  _message(message), _client(&client), _server(&server){
+Command::Command(Server &server, Client &client, std::string message) :  _message(message), _client(&client), _server(&server) {
 	if (VERBOSE)
 		std::cout << GRASS_GREEN << "Hello from Command constructor\n" << RESET;
 }

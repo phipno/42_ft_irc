@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichowsky <kczichowsky@student.42.fr>    +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/06 14:29:07 by kczichowsky      ###   ########.fr       */
+/*   Updated: 2023/10/09 10:04:09 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -327,8 +327,8 @@ std::vector<Client> Server::getClients(){
 	return this->_clients;
 }
 
-std::vector<Channel> Server::getChannels(){
-	return this->_channels;
+std::vector<Channel> *Server::getChannels(){
+	return &this->_channels;
 }
 
 void Server::addChannel(Channel channel){

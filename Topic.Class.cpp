@@ -36,41 +36,47 @@ int Topic::executeCommand(){
 	if (Command::checkRegistrationStatusWelcomed())
 		return 1;
 
-	int i = channel_exists(this->_paramVec[0]);
+	int i = this->_server->channel_exists(this->_paramVec[0]);
 	if (i == -1) { 
-		numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), parsedMsg->paramVec[0]));
+		Command::returnMsgToServer(ERR_NOTONCHANNEL(this->_server->getHostname(), this->_client->getNickName(), this->_paramVec[0]));
 		return (1);
 	}
-
-	//checks if the client is on that channel
-	if (!_channels[i].is_in_channel(client.getNickName())) {
-		numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), _channels[i].get_name()));
+	std::vector<Channel> *channels = this->_server->getChannels();
+	if (!(*channels)[i].is_in_channel(this->_client->getNickName())) {
+		Command::returnMsgToServer(ERR_NOTONCHANNEL(this->_server->getHostname(), this->_client->getNickName(), this->_paramVec[0]));
 		return (1);
 	}
 
 	// if no topic argument exists, the Topic will be displayed
 	// if there is an empty string the Topic will be deleted (operator)
 	// else the topic will be set if there is a non-empty string (operator)	
-	bool privileges = _channels[i].is_operator(client.getNickName());
-	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin() + 1;
+	bool privileges = (*channels)[i].is_operator(this->_client->getNickName());
+	std::vector<std::string>::iterator it = this->_paramVec.begin() + 1;
 
 	// TO-DO: make topic available for multiple channels
 	//e.g: TOPIC #chan1,#chan2 :new_topic changes the topic for both channels into new_topic
 	//loop through the code below
-	if (it == parsedMsg->paramVec.end()) {
+	if (it == this->_paramVec.end()) {
 		// numReply(client, RPL_TOPIC(this->_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].get_topic()));
 		return(0);
 	}
-	if (is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction()))
-		_channels[i].set_topic("No topic is set");
-	else if (is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
-		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
-	else if (!is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction())) {
-		_channels[i].set_topic(*it);
-		std::string msg = make_msg_ready(parsedMsg, client, 0, _channels[i].get_topic());
-		send_message_to_channel(msg, _channels[i]);
+	if (this->_server->is_empty_string(*it) && (privileges || !(*channels)[i].get_topic_restriction()))
+		(*channels)[i].set_topic("No topic is set");
+	else if (this->_server->is_empty_string(*it) && (*channels)[i].get_topic_restriction() && !privileges)
+		Command::returnMsgToServer(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
+	else if (!this->_server->is_empty_string(*it) && (privileges || !(*channels)[i].get_topic_restriction())) {
+		(*channels)[i].set_topic(*it);
+		std::string msg = make_msg_ready(0, (*channels)[i].get_topic());
+		this->_server->send_message_to_channel(msg, (*channels)[i]);
 	}
-	else if (!is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
-		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
+	else if (!this->_server->is_empty_string(*it) && (*channels)[i].get_topic_restriction() && !privileges)
+		Command::returnMsgToServer(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
 	return (0);
+}
+
+std::string Topic::make_msg_ready(size_t channelnumber, std::string topic_message){
+	std::string msg;
+	msg += ":" + this->_client->getNickName() + "!~" + this->_client->getUserName() + "@" + this->_server->getHostname() + \
+	" " + this->_command + " " + this->_paramVec[channelnumber] + " :" + topic_message;
+	return (msg);
 }

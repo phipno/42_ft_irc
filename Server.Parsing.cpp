@@ -13,6 +13,7 @@
 #include "PrivMsg.Class.hpp"
 #include "Join.Class.hpp"
 #include "Invite.Class.hpp"
+#include "Topic.Class.hpp"
 
 
 
@@ -47,7 +48,10 @@ void  Server::executeCommands(Client &client, std::string Message) {
   } else if (this->_parMsg.command == "KICK") {
     
   } else if (this->_parMsg.command == "TOPIC") {
-      this->topic(&this->_parMsg, client);
+    Command *command = new Topic(*this, client, Message);
+    command->executeCommand();
+    delete command;
+      // this->topic(&this->_parMsg, client);
   } else if (this->_parMsg.command == "MODE") {
     
   } else if (this->_parMsg.command == "INVITE") {
