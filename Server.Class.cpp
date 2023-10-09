@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/09 12:42:42 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/09 13:17:23 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,9 +263,9 @@ void Server::send_message_to_channel(std::string message, class Channel &channel
 	}
 }
 
-// void Server::numReply(Client &client, std::string message){
-// 	send_msg_to_client_socket(client, message);
-// }
+void Server::numReply(Client &client, std::string message){
+	send_msg_to_client_socket(client, message);
+}
 
 void Server::list_channels(void) {
 
