@@ -31,13 +31,13 @@
 
 class Client{
 
-		protected:
+		private:
 			struct sockaddr_in	_clientAddr;
 			struct pollfd		_clientPollfd;
 			int					_clientSocket;
 			std::string			_userName;
 			std::string			_nickName;
-			char				_buffer[512];
+			std::string _buffer;
 			int					_status;
 			bool				_superUser;
 			
@@ -57,9 +57,10 @@ class Client{
 			int &getRegistrationStatus();
 			std::string &getNickName();
 			std::string &getUserName();
+			std::string &getBuffer();
 			int getStatus();
 			bool getSu();
-			
+
 			void setClientAddr(struct sockaddr_in &clientAddr);
 			void setClientSocket(int clientSocket);
 			void setClientPollfdFD (int const &fd);
@@ -67,8 +68,8 @@ class Client{
 			void registerClient(int status);
 			void setNickName(std::string nickName);
 			void setFullName(std::string fullName);
+			void addToBuffer(std::string newBuff);
 			void setStatus(int status);
 			void setSu(bool su_flag);
 			void cleanBuffer();
-			void setBuffer(char buffer);
 };

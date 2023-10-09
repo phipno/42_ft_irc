@@ -66,7 +66,7 @@ void  Server::executeCommands(Client &client, std::string Message) {
   } else if (this->_parMsg.command == "PING") {
     this->pong(&this->_parMsg, client);
   } else {
-    throw(std::runtime_error("Command not found"));
+    std::cerr << "Error: Command not found" << std::endl;
   }
 }
 
@@ -96,18 +96,20 @@ t_msg tokenize_msg(std::string Message) {
 
 
 void Server::parsing_msg(std::string &Message, Client &client) {
-  try {
-    this->_parMsg = tokenize_msg(Message);
+
+  if (Message.back() != '\n') {
+    client.addToBuffer(Message);
+  } else {
+    client.addToBuffer(Message);
+    std::cout << "CTRL - D TEST: " << client.getBuffer() << std::endl;
+    this->_parMsg = tokenize_msg(client.getBuffer());
     if (DEBUG) {
       std::cout << " .Com: " << this->_parMsg.command << std::endl;
       for (size_t i = 0; i < this->_parMsg.paramVec.size(); ++i) {
         std::cout << i << ".Tok: " << this->_parMsg.paramVec[i] << std::endl;
       }
     }
-    executeCommands(client, Message);
-    (void)client;
-  }
-  catch (std::exception &e) {
-    std::cout << e.what() << std::endl;
+    executeCommands(client, client.getBuffer());
+    client.cleanBuffer();
   }
 }

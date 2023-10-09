@@ -210,13 +210,18 @@ std::string Server::recv_from_client_socket(Client &client) {
 	if (bytesRead == -1) {
 			// Handle other errors.
 			perror("recv");
-	} 
+	}
 	else {
-		
+		// std::stringstream ss;
+		// std::string				line;
+
+		// while (std::getline(ss, line, '\n')) {
 		std::string message(buffer);
+		parsing_msg(message, client);
+
+		// }
 		std::cout << "<<<<<<<" << message << std::endl;
 		
-		parsing_msg(message, client);
 		return (message);
 	}
 	return (message);
