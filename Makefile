@@ -23,6 +23,7 @@ SRC				= 	main \
 					Join.Class \
 					Invite.Class \
 					Topic.Class \
+					Kick.Class \
 					modes \
 					commands
 					
