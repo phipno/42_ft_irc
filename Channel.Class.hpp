@@ -36,6 +36,8 @@ class Channel {
 		bool is_in_channel(std::string name); 
 		bool is_operator(std::string name); 
 		std::string make_memberlist(void);
+		int kick_user(std::string to_kick); //returns 1 if successfull
+		bool has_permission(std::string name);
 
 		//Debugging
 		void list_clients_in_channel(void); 
