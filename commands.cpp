@@ -157,10 +157,7 @@ there.
                                    "irc.funet.fi"*/
 
 //server sends a ping message to the client. Client has to respond with a pong message
-void Server::ping(class Client &client) {
 
-		send_msg_to_client_socket(client, "PING :1234567890");
-}
 
 int Server::handshake(t_msg *message, class Client &client) {
 

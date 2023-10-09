@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/09/27 14:03:49 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/09 10:53:17 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,10 @@ void Client::setStatus(int status) {
 
 void Client::setSu(bool su_flag) {
 	this->_superUser = su_flag;	
+}
+
+void Client::cleanBuffer(void) {
+	memset(this->_buffer, 0, sizeof(this->_buffer));
 }
 
 

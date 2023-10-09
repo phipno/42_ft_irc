@@ -53,15 +53,15 @@ int PrivMsg::executeCommand(){
 		if (i == -1)
 			Command::returnMsgToServer(ERR_NOSUCHNICK(this->_server->getHostname(), this->_client->getNickName()));	
 		else {
-			std::vector<Channel> channel = this->_server->getChannels();
-			std::vector<Channel>::iterator it = channel.begin();
-			for (; it < channel.end(); it++){
+			std::vector<Channel> *channel = this->_server->getChannels();
+			std::vector<Channel>::iterator it = channel->begin();
+			for (; it < channel->end(); it++){
 				if (it->get_name() == recipient && it->is_in_channel(this->_client->getNickName())) {
 					this->_server->send_message_to_channel(msg, *it);
 					break ;
 				}
 			}
-			if (it == channel.end())
+			if (it == channel->end())
 				Command::returnMsgToServer(ERR_CANNOTSENDTOCHAN(this->_server->getHostname(), this->_client->getNickName(), it->get_name()));
 		}
 	}

@@ -100,8 +100,8 @@ int Channel::add_user(std::string client, std::string pass, bool operatorflag) {
 		}
 		else
 			this->_users[client] = operatorflag;
-		list_clients_in_channel();
-		list_channel_attributes();
+		// list_clients_in_channel();
+		// list_channel_attributes();
 		return (0);
 	}
 	else {

@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/09 10:04:09 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/09 12:42:42 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,8 +199,11 @@ void Server::runServer() {
 
 //receives a message from a client's socket
 std::string Server::recv_from_client_socket(Client &client) {
+
 	char buffer[512];
 	std::string message;
+	
+	// client.bufferMessage();
 	
 	memset(buffer, 0, sizeof(buffer));
 	int bytesRead = recv(client.getClientSocket(), buffer, sizeof(buffer), 0);
@@ -209,8 +212,10 @@ std::string Server::recv_from_client_socket(Client &client) {
 			perror("recv");
 	} 
 	else {
+		
 		std::string message(buffer);
 		std::cout << "<<<<<<<" << message << std::endl;
+		
 		parsing_msg(message, client);
 		return (message);
 	}
@@ -258,9 +263,9 @@ void Server::send_message_to_channel(std::string message, class Channel &channel
 	}
 }
 
-void Server::numReply(Client &client, std::string message){
-	send_msg_to_client_socket(client, message);
-}
+// void Server::numReply(Client &client, std::string message){
+// 	send_msg_to_client_socket(client, message);
+// }
 
 void Server::list_channels(void) {
 
