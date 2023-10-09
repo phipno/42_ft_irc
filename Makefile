@@ -23,6 +23,7 @@ SRC				= 	main \
 					Join.Class \
 					Invite.Class \
 					Topic.Class \
+					modes \
 					commands
 					
 DEPS 			= Channel.Class.hpp \

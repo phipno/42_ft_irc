@@ -53,7 +53,7 @@ void  Server::executeCommands(Client &client, std::string Message) {
     delete command;
       // this->topic(&this->_parMsg, client);
   } else if (this->_parMsg.command == "MODE") {
-    
+       this->mode(&this->_parMsg, client);
   } else if (this->_parMsg.command == "INVITE") {
     Command *command = new Invite(*this, client, Message);
     command->executeCommand();

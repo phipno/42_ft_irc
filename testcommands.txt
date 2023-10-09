@@ -1,0 +1,73 @@
+-partial commands testing
+-change send msg to channel, so that the msg dont get sent to the sender, but to the other channel members 
+
+
+//pass,nick,user
+wrong pw
+same nick
+nick and user in different order
+change nickname and watch status after registering
+check if all commands only work when welcomed
+
+//join
+JOIN #qwe
+JOIN 32
+JOIN
+JOIN #
+JOIN #test #qweqdsa
+JOIN #test #qweqdsa
+
+//invite
+INVITE #qwe nick
+INVITE
+INVITE nick #
+INVITE nick1 nick2 # 
+INVITE #qweqw #eqweq
+INVITE 
+
+//kick
+KICK #qwe nick
+KICK
+KICK nick #
+KICK nick1 nick2 # 
+KICK 
+
+//privmsg
+PRIVMSG #test nick1 nick2 wqeqasd
+PRIVMSG nick1 nick2 qweasdad
+PRIVMSG #
+PRIVMSG
+
+//topic
+TOPIC nick #qwe
+TOPIC
+TOPIC #
+TOPIC #test :msg
+TOPIC #test :
+TOPIC #test
+
+//mode
+MODE ----> :London.UK.EU.StarLink.Org 461 nick2 MODE :Not enough parameters^M$
+MODE # :London.UK.EU.StarLink.Org 403 nick2 # :No such channel^M$
+MODE #test :London.UK.EU.StarLink.Org 324 nick1 #test +t +i +l 10 +k hi^M$
+MODE +o :London.UK.EU.StarLink.Org 472 nick1 a :is unknown mode char to me^M$
+MODE -o :London.UK.EU.StarLink.Org 472 nick1 a :is unknown mode char to me^M$
+MODE #test +o nick1 nick2 nick3 send channelcommand
+MODE #test -o nick1 nick2 nick3	send chanel command
+MODE +l :London.UK.EU.StarLink.Org 461 nick1 MODE +l :Not enough parameters^M$
+MODE -l send channel command like----> :nick1!~user@188.244.102.158 MODE #test +i ^M$
+MODE #test +l a1 :London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test +l 1a :London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test -l 10 :London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test -i 1 :London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test +i 1 :London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test -i :nick1!~user@188.244.102.158 MODE #test -i ^M$
+MODE #test +i :nick1!~user@188.244.102.158 MODE #test -i ^M$
+MODE #test -t 1 :London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test +t 1	:London.UK.EU.StarLink.Org 472 nick1 1 :is unknown mode char to me^M$
+MODE #test -t :nick1!~user@188.244.102.158 MODE #test -t ^M$
+MODE #test +t :nick1!~user@188.244.102.158 MODE #test +t ^M$
+
+
+MODE #test +i +t +k :hi
+:London.UK.EU.StarLink.Org 324 nick2 #test +tik hi^M$

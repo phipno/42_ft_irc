@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 11:03:14 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/05 11:18:44 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/09 13:10:08 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 // #define ERR_NICKNAMEINUSE(hostname, nickname) (std::string(":" + hostname + " 433 " + nickname + " :Nickname is already in use"))
 #define ERR_NOTONCHANNEL(hostname, nickname, channel) (std::string(":" + hostname + " 442 " + nickname + " " + channel + " :You're not on that channel"))
 #define ERR_USERONCHANNEL(hostname, nickname, channel) (std::string(":" + hostname + " 443 " + nickname + " " + channel + " :is already on channel"))
+#define ERR_USERNOTINCHANNEL(hostname, nickname, user, channel) (std::string(":" + hostname + " 441 " + nickname + " " + user + " " + channel + " :They aren't on that channel"))
 #define ERR_NOTREGISTERED(hostname, nickname) (std::string(":" + hostname + " 451 " + nickname + " :You have not registered"))
 #define ERR_NEEDMOREPARAMS(hostname, nickname, command) (std::string(":" + std::string(hostname) + " 461 " + std::string(nickname) + " :" +std::string(command) + " :Not enough parameters"))
 #define ERR_ALREADYREGISTERED(hostname, nickname) (std::string(":" + std::string(hostname) + " 462 " + std::string(nickname) + " :You may not reregister"))
@@ -52,7 +53,9 @@
 #define RPL_ENDOFNAMES(hostname, creator, channel) (std::string(":" + hostname + " 366 " + creator + " " + channel + " :END of /NAMES list."))
 
 //MODES
-// #define ERR_NOCHANMODES 477 //"<channel> :Channel doesn't support modes"       
+#define ERR_UNKNOWNMODE(hostname, nickname, mode) (std::string(":" + hostname + " 472 " + nickname + " " + mode + " :is unknown mode char to me"))      
+#define ERR_KEYSET(hostname, nickname, channel) (std::string(":" + hostname + " 467 " + nickname + " " + channel + " :Channel key already set"))      
+#define RPL_CHANNELMODEIS(hostname, channel) (std::string(":" + hostname + " 324 " + channel + " :This channels modes are +-i +-k +-l +-t +-o"))      
 
 //custom errors
 #define ERR_PING 005
@@ -64,25 +67,3 @@
 #define VERBOSE 1 //used for constructors and function calls
 #define LOOP 0 //used for printing when inside a loop
 #define DEBUG 1 // generic print flag
-
-// 	case ERR_PING:
-	// 		reply = ": To connect, type PONG 1234567890";
-	// 		send_msg_to_client_socket(client, reply);
-	// 		break;
-	// 	case ERR_NOORIGIN:
-	// 		reply = ": To connect, type PONG 1234567890";
-	// 		send_msg_to_client_socket(client, reply);
-	// 		break;
-
-	// 	case ERR_CHANOPRIVSNEEDED:
-	// 		reply = ": You're not channel operator";
-	// 		send_msg_to_client_socket(client, reply);
-	// 		break;
-	// 	case RPL_TOPIC:
-	// 		reply = ": <channel> :Topic is <TOPIC message>";
-	// 		send_msg_to_client_socket(client, reply);
-	// 		break;
-	// 	case RPL_NOTOPIC:
-	// 		reply = ": <channel> :No topic is set";
-	// 		send_msg_to_client_socket(client, reply);
-	// 		break;

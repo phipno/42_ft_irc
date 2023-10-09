@@ -19,144 +19,201 @@
 	ERR_UMODEUNKNOWNFLAG
 */
 
-int Server::mode(t_msg *message, Client &client){
+int Server::mode(t_msg *message, Client &client) {
 
 	std::vector<std::string>::iterator params = message->paramVec.begin();
 
-
-	//numReply: do nothing maybe
-	if (params == message->paramVec.end())
+	if (params == message->paramVec.end()) {
+		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
 		return (0);
+	}
 	
 	int i = channel_exists(*params);
-	//numReply: no channel
-	if (i == -1)
+	if (i == -1) {
+		numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));
 		return(0);
+	}
+		
+	if (!_channels[i].is_operator(client.getNickName())) {
+		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
+		return (0);
+	}
 	
-	//numReply(client, ERR_CHANOPRIVSNEEDED())
-	if (!_channels[i].is_operator(client.getNickName()))
-		return (0);
-
-	//numReply: LIST the modes
 	std::string channel = *params;
-	if (++params == message->paramVec.end())
+	if (++params == message->paramVec.end()) {
+		numReply(client, RPL_CHANNELMODEIS(this->_hostname, _channels[i].get_name()));
 		return (0);
-
-	for (int i = 0; params != message->paramVec.end(); params++) {
+	}
+	
+	std::cout << "PARAMS: " << *params << std::endl;
+	for (int i = 1; params != message->paramVec.end(); params++, i++) {
 		
 		if (*params == "+i" || *params == "-i" || *params == "+t" || *params == "-t" )
-			topic_invite_restriction(*params, *(params + 1), channel);
+			topic_invite_restriction(message->paramVec, i, client);
 		else if (*params == "+k" || *params == "-k")
-			key_mode(*params, *(params + 1), channel);
+			key_mode(message->paramVec, i, client);
 		else if (*params == "+l" || *params == "-l")
-			user_limit(*params, *(params + 1), channel);
+			user_limit(message->paramVec, i, client);
 		else if (*params == "+o" || *params == "-o")
-			operator_mode(*params, *(params + 1), channel);
-	}
-}
-
-int Server::operator_mode(std::string operatormode, std::string param, std::string channel) {
-
-	int i = channel_exists(channel);
-
-	
-}
-
-int Server::user_limit(std::string usermode, std::string param, std::string channel) {
-
-	int i = channel_exists(channel);
-
-	if (usermode == "+l" && (param.empty() || valid_number(param) == -1)) {
-
-		//numReply(cliet, ERR_NEEDMOREPARAMS())
-		return(461);
-	}
-	
-	if (usermode == "-l" && (!is_in_modes(param) || !param.empty())) {
-
-		//numReply(cliet, ERR_UNKNOWNMODE())
-		return(472);
-	}
-	
-	if (usermode == "+l" && valid_number(param)) {
-
-		_channels[i].set_userlimit(valid_number(param));
-		return(0);
-	}
-	if (usermode == "-l" && (is_in_modes(param) || param.empty())) {
-
-		_channels[i].set_userlimit(-1);
-		return(0);
+			operator_mode(message->paramVec, i, client);
 	}
 	return (0);
 }
 
-int Server::valid_number(std::string param) {
+int Server::topic_invite_restriction(std::vector<std::string> params, int pos, class Client &client) {
 
-	int integer = -1;
-	for(int i = 0 ; i < param.size() ; i++)
-		if (param[i] < '0' || param[i] > '9')
-			return (-1);
+	int i = channel_exists(params[0]);
+	std::vector<std::string>::iterator mode = params.begin() + pos;
+	std::vector<std::string>::iterator next = params.begin() + pos + 1;
+	std::string msg;
 
-	if (!param.empty())
-		integer = atoi(param.c_str());
-
-	return (integer);
-}
-
-int Server::topic_invite_restriction(std::string topicmode, std::string param, std::string channel) {
-
-	int i = channel_exists(channel);
-
-	if (topicmode == "+i" && (is_in_modes(param) || param.empty())) {
+	std::cout << "mode: " << std::endl;
+	
+	if (*mode == "+i" && (next == params.end() || is_in_modes(*next))) {
+		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
+		send_message_to_channel(msg, _channels[i]);
 		_channels[i].set_invite_only(true);
 		return (0);
 	}
-	if (topicmode == "-i" && (is_in_modes(param) || param.empty())) {
+	if (*mode == "-i" && (next == params.end() || is_in_modes(*next))) {
+		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
+		send_message_to_channel(msg, _channels[i]);
 		_channels[i].set_invite_only(false);
 		return (0);
 	}
-	if (topicmode == "+t" && (is_in_modes(param) || param.empty())) {
+	if (*mode == "+t" && (next == params.end() || is_in_modes(*next))) {
+		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
+		send_message_to_channel(msg, _channels[i]);
 		_channels[i].set_topic_restriction(true);
 		return (0);
 	}
-	if (topicmode == "-t" && (is_in_modes(param) || param.empty())) {
+	if (*mode == "-t" && (next == params.end() || is_in_modes(*next))) {
+		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
+		send_message_to_channel(msg, _channels[i]);
 		_channels[i].set_topic_restriction(false);
 		return (0);
 	}
-	//numReply(cliet, ERR_UNKNOWNMODE())
+	numReply(client, ERR_UNKNOWNMODE(this->_hostname, client.getNickName(), *next));
 	return (472);
 }
 
+int Server::operator_mode(std::vector<std::string> params, int pos, class Client &client) {
 
-int Server::key_mode(std::string keymode, std::string param, std::string channel) {
+	int i = channel_exists(params[0]);
+	std::vector<std::string>::iterator mode = params.begin() + pos;
+	std::vector<std::string>::iterator user = params.begin() + pos + 1;
 
-	int i = channel_exists(channel);
+	if (user == params.end() || is_in_modes(*user)){
+		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), "MODE +o"));
+		return(461);
+	}
+	for (int j = 0; user != params.end() && !is_in_modes(*user) && j < 3; j++, user++) {
 
-	if (_channels[i].get_passrestriction() && keymode == "+k") {
+		if (_channels[i].is_in_channel(*user)) {
+			if (*mode == "+o")
+				_channels[i].give_priveleges(*user);
+			else
+				_channels[i].rm_priveleges(*user);
+		}
+		else {
+			if (*mode == "+o")
+				numReply(client, ERR_USERNOTINCHANNEL(this->_hostname, client.getNickName(), *user, params[0]));
+			else
+				numReply(client, ERR_USERNOTINCHANNEL(this->_hostname, client.getNickName(), *user, params[0]));
+		}
+	}
+	return (0);
+}
 
-		// numReply(client, ERR_KEYSET())
+int Server::user_limit(std::vector<std::string> params, int pos, class Client &client) {
+
+	int i = channel_exists(params[0]);
+	std::vector<std::string>::iterator mode = params.begin() + pos;
+	std::vector<std::string>::iterator limit = params.begin() + pos + 1;
+	std::string msg;
+
+	if (*mode == "+l" && (limit == params.end() || is_in_modes(*limit) || !valid_number(*limit, i))) {
+
+		numReply(client, ERR_UNKNOWNMODE(this->_hostname, client.getNickName(), *mode));
+		return(461);
+	}
+	
+	if (*mode == "+l" && (limit != params.end() && valid_number(*limit, i))) {
+
+		_channels[i].set_userlimit(valid_number(*limit, i));
+		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
+		send_message_to_channel(msg, _channels[i]);
+		return(0);
+	}
+	else
+		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), "+l"));
+
+	if (*mode == "-l" && (limit == params.end() || is_in_modes(*mode))) {
+
+		_channels[i].set_userlimit(-1);
+		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
+		send_message_to_channel(msg, _channels[i]);
+		return(0);
+	}
+	else
+		numReply(client, ERR_UNKNOWNMODE(this->_hostname, client.getNickName(), *limit));
+	return (0);
+}
+
+int Server::valid_number(std::string param, int channelindex) {
+
+	int integer = 0;
+	int origin_limit = _channels[channelindex].get_userlimit();
+	(void) origin_limit;
+	unsigned long i = 0;
+
+	for(i = 0 ; i < param.size() ; i++)
+		if (param[i] < '0' || param[i] > '9')
+			break ;
+
+	if (i != param.size())
+		return (0);
+
+	integer = atoi(param.c_str());
+	return (integer);
+}
+
+int Server::key_mode(std::vector<std::string> params, int pos, class Client &client) {
+
+	int i = channel_exists(params[0]);
+	std::vector<std::string>::iterator mode = params.begin() + pos;
+	std::vector<std::string>::iterator key = params.begin() + pos + 1;
+	std::string msg;
+
+	if (_channels[i].get_passrestriction() && *mode == "+k") {
+
+		numReply(client, ERR_KEYSET(this->_hostname, client.getNickName(), _channels[i].get_name()));
 		return (467);
 	}
 	
-	if (keymode == "+k" && (param.empty() || is_in_modes(param) || !valid_passphrase(param))) {
+	if (*mode == "+k" && (key == params.end() || is_in_modes(*key) || !valid_passphrase(*key))) {
 
-		//numReply(cliet, ERR_NEEDMOREPARAMS())
+		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), "+k"));
 		return(461);
 	}
 
-	if (keymode == "+k" && valid_passphrase(param)) {
+	if (*mode == "+k" && valid_passphrase(*key)) {
 		_channels[i].set_passrestriction(true);
-		_channels[i].set_passphrase(param);
+		_channels[i].set_passphrase(*key);
+		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
+		send_message_to_channel(msg, _channels[i]);
 		return (0);
 	}
 
-	if (keymode == "-k" && (is_in_modes(param) || param.empty())) {
+	if (*mode == "-k" && (is_in_modes(*key) || key == params.end())) {
 		_channels[i].set_passrestriction(false);
 		_channels[i].set_passphrase("");
+		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
+		send_message_to_channel(msg, _channels[i]);
 		return (0);
 	}
-	
+	else
+		numReply(client, ERR_UNKNOWNMODE(this->_hostname, client.getNickName(), *key));
 	return (0);
 }
 
@@ -164,7 +221,7 @@ bool Server::valid_passphrase(std::string param) {
 
     if (param.size() < 15) {
 
-		for (char c : param) {
+		for (unsigned long i = 0, c = param[i]; i < param.size(); i++) {
 			if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') ||
 				c == '!' || c == '@' || c == '#' || c == '$' || c == '%' || c == '^' ||
 				c == '&' || c == '*' || c == '(' || c == ')' || c == '-' || c == '_' ||

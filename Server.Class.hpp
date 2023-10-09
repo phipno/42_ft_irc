@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/10/09 10:03:43 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/09 13:11:12 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,16 +87,16 @@ class Server{
 		int privmsg(t_msg *message, Client &client);
 		void join(t_msg &parsedMsg, Client &client);
 		int topic(t_msg *parsedMsg, Client &client);
-		int mode(t_msg *parsedMsg, Client &client);
 		int invite(t_msg *message, Client &client);
 
 		//Modes
+		int mode(t_msg *message, Client &client);
 		bool is_in_modes(std::string param);
-		int operator_mode(std::string operatormode, std::string param, std::string channel);
-		int topic_invite_restriction(std::string topicmode, std::string param, std::string channel);
-		int user_limit(std::string usermode, std::string param, std::string channel);
-		int valid_number(std::string param);
-		int key_mode(std::string keymode, std::string param, std::string channel);
+		int operator_mode(std::vector<std::string> params, int pos, class Client &client);
+		int topic_invite_restriction(std::vector<std::string> params, int pos, class Client &client);
+		int user_limit(std::vector<std::string> params, int pos, class Client &client);
+		int valid_number(std::string param, int channelindex);
+		int key_mode(std::vector<std::string> params, int pos, class Client &client);
 		bool valid_passphrase(std::string param);
 			
 		//misc

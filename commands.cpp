@@ -17,18 +17,18 @@ variables in t_msg struct:
 	461	ERR_NEEDMOREPARAMS
 */
 
-// int Server::pass(t_msg *message, Client &client){
-// 	if (client.getRegistrationStatus() >= REGISTERED)
-// 		numReply(client, ERR_ALREADYREGISTERED(this->_hostname, client.getNickName()));
-// 	else if (message->paramVec.empty() || message->paramVec[0].empty())
-// 		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
-// 	else if (message->paramVec[0].compare(this->_password) == 0){
-// 		client.registerClient(REGISTERED);
-// 		std::cout << "Registering succesfull: Client status is " << client.getStatus() << std::endl;
-// 		return 0;
-// 	}
-// 	return 1;
-// }
+int Server::pass(t_msg *message, Client &client){
+	if (client.getRegistrationStatus() >= REGISTERED)
+		numReply(client, ERR_ALREADYREGISTERED(this->_hostname, client.getNickName()));
+	else if (message->paramVec.empty() || message->paramVec[0].empty())
+		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
+	else if (message->paramVec[0].compare(this->_password) == 0){
+		client.registerClient(REGISTERED);
+		std::cout << "Registering succesfull: Client status is " << client.getStatus() << std::endl;
+		return 0;
+	}
+	return 1;
+}
 
 /* NICK
 NICK <your-nick>
@@ -39,97 +39,97 @@ when connecting for the first time, choose a nickname
 	ERR_UNAVAILRESOURCE		ERR_RESTRICTED
 */
 
-// int Server::nick(t_msg *message, Client &client){
+int Server::nick(t_msg *message, Client &client){
     
-//     // if (VERBOSE)
-//     //     std::cout << "nick()" << std::endl;
+    // if (VERBOSE)
+    //     std::cout << "nick()" << std::endl;
 
-// 	// if (client.getRegistrationStatus() < REGISTERED){
-// 	// 	numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-// 	// 	return 1;
-// 	// }
-// 	// if (message->paramVec.empty()){
-// 	// 		numReply(client, ERR_NONICKNAMEGIVEN(this->_hostname));
-// 	// 	return 1;
-// 	// }
-//     // check if characters of chosen nickname are valid
-//     std::string allowed_chars = "abcdefghijklmnopqrstuvwxyz0123456789{}[]\\|";
-// 	for (size_t i = 0; i < message->paramVec[0].length(); ++i){
-//         char ch = message->paramVec[0][i];
-// 		if (allowed_chars.find(ch) != std::string::npos){}
-//         else {
-// 			numReply(client, ERR_ERRONEUSNICKNAME(this->_hostname, client.getNickName()));
-// 			return 1;
-//         }
-// 	}
-//     // check if nickname already exists on same server
-// 	std::vector<Client>::iterator it = _clients.begin();
-// 	for (;it != _clients.end(); it++){
-// 		if (it->getNickName() == message->paramVec[0]){
-// 			numReply(client, ERR_NICKNAMEINUSE(this->_hostname, client.getNickName()));
-// 			return 1;
-//         }
-// 	}
-// 	//if superuser, he will be welcomed.
-// 	if (client.getNickName() == "superuser") {
-// 		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
-// 		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
-// 		client.setSu(true);
-// 		client.registerClient(SUPERUSER);
-// 		return (0);
-// 	}
+	// if (client.getRegistrationStatus() < REGISTERED){
+	// 	numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+	// 	return 1;
+	// }
+	// if (message->paramVec.empty()){
+	// 		numReply(client, ERR_NONICKNAMEGIVEN(this->_hostname));
+	// 	return 1;
+	// }
+    // check if characters of chosen nickname are valid
+    std::string allowed_chars = "abcdefghijklmnopqrstuvwxyz0123456789{}[]\\|";
+	for (size_t i = 0; i < message->paramVec[0].length(); ++i){
+        char ch = message->paramVec[0][i];
+		if (allowed_chars.find(ch) != std::string::npos){}
+        else {
+			numReply(client, ERR_ERRONEUSNICKNAME(this->_hostname, client.getNickName()));
+			return 1;
+        }
+	}
+    // check if nickname already exists on same server
+	std::vector<Client>::iterator it = _clients.begin();
+	for (;it != _clients.end(); it++){
+		if (it->getNickName() == message->paramVec[0]){
+			numReply(client, ERR_NICKNAMEINUSE(this->_hostname, client.getNickName()));
+			return 1;
+        }
+	}
+	//if superuser, he will be welcomed.
+	if (client.getNickName() == "superuser") {
+		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+		client.setSu(true);
+		client.registerClient(SUPERUSER);
+		return (0);
+	}
 	
-// 	// if client typed om username, he will be welcomed after nickname
-// 	if (client.getStatus() == USERNAME) {
-// 		client.setNickName(message->paramVec[0]);
-// 		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
-// 		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
-// 		client.registerClient(WELCOMED);
-// 		return (0);
-// 	}
-// 	else {
-// 		client.setNickName(message->paramVec[0]);
-// 		client.registerClient(NICKNAME);
-// 	}
-// 	return 0;
-// }
+	// if client typed om username, he will be welcomed after nickname
+	if (client.getStatus() == USERNAME) {
+		client.setNickName(message->paramVec[0]);
+		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+		client.registerClient(WELCOMED);
+		return (0);
+	}
+	else {
+		client.setNickName(message->paramVec[0]);
+		client.registerClient(NICKNAME);
+	}
+	return 0;
+}
 
 /* USER <your-username> <your-hostname> <your-servername> :<your-realname>
 TO-DO: 4 Names must be set for Username
 */
 
-// int Server::user(t_msg *message, Client &client){
-// 	if (VERBOSE)
-//         std::cout << "user()" << std::endl;
+int Server::user(t_msg *message, Client &client){
+	if (VERBOSE)
+        std::cout << "user()" << std::endl;
 
-// 	if (client.getRegistrationStatus() < REGISTERED){
-// 		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-// 		return 1;
-// 	}
-// 	if (message->paramVec.empty()){ // to be added || message.paramVec.size() < 3
-// 		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
-// 		return 1;
-// 	}
-// 	if (message->paramVec[0].length() <= USERLEN)
-// 		client.setFullName(message->paramVec[0]);
-// 	else{
-// 		std::string name = message->paramVec[0].substr(0,9);
-// 		client.setFullName(name);
-// 	}
+	if (client.getRegistrationStatus() < REGISTERED){
+		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+		return 1;
+	}
+	if (message->paramVec.empty()){ // to be added || message.paramVec.size() < 3
+		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
+		return 1;
+	}
+	if (message->paramVec[0].length() <= USERLEN)
+		client.setFullName(message->paramVec[0]);
+	else{
+		std::string name = message->paramVec[0].substr(0,9);
+		client.setFullName(name);
+	}
 	
-// 	// if client typed in nickname, he will be welcomed after username
-// 	if (client.getStatus() == NICKNAME) {
-// 		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
-// 		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
-// 		client.registerClient(WELCOMED);
-// 		return (0);
-// 	}
-// 	else {
-// 		client.setFullName(message->paramVec[0]);
-// 		client.registerClient(USERNAME);
-// 	}
-//     return 0;
-// }
+	// if client typed in nickname, he will be welcomed after username
+	if (client.getStatus() == NICKNAME) {
+		numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
+		numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+		client.registerClient(WELCOMED);
+		return (0);
+	}
+	else {
+		client.setFullName(message->paramVec[0]);
+		client.registerClient(USERNAME);
+	}
+    return 0;
+}
 
 /*
 3.7.2 Ping message
@@ -219,87 +219,87 @@ Numeric Replies:
 	RPL_AWAY
 */
 
-//Make a string out of the message struct, works for COMMANDS 
-//PRIVMSG
+// Make a string out of the message struct, works for COMMANDS 
+// PRIVMSG
 // JOIN
 // MODE
-// std::string Server::make_msg_ready(t_msg *message, Client &client, size_t channelnumber, std::string topic_message) {
+std::string Server::make_msg_ready(t_msg *message, Client &client, size_t channelnumber, std::string topic_message) {
 
-// 	std::string msg;
+	std::string msg;
 
-// 	// if (message->command == "PRIVMSG") {
+	if (message->command == "PRIVMSG") {
 
-// 	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
-// 	// 	 " " + message->command + " " + message->paramVec[0] + " " + message->paramVec[1];
-// 	// }
-// 	// else if (message->command == "JOIN") {
+		msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
+		 " " + message->command + " " + message->paramVec[0] + " " + message->paramVec[1];
+	}
+	else if (message->command == "JOIN") {
 
-// 	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
-// 	// 	 " " + message->command + " " + message->paramVec[channelnumber];
-// 	// }
-// 	// if (message->command == "TOPIC") {
+		msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
+		 " " + message->command + " " + message->paramVec[channelnumber];
+	}
+	if (message->command == "TOPIC") {
 
-// 	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
-// 	// 	 " " + message->command + " " + message->paramVec[channelnumber] + " :"  + topic_message;
-// 	// }
-// 	// else if (message->command == "INVITE") {
+		msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
+		 " " + message->command + " " + message->paramVec[channelnumber] + " :"  + topic_message;
+	}
+	else if (message->command == "INVITE") {
 
-// 	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
-// 	// 	 " " + message->command + " " + message->paramVec[0] + " :"  + message->paramVec[1];
-// 	// }
+		msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
+		 " " + message->command + " " + message->paramVec[0] + " :"  + message->paramVec[1];
+	}
 
-// 	return (msg);
-// }
+	return (msg);
+}
 
-// int Server::privmsg(t_msg *message, Client &client){
+int Server::privmsg(t_msg *message, Client &client){
 	
-// 	if (client.getRegistrationStatus() < WELCOMED){
-// 		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-// 		return 1;
-// 	}
-// 	else if (message->paramVec.empty()){
-// 		numReply(client, ERR_NORECIPIENT(this->_hostname, client.getNickName(), message->command));
-// 		return 1;
-// 	}
-// 	else if (message->paramVec.size() == 1){
-// 		numReply(client, ERR_NOTEXTTOSEND(this->_hostname, client.getNickName()));
-// 		return 1;		
-// 	}
-// 	std::string recipient = message->paramVec[0];
-// 	//make MESSAGE comply with KVirc
-// 	std::string msg = make_msg_ready(message, client, 0, "");
-// 	// std::cout << "MESSAGE: " << msg <<std::endl;
+	if (client.getRegistrationStatus() < WELCOMED){
+		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+		return 1;
+	}
+	else if (message->paramVec.empty()){
+		numReply(client, ERR_NORECIPIENT(this->_hostname, client.getNickName(), message->command));
+		return 1;
+	}
+	else if (message->paramVec.size() == 1){
+		numReply(client, ERR_NOTEXTTOSEND(this->_hostname, client.getNickName()));
+		return 1;		
+	}
+	std::string recipient = message->paramVec[0];
+	//make MESSAGE comply with KVirc
+	std::string msg = make_msg_ready(message, client, 0, "");
+	// std::cout << "MESSAGE: " << msg <<std::endl;
 
-// 	// if a channel
-// 	if (recipient.at(0) == '#') {
-// 		int i = channel_exists(recipient);
-// 		if (i == -1)
-// 			numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));	
-// 		else {
-// 			std::vector<Channel>::iterator it = this->_channels.begin();
-// 			for (; it < _channels.end(); it++){
-// 				if (it->get_name() == recipient && it->is_in_channel(client.getNickName())) {
-// 					send_message_to_channel(msg, *it);
-// 					break ;
-// 				}
-// 			}
-// 			if (it == _channels.end())
-// 				numReply(client, ERR_CANNOTSENDTOCHAN(this->_hostname, client.getNickName(), it->get_name()));
-// 		}
-// 	}
-// 	else {
-// 		std::vector<Client>::iterator clientit = _clients.begin();
-// 		for ( ; clientit < _clients.end(); clientit++){
-// 			if (clientit->getNickName() == recipient){
-// 				send_msg_to_client_socket(*clientit, msg);
-// 				break;
-// 			}
-// 		}
-// 		if (clientit == _clients.end())
-// 			numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));			
-// 	}
-// 	return (0);
-// }
+	// if a channel
+	if (recipient.at(0) == '#') {
+		int i = channel_exists(recipient);
+		if (i == -1)
+			numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));	
+		else {
+			std::vector<Channel>::iterator it = this->_channels.begin();
+			for (; it < _channels.end(); it++){
+				if (it->get_name() == recipient && it->is_in_channel(client.getNickName())) {
+					send_message_to_channel(msg, *it);
+					break ;
+				}
+			}
+			if (it == _channels.end())
+				numReply(client, ERR_CANNOTSENDTOCHAN(this->_hostname, client.getNickName(), it->get_name()));
+		}
+	}
+	else {
+		std::vector<Client>::iterator clientit = _clients.begin();
+		for ( ; clientit < _clients.end(); clientit++){
+			if (clientit->getNickName() == recipient){
+				send_msg_to_client_socket(*clientit, msg);
+				break;
+			}
+		}
+		if (clientit == _clients.end())
+			numReply(client, ERR_NOSUCHNICK(this->_hostname, client.getNickName()));			
+	}
+	return (0);
+}
 
 /*
 	Parameters: <nickname> <channel>
@@ -316,70 +316,70 @@ Numeric Replies:
    notified.  (This is unlike the MODE changes, and is occasionally the
    source of trouble for users.)
 */
-// int Server::invite(t_msg *message, Client &client) {
-// 	if (VERBOSE)
-// 		std::cout << "invite" << std::endl;
-// 	if (client.getRegistrationStatus() < WELCOMED){
-// 		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-// 		return 1;
-// 	}
-// 	if (message->paramVec.empty() || message->paramVec.size() == 1){
-// 		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
-// 		return 1;
-// 	}
-// 	std::string channelName = message->paramVec[1];
-// 	std::string inviteNick = message->paramVec[0];
+int Server::invite(t_msg *message, Client &client) {
+	if (VERBOSE)
+		std::cout << "invite" << std::endl;
+	if (client.getRegistrationStatus() < WELCOMED){
+		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+		return 1;
+	}
+	if (message->paramVec.empty() || message->paramVec.size() == 1){
+		numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), message->command));
+		return 1;
+	}
+	std::string channelName = message->paramVec[1];
+	std::string inviteNick = message->paramVec[0];
 
-// 	std::vector<Client>::iterator clientit = _clients.begin();
-// 	for ( ; clientit < _clients.end(); clientit++){
-// 		if (clientit->getNickName() == inviteNick){
-// 			break;
-// 		}
-// 	}
-// 	if (clientit == _clients.end())
-// 		numReply(client, ERR_NOSUCHNICK(this->_hostname, inviteNick));
+	std::vector<Client>::iterator clientit = _clients.begin();
+	for ( ; clientit < _clients.end(); clientit++){
+		if (clientit->getNickName() == inviteNick){
+			break;
+		}
+	}
+	if (clientit == _clients.end())
+		numReply(client, ERR_NOSUCHNICK(this->_hostname, inviteNick));
 
-// 	std::vector<Channel>::iterator it = _channels.begin();
-// 	for (; it != _channels.end(); it++){
-// 		if (it->get_name() == channelName){
-// 			Channel channel = *it;
-// 			if (channel.is_in_channel(inviteNick)){
-// 				numReply(client, ERR_USERONCHANNEL(this->_hostname, client.getNickName(), channel.get_name()));
-// 				return 1;
-// 			}
-// 			if (channel.get_invite_only()){
-// 				if (channel.is_operator(client.getNickName())){
-// 					numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, channel.get_name()));
-// 					std::string msg = make_msg_ready(message, client, 0, "");
-// 					numReply(*clientit, msg);
-// 					it->set_invitee(inviteNick);
-// 					return 0;
-// 				}
-// 				else{
-// 					numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), channel.get_name()));
-// 					return 1;
-// 				}
-// 			}
-// 			else {
-// 				if (channel.is_in_channel(client.getNickName())){
-// 					numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, channel.get_name()));
-// 					std::string msg = make_msg_ready(message, client, 0, "");
-// 					numReply(*clientit, msg);
-// 					it->set_invitee(inviteNick);
-// 					return 0;
-// 				}
-// 				else {
-// 					numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), channel.get_name()));
-// 					return 1;
-// 				}
-// 			}
-// 		}
-// 		numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, it->get_name()));
-// 		std::string msg = make_msg_ready(message, client, 0, "");
-// 		numReply(*clientit, msg);
-// 	}
-// 	return 0;
-// }
+	std::vector<Channel>::iterator it = _channels.begin();
+	for (; it != _channels.end(); it++){
+		if (it->get_name() == channelName){
+			Channel channel = *it;
+			if (channel.is_in_channel(inviteNick)){
+				numReply(client, ERR_USERONCHANNEL(this->_hostname, client.getNickName(), channel.get_name()));
+				return 1;
+			}
+			if (channel.get_invite_only()){
+				if (channel.is_operator(client.getNickName())){
+					numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, channel.get_name()));
+					std::string msg = make_msg_ready(message, client, 0, "");
+					numReply(*clientit, msg);
+					it->set_invitee(inviteNick);
+					return 0;
+				}
+				else{
+					numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), channel.get_name()));
+					return 1;
+				}
+			}
+			else {
+				if (channel.is_in_channel(client.getNickName())){
+					numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, channel.get_name()));
+					std::string msg = make_msg_ready(message, client, 0, "");
+					numReply(*clientit, msg);
+					it->set_invitee(inviteNick);
+					return 0;
+				}
+				else {
+					numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), channel.get_name()));
+					return 1;
+				}
+			}
+		}
+		numReply(client, RPL_INVITING(this->_hostname, client.getNickName(), inviteNick, it->get_name()));
+		std::string msg = make_msg_ready(message, client, 0, "");
+		numReply(*clientit, msg);
+	}
+	return 0;
+}
 
 void Server::list(t_msg &message, Client &client) {
 	std::vector<Channel>::iterator it = _channels.begin();
@@ -409,19 +409,19 @@ void Server::join_channel(std::string channelName, class Client &client) {
 	}
 }
 
-// std::vector<std::string> parse_join_kick(std::string commaToken) {
-// 	std::vector<std::string>	splitToken;
-// 	size_t	pos;
+std::vector<std::string> parse_join_kick(std::string commaToken) {
+	std::vector<std::string>	splitToken;
+	size_t	pos;
 
-// 	while ((pos = commaToken.find(',')) != std::string::npos) {
-// 		splitToken.push_back(commaToken.substr(0, pos));
-// 		commaToken.erase(0, pos + 1);
-// 	}
-// 	if (pos == std::string::npos)
-// 		splitToken.push_back(commaToken);
+	while ((pos = commaToken.find(',')) != std::string::npos) {
+		splitToken.push_back(commaToken.substr(0, pos));
+		commaToken.erase(0, pos + 1);
+	}
+	if (pos == std::string::npos)
+		splitToken.push_back(commaToken);
 
-// 	return splitToken;
-// }
+	return splitToken;
+}
 
 
 //TO-DO: Send channelmessge:
@@ -430,67 +430,67 @@ void Server::join_channel(std::string channelName, class Client &client) {
 	// :London.UK.EU.StarLink.Org 353 nick3 * #channel2 :nick3 nick2 @nick1 ^M$ ---> 353, list all users in that channel, @is the channel creator
 	// :London.UK.EU.StarLink.Org 366 nick1 #test :End of /NAMES list.^M$ ---> 366
 
-// void Server::join(t_msg &parsedMsg, Client &client) {
-// 	// if (client.getRegistrationStatus() < WELCOMED){
-// 	// 	numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-// 	// 	return ;
-// 	// }
-// 	// if (parsedMsg.paramVec.empty()) {
-// 	// 	numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), parsedMsg.command));
-// 	// 	return ;
-// 	// }
-// 	if (parsedMsg.paramVec[0].at(0) == 0) {
-// 		//TODO kick client out of any channel
-// 	}
-// 	std::vector<std::string> channelsToJoin, keyForChannel;
-// 	std::vector<Channel> joinChannel;
+void Server::join(t_msg &parsedMsg, Client &client) {
+	// if (client.getRegistrationStatus() < WELCOMED){
+	// 	numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+	// 	return ;
+	// }
+	// if (parsedMsg.paramVec.empty()) {
+	// 	numReply(client, ERR_NEEDMOREPARAMS(this->_hostname, client.getNickName(), parsedMsg.command));
+	// 	return ;
+	// }
+	if (parsedMsg.paramVec[0].at(0) == 0) {
+		//TODO kick client out of any channel
+	}
+	std::vector<std::string> channelsToJoin, keyForChannel;
+	std::vector<Channel> joinChannel;
 	
-// 	channelsToJoin = parse_join_kick(parsedMsg.paramVec[0]);
-// 	if (parsedMsg.paramVec.size() >= 2)
-// 		keyForChannel = parse_join_kick(parsedMsg.paramVec[1]);
+	channelsToJoin = parse_join_kick(parsedMsg.paramVec[0]);
+	if (parsedMsg.paramVec.size() >= 2)
+		keyForChannel = parse_join_kick(parsedMsg.paramVec[1]);
 
-// 	for (size_t j = 0; j < channelsToJoin.size(); j++) {
-// 		int i = channel_exists(channelsToJoin[j]);
-// 		if (i == -1) {
+	for (size_t j = 0; j < channelsToJoin.size(); j++) {
+		int i = channel_exists(channelsToJoin[j]);
+		if (i == -1) {
 
-// 			Channel channel(channelsToJoin[j]);
-// 			channel.add_user(client.getNickName(), "", true);
-// 			this->_channels.push_back(channel);
-// 			std::string msg = make_msg_ready(&parsedMsg, client, j, "");
+			Channel channel(channelsToJoin[j]);
+			channel.add_user(client.getNickName(), "", true);
+			this->_channels.push_back(channel);
+			std::string msg = make_msg_ready(&parsedMsg, client, j, "");
 			
-// 			send_message_to_channel(msg, channel);
-// 			numReply(client, RPL_NAMREPLY(_hostname, client.getNickName(), channel.get_name(), "", channel.get_creator()));
-// 			numReply(client, RPL_ENDOFNAMES(_hostname, channel.get_creator(), channel.get_name()));
-// 		} 
-// 		else {
-// 			int code;
-// 			if (j < keyForChannel.size()) 
-// 				code = _channels[i].add_user(client.getNickName(), keyForChannel[j], false);
-// 			else
-// 				code = _channels[i].add_user(client.getNickName(), "", false);
+			send_message_to_channel(msg, channel);
+			numReply(client, RPL_NAMREPLY(_hostname, client.getNickName(), channel.get_name(), "", channel.get_creator()));
+			numReply(client, RPL_ENDOFNAMES(_hostname, channel.get_creator(), channel.get_name()));
+		} 
+		else {
+			int code;
+			if (j < keyForChannel.size()) 
+				code = _channels[i].add_user(client.getNickName(), keyForChannel[j], false);
+			else
+				code = _channels[i].add_user(client.getNickName(), "", false);
 				
-// 			//switchcase
-// 			if (code)
-// 				std::cout << std::endl;//REPLY with adequate numReply
-// 			else {
-// 				std::string msg = make_msg_ready(&parsedMsg, client, j, "");
-// 				send_message_to_channel(msg, _channels[i]);
-// 				numReply(client, RPL_NAMREPLY(_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].make_memberlist(), _channels[i].get_creator()));
-// 				numReply(client, RPL_ENDOFNAMES(_hostname, _channels[i].get_creator(), _channels[i].get_name()));
-// 			} 
-// 		}
-// 	}
-// 	if (DEBUG) {
-// 		for (std::vector<std::string>::iterator It = channelsToJoin.begin();
-// 				 It != channelsToJoin.end(); ++It) {
-// 			std::cout << "Channel: " << *It << std::endl;
-// 		}
-// 		for (std::vector<std::string>::iterator It = keyForChannel.begin();
-// 				 It != keyForChannel.end(); ++It) {
-// 			std::cout << "Keys: " << *It << std::endl;
-// 		}
-// 	}
-// }
+			//switchcase
+			if (code)
+				std::cout << std::endl;//REPLY with adequate numReply
+			else {
+				std::string msg = make_msg_ready(&parsedMsg, client, j, "");
+				send_message_to_channel(msg, _channels[i]);
+				numReply(client, RPL_NAMREPLY(_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].make_memberlist(), _channels[i].get_creator()));
+				numReply(client, RPL_ENDOFNAMES(_hostname, _channels[i].get_creator(), _channels[i].get_name()));
+			} 
+		}
+	}
+	if (DEBUG) {
+		for (std::vector<std::string>::iterator It = channelsToJoin.begin();
+				 It != channelsToJoin.end(); ++It) {
+			std::cout << "Channel: " << *It << std::endl;
+		}
+		for (std::vector<std::string>::iterator It = keyForChannel.begin();
+				 It != keyForChannel.end(); ++It) {
+			std::cout << "Keys: " << *It << std::endl;
+		}
+	}
+}
 
 int Server::channel_exists(std::string channelName) {
 
@@ -524,50 +524,50 @@ topic for that channel will be removed.
    TOPIC #test                     ; Command to check the topic for
                                    #test.
 */
-// int Server::topic(t_msg *parsedMsg, Client &client) {
+int Server::topic(t_msg *parsedMsg, Client &client) {
 
-// 	if (client.getRegistrationStatus() < WELCOMED){
-// 		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
-// 		return (1);
-// 	}
-// 	int i = channel_exists(parsedMsg->paramVec[0]);
-// 	if (i == -1) { 
-// 		numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), parsedMsg->paramVec[0]));
-// 		return (1);
-// 	}
+	if (client.getRegistrationStatus() < WELCOMED){
+		numReply(client, ERR_NOTREGISTERED(this->_hostname, client.getNickName()));
+		return (1);
+	}
+	int i = channel_exists(parsedMsg->paramVec[0]);
+	if (i == -1) { 
+		numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), parsedMsg->paramVec[0]));
+		return (1);
+	}
 
-// 	//checks if the client is on that channel
-// 	if (!_channels[i].is_in_channel(client.getNickName())) {
-// 		numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), _channels[i].get_name()));
-// 		return (1);
-// 	}
+	//checks if the client is on that channel
+	if (!_channels[i].is_in_channel(client.getNickName())) {
+		numReply(client, ERR_NOTONCHANNEL(this->_hostname, client.getNickName(), _channels[i].get_name()));
+		return (1);
+	}
 
-// 	// if no topic argument exists, the Topic will be displayed
-// 	// if there is an empty string the Topic will be deleted (operator)
-// 	// else the topic will be set if there is a non-empty string (operator)	
-// 	bool privileges = _channels[i].is_operator(client.getNickName());
-// 	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin() + 1;
+	// if no topic argument exists, the Topic will be displayed
+	// if there is an empty string the Topic will be deleted (operator)
+	// else the topic will be set if there is a non-empty string (operator)	
+	bool privileges = _channels[i].is_operator(client.getNickName());
+	std::vector<std::string>::iterator it = parsedMsg->paramVec.begin() + 1;
 
-// 	// TO-DO: make topic available for multiple channels
-// 	//e.g: TOPIC #chan1,#chan2 :new_topic changes the topic for both channels into new_topic
-// 	//loop through the code below
-// 	if (it == parsedMsg->paramVec.end()) {
-// 		// numReply(client, RPL_TOPIC(this->_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].get_topic()));
-// 		return(0);
-// 	}
-// 	if (is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction()))
-// 		_channels[i].set_topic("No topic is set");
-// 	else if (is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
-// 		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
-// 	else if (!is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction())) {
-// 		_channels[i].set_topic(*it);
-// 		std::string msg = make_msg_ready(parsedMsg, client, 0, _channels[i].get_topic());
-// 		send_message_to_channel(msg, _channels[i]);
-// 	}
-// 	else if (!is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
-// 		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
-// 	return (0);
-// }
+	// TO-DO: make topic available for multiple channels
+	//e.g: TOPIC #chan1,#chan2 :new_topic changes the topic for both channels into new_topic
+	//loop through the code below
+	if (it == parsedMsg->paramVec.end()) {
+		// numReply(client, RPL_TOPIC(this->_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].get_topic()));
+		return(0);
+	}
+	if (is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction()))
+		_channels[i].set_topic("No topic is set");
+	else if (is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
+		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
+	else if (!is_empty_string(*it) && (privileges || !_channels[i].get_topic_restriction())) {
+		_channels[i].set_topic(*it);
+		std::string msg = make_msg_ready(parsedMsg, client, 0, _channels[i].get_topic());
+		send_message_to_channel(msg, _channels[i]);
+	}
+	else if (!is_empty_string(*it) && _channels[i].get_topic_restriction() && !privileges)
+		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
+	return (0);
+}
 
 // ERR_PING(client)
 // define ERR_PING(client){"": To connect, type PONG 1234567890"}
