@@ -31,6 +31,7 @@ class Command{
 		int checkRegistrationStatusWelcomed();
 		int checkEmptyParamter();
 		int isValidNickname();
+		std::vector<std::string> parse_join_kick(std::string commaToken);
 
 		virtual int executeCommand() = 0;
 };

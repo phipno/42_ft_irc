@@ -25,9 +25,9 @@ int Join::executeCommand(){
 	std::vector<std::string> channelsToJoin, keyForChannel;
 	std::vector<Channel> joinChannel;
 	
-	channelsToJoin = parse_join_kick(this->_paramVec[0]);
+	channelsToJoin = Command::parse_join_kick(this->_paramVec[0]);
 	if (this->_paramVec.size() >= 2)
-		keyForChannel = parse_join_kick(this->_paramVec[1]);
+		keyForChannel = Command::parse_join_kick(this->_paramVec[1]);
 
     std::vector<Channel> *channels = this->_server->getChannels();
 	for (size_t j = 0; j < channelsToJoin.size(); j++) {
@@ -72,20 +72,6 @@ int Join::executeCommand(){
 		}
 	}
     return 0;
-}
-
-std::vector<std::string> Join::parse_join_kick(std::string commaToken) {
-	std::vector<std::string>	splitToken;
-	size_t	pos;
-
-	while ((pos = commaToken.find(',')) != std::string::npos) {
-		splitToken.push_back(commaToken.substr(0, pos));
-		commaToken.erase(0, pos + 1);
-	}
-	if (pos == std::string::npos)
-		splitToken.push_back(commaToken);
-
-	return splitToken;
 }
 
 std::string Join::make_msg_ready(size_t channelnumber, std::string topic_message){

@@ -60,6 +60,20 @@ void Command::tokenizeMsg(){
 	}
 }
 
+std::vector<std::string> Command::parse_join_kick(std::string commaToken) {
+	std::vector<std::string>	splitToken;
+	size_t	pos;
+
+	while ((pos = commaToken.find(',')) != std::string::npos) {
+		splitToken.push_back(commaToken.substr(0, pos));
+		commaToken.erase(0, pos + 1);
+	}
+	if (pos == std::string::npos)
+		splitToken.push_back(commaToken);
+
+	return splitToken;
+}
+
 std::string Command::returnMsgToServer(std::string message){
 	this->_server->send_msg_to_client_socket(*this->_client, message);
 	return (message);
