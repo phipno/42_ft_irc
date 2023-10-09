@@ -24,7 +24,6 @@ int Nick::executeCommand(){
         char ch = this->_paramVec[0][i];
 		if (allowed_chars.find(ch) != std::string::npos){}
         else {
-			// numReply(client, ERR_ERRONEUSNICKNAME(this->_hostname, client.getNickName()));
 			Command::returnMsgToServer(ERR_ERRONEUSNICKNAME(this->_server->getHostname(), this->_client->getNickName()));
 			return 1;
         }
@@ -32,15 +31,15 @@ int Nick::executeCommand(){
 	std::cout << MAGENTA << "CHECK 1\n" << RESET;
     // check if nickname already exists on same server
 	if (Command::isValidNickname()){
-			// numReply(client, ERR_NICKNAMEINUSE(this->_hostname, client.getNickName()));
-			return 1;
+		Command::returnMsgToServer(ERR_NICKNAMEINUSE(this->_server->getHostname(), this->_client->getNickName()));
+		return 1;
 	}
 
 	std::cout << MAGENTA << "CHECK 2\n" << RESET;
 	//if superuser, he will be welcomed.
 	if (this->_client->getNickName() == "superuser") {
-		// numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
-		// numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+		Command::returnMsgToServer(RPL_WELCOME(this->_server->getHostname(), this->_client->getNickName(), this->_client->getUserName()));
+		Command::returnMsgToServer(RPL_YOURHOST(this->_server->getHostname(), this->_client->getNickName()));
 		this->_client->getSu();
 		this->_client->registerClient(SUPERUSER);
 		return (0);
@@ -49,8 +48,8 @@ int Nick::executeCommand(){
 	// if client typed om username, he will be welcomed after nickname
 	if (this->_client->getStatus() == USERNAME) {
 		this->_client->setNickName(this->_paramVec[0]);
-		// numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
-		// numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
+		Command::returnMsgToServer(RPL_WELCOME(this->_server->getHostname(), this->_client->getNickName(), this->_client->getUserName()));
+		Command::returnMsgToServer(RPL_YOURHOST(this->_server->getHostname(), this->_client->getNickName()));
 		this->_client->registerClient(WELCOMED);
 		return (0);
 	}

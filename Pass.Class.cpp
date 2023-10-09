@@ -11,7 +11,7 @@ variables:
 	461	ERR_NEEDMOREPARAMS
 */
 
-Pass::Pass(Server &server, Client &client, std::string message) : Command(server, client , message){}
+Pass::Pass(Server &server, Client &client, std::string message) : Command(server, client, message){}
 
 Pass::~Pass() {};
 
@@ -44,7 +44,6 @@ int Pass::checkEmptyParamter(){
 
 int Pass::checkRegistrationStatus(){
 	std::cout << MAGENTA << "REGSTATUS\n" << RESET;
-	// std::cout << MAGENTA << this->_client->getRegistrationStatus() << RESET;
 	if (this->_client->getRegistrationStatus() >= REGISTERED){
 		returnMsgToServer(ERR_ALREADYREGISTERED(this->_server->getHostname(), this->_client->getNickName()));
 		return (1);

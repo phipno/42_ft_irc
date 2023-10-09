@@ -31,7 +31,7 @@ int User::executeCommand(){
     Command::tokenizeMsg();
     if (Command::checkRegistrationStatus())
         return 1;
-    if (Command::checkEmptyParamter()) // to changed to class specific function
+    if (Command::checkEmptyParamter()) // to be changed to class specific function (4 params)
         return 1;
     
     if (this->_paramVec[0].length() <= USERLEN)
@@ -45,8 +45,6 @@ int User::executeCommand(){
     if (this->_client->getStatus() == NICKNAME) {
         Command::returnMsgToServer(RPL_WELCOME(this->_server->getHostname(), this->_client->getNickName(), this->_client->getUserName()));
         Command::returnMsgToServer(RPL_YOURHOST(this->_server->getHostname(), this->_client->getNickName()));
-        // numReply(client, RPL_WELCOME(this->_hostname, client.getNickName(), client.getUserName()));
-        // numReply(client, RPL_YOURHOST(this->_hostname, client.getNickName()));
         this->_client->registerClient(WELCOMED);
         return 0;
     }

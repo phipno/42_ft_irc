@@ -240,7 +240,7 @@ std::string Server::make_msg_ready(t_msg *message, Client &client, size_t channe
 	// 	msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
 	// 	 " " + message->command + " " + message->paramVec[channelnumber];
 	// }
-	else if (message->command == "TOPIC") {
+	if (message->command == "TOPIC") {
 
 		msg += ":" + client.getNickName() + "!~" + client.getUserName() + "@" + _hostname + \
 		 " " + message->command + " " + message->paramVec[channelnumber] + " :"  + topic_message;
