@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/10 11:23:47 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/10 13:25:41 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,6 +227,7 @@ std::string Server::recv_from_client_socket(Client &client) {
 	}
 	return (message);
 }
+
 
 //A message is written to a client's socket
 void Server::send_msg_to_client_socket(Client &client, std::string message) {
