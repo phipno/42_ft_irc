@@ -245,3 +245,12 @@ bool Mode::is_in_modes(std::string param) {
 	}
 	return (false);
 }
+
+std::string Mode::make_msg_ready(size_t channelnumber, std::string topic_message){
+    std::string msg;
+	(void) topic_message;
+
+    msg += ":" + this->_client->getNickName() + "!~" + this->_client->getUserName() + "@" + this->_server->getHostname() + \
+	" MODE " + this->_paramVec[0] + " " + topic_message;
+    return (msg);
+}
