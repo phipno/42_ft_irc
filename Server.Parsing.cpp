@@ -97,9 +97,9 @@ t_msg tokenize_msg(std::string Message) {
 
 void Server::parsing_msg(std::string &Message, Client &client) {
 
-  if (Message.back() != '\n') {
-    client.addToBuffer(Message);
-  } else {
+  // if (Message.back() != '\n') {
+  //   client.addToBuffer(Message);
+  // } else {
     client.addToBuffer(Message);
     std::cout << "CTRL - D TEST: " << client.getBuffer() << std::endl;
     this->_parMsg = tokenize_msg(client.getBuffer());
@@ -108,7 +108,7 @@ void Server::parsing_msg(std::string &Message, Client &client) {
       for (size_t i = 0; i < this->_parMsg.paramVec.size(); ++i) {
         std::cout << i << ".Tok: " << this->_parMsg.paramVec[i] << std::endl;
       }
-    }
+    // }
     executeCommands(client, client.getBuffer());
     client.cleanBuffer();
   }
