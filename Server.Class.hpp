@@ -39,6 +39,7 @@ typedef	struct s_msg{
 	std::string					command;
 	std::string					param; //this could be better formulated
 	std::vector<std::string>	paramVec;
+	
 } t_msg;
 
 class Server{

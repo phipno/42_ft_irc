@@ -38,12 +38,12 @@ int Topic::executeCommand(){
 
 	int i = this->_server->channel_exists(this->_paramVec[0]);
 	if (i == -1) { 
-		Command::returnMsgToServer(ERR_NOTONCHANNEL(this->_server->getHostname(), this->_client->getNickName(), this->_paramVec[0]));
+		Command::numReply(ERR_NOTONCHANNEL(this->_server->getHostname(), this->_client->getNickName(), this->_paramVec[0]));
 		return (1);
 	}
 	std::vector<Channel> *channels = this->_server->getChannels();
 	if (!(*channels)[i].is_in_channel(this->_client->getNickName())) {
-		Command::returnMsgToServer(ERR_NOTONCHANNEL(this->_server->getHostname(), this->_client->getNickName(), this->_paramVec[0]));
+		Command::numReply(ERR_NOTONCHANNEL(this->_server->getHostname(), this->_client->getNickName(), this->_paramVec[0]));
 		return (1);
 	}
 
@@ -63,14 +63,14 @@ int Topic::executeCommand(){
 	if (this->_server->is_empty_string(*it) && (privileges || !(*channels)[i].get_topic_restriction()))
 		(*channels)[i].set_topic("No topic is set");
 	else if (this->_server->is_empty_string(*it) && (*channels)[i].get_topic_restriction() && !privileges)
-		Command::returnMsgToServer(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
+		Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
 	else if (!this->_server->is_empty_string(*it) && (privileges || !(*channels)[i].get_topic_restriction())) {
 		(*channels)[i].set_topic(*it);
 		std::string msg = make_msg_ready(0, (*channels)[i].get_topic());
 		this->_server->send_message_to_channel(msg, (*channels)[i]);
 	}
 	else if (!this->_server->is_empty_string(*it) && (*channels)[i].get_topic_restriction() && !privileges)
-		Command::returnMsgToServer(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
+		Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
 	return (0);
 }
 

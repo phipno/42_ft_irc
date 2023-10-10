@@ -201,6 +201,32 @@ void Channel::list_channel_attributes(void) {
 
 }
 
+bool Channel::has_permission(std::string name) {
+    if (is_in_channel(name)) {
+        if (this->_users[name] == true)
+            return true;
+    }
+    return false;
+}
+
+int Channel::kick_user(std::string to_kick) {
+    
+    if (VERBOSE)
+        std::cout << "kick" << std::endl;
+
+    std::map<std::string, bool>::iterator it = _users.find(to_kick);
+    if (it != _users.end()) {
+        _users.erase(to_kick);
+        return (1);
+    }
+    else {
+        //TODO Error Mesasge 
+        if (DEBUG)
+            std::cout << "User not found, returned 0" << std::endl;
+        return (0);
+    }
+}
+
 //==============================================================================
 //setter
 void Channel::set_users(std::map<std::string, bool> users) {_users = users;}

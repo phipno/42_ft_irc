@@ -36,7 +36,7 @@ int Pass::executeCommand(){
 int Pass::checkEmptyParamter(){
 	std::cout << MAGENTA << "EMPTYPARAM\n" << RESET;
 	if (this->_paramVec.empty()){
-		Command::returnMsgToServer(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), this->_command));
+		Command::numReply(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), this->_command));
 		return (1);
 	}
 	return (0);
@@ -45,7 +45,7 @@ int Pass::checkEmptyParamter(){
 int Pass::checkRegistrationStatus(){
 	std::cout << MAGENTA << "REGSTATUS\n" << RESET;
 	if (this->_client->getRegistrationStatus() >= REGISTERED){
-		returnMsgToServer(ERR_ALREADYREGISTERED(this->_server->getHostname(), this->_client->getNickName()));
+		Command::numReply(ERR_ALREADYREGISTERED(this->_server->getHostname(), this->_client->getNickName()));
 		return (1);
 	}
 	return (0);

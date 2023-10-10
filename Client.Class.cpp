@@ -15,7 +15,7 @@
 /* ------------------ CANONICAL FORM -----------------------------------------*/
 
 															 
-Client::Client():_userName("Unknown"), _nickName("Unknown"), _status(0) {
+Client::Client():_userName("Unknown"), _nickName("Unknown"), _buffer(""), _status(0) {
 	memset(&_clientAddr, 0, sizeof(_clientAddr));
 
 	if (VERBOSE)
@@ -24,6 +24,7 @@ Client::Client():_userName("Unknown"), _nickName("Unknown"), _status(0) {
 
 Client::Client(std::string username, std::string nickname) : _userName(username),
 															 _nickName(nickname),
+															 _buffer(""), 
 															 _status(0) {}
 															 
 Client::~Client(){
@@ -49,6 +50,7 @@ Client &Client::operator= (Client const &src){
 		this->_userName = src._userName;
 		this->_nickName = src._nickName;
 		this->_status = src._status;
+		this->_buffer = src._buffer;
 	}
 	return (*this);
 };
@@ -92,6 +94,10 @@ std::string &Client::getUserName(){
 	return (this->_userName);
 };
 
+std::string &Client::getBuffer(){
+	return (this->_buffer);
+};
+
 int Client::getStatus(){
 	return (this->_status);
 };
@@ -103,6 +109,10 @@ bool Client::getSu(){
 
 void Client::setNickName(std::string nickName){
 	_nickName = nickName;
+}
+
+void Client::addToBuffer(std::string Buffer){
+	_buffer += Buffer;
 }
 
 void Client::setClientAddr(struct sockaddr_in &clientAddr){
@@ -138,7 +148,7 @@ void Client::setSu(bool su_flag) {
 }
 
 void Client::cleanBuffer(void) {
-	memset(this->_buffer, 0, sizeof(this->_buffer));
+	this->_buffer.clear();
 }
 
 

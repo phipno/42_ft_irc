@@ -25,9 +25,9 @@ int Join::executeCommand(){
 	std::vector<std::string> channelsToJoin, keyForChannel;
 	std::vector<Channel> joinChannel;
 	
-	channelsToJoin = parse_join_kick(this->_paramVec[0]);
+	channelsToJoin = Command::parse_join_kick(this->_paramVec[0]);
 	if (this->_paramVec.size() >= 2)
-		keyForChannel = parse_join_kick(this->_paramVec[1]);
+		keyForChannel = Command::parse_join_kick(this->_paramVec[1]);
 
     std::vector<Channel> *channels = this->_server->getChannels();
 	for (size_t j = 0; j < channelsToJoin.size(); j++) {
@@ -40,8 +40,8 @@ int Join::executeCommand(){
 			std::string msg = make_msg_ready(j, "");
 			
 			this->_server->send_message_to_channel(msg, channel);
-            Command::returnMsgToServer(RPL_NAMREPLY(this->_server->getHostname(), this->_client->getNickName(), channel.get_name(), "", channel.get_creator()));
-            Command::returnMsgToServer(RPL_ENDOFNAMES(this->_server->getHostname(), channel.get_creator(), channel.get_name()));
+            Command::numReply(RPL_NAMREPLY(this->_server->getHostname(), this->_client->getNickName(), channel.get_name(), "", channel.get_creator()));
+            Command::numReply(RPL_ENDOFNAMES(this->_server->getHostname(), channel.get_creator(), channel.get_name()));
 		}
 		else {
 			int code;
@@ -56,8 +56,8 @@ int Join::executeCommand(){
 			else {
 				std::string msg = make_msg_ready(j, "");
 				this->_server->send_message_to_channel(msg, (*channels)[i]);
-                Command::returnMsgToServer(RPL_NAMREPLY(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name(), (*channels)[i].make_memberlist(), (*channels)[i].get_creator()));
-                Command::returnMsgToServer(RPL_ENDOFNAMES(this->_server->getHostname(), (*channels)[i].get_creator(), (*channels)[i].get_name()));
+                Command::numReply(RPL_NAMREPLY(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name(), (*channels)[i].make_memberlist(), (*channels)[i].get_creator()));
+                Command::numReply(RPL_ENDOFNAMES(this->_server->getHostname(), (*channels)[i].get_creator(), (*channels)[i].get_name()));
 			} 
 		}
 	}
@@ -72,20 +72,6 @@ int Join::executeCommand(){
 		}
 	}
     return 0;
-}
-
-std::vector<std::string> Join::parse_join_kick(std::string commaToken) {
-	std::vector<std::string>	splitToken;
-	size_t	pos;
-
-	while ((pos = commaToken.find(',')) != std::string::npos) {
-		splitToken.push_back(commaToken.substr(0, pos));
-		commaToken.erase(0, pos + 1);
-	}
-	if (pos == std::string::npos)
-		splitToken.push_back(commaToken);
-
-	return splitToken;
 }
 
 std::string Join::make_msg_ready(size_t channelnumber, std::string topic_message){

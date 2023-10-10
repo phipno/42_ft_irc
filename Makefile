@@ -2,7 +2,7 @@
 #.~"~._.~"~._.~"~._.~"~.__.~"~._.~"~. VARS .~"~._.~"~.__.~"~._.~"~._.~"~._.~"~.#
 
 SHELL 			=	/bin/bash
-CPPFLAGS		= 	-Wall -Wextra -Werror -std=c++98 -g 
+CPPFLAGS		= 	-Wall -Wextra -Werror -std=c++98 -g
 CPPFLAGS		+=	-fsanitize=address
 CXX 			= 	c++
 # ---------------------------------------#
@@ -23,13 +23,12 @@ SRC				= 	main \
 					Join.Class \
 					Invite.Class \
 					Topic.Class \
+					Kick.Class \
+					Mode.Class \
 					modes \
 					commands
 					
-DEPS 			= Channel.Class.hpp \
-						Client.Class.hpp \
-						defines.hpp \
-						Server.Class.hpp
+DEPS 			= *.hpp
 
 SRC_FILES		=	$(addsuffix .c, $(SRC))
 OBJ_FILES		=	$(addsuffix .o, $(SRC))

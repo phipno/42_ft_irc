@@ -5,6 +5,7 @@
 class Invite : public Command{
 
 	private:
+		int i;
 		Invite();		
 
 	public:

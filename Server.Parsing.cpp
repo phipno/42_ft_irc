@@ -14,59 +14,48 @@
 #include "Join.Class.hpp"
 #include "Invite.Class.hpp"
 #include "Topic.Class.hpp"
-
-
+#include "Kick.Class.hpp"
+#include "Mode.Class.hpp"
 
 void  Server::executeCommands(Client &client, std::string Message) {
-//switch case
-  if (this->_parMsg.command == "PASS") {
-    Command *command = new Pass(*this, client, Message);
-    command->executeCommand();
-    delete command;
-    // this->pass(&this->_parMsg, client);
-  } else if (this->_parMsg.command == "NICK") {
-    Command *command = new Nick(*this, client, Message);
-    command->executeCommand();
-    delete command;
-  } else if (this->_parMsg.command == "USER") {
-    Command *command = new User(*this, client, Message);
-    command->executeCommand();
-    delete command;
-      // this->user(&this->_parMsg, client);
-  } else if (this->_parMsg.command == "JOIN") {
-    Command *command = new Join(*this, client, Message);
-    command->executeCommand();
-    delete command;   
-      // this->join(this->_parMsg, client);
-  } else if (this->_parMsg.command == "OP") {
-    // setOperator(Message);
-  } else if (this->_parMsg.command == "PRIVMSG") {
-    Command *command = new PrivMsg(*this, client, Message);
-    command->executeCommand();
-    delete command;
-      // this->privmsg(&this->_parMsg, client);
-  } else if (this->_parMsg.command == "KICK") {
-    
-  } else if (this->_parMsg.command == "TOPIC") {
-    Command *command = new Topic(*this, client, Message);
-    command->executeCommand();
-    delete command;
-      // this->topic(&this->_parMsg, client);
-  } else if (this->_parMsg.command == "MODE") {
+
+	Command *command = NULL;
+
+	if (this->_parMsg.command == "PASS")
+		command = new Pass(*this, client, Message);
+	else if (this->_parMsg.command == "NICK")
+		command = new Nick(*this, client, Message);
+	else if (this->_parMsg.command == "USER")
+		command = new User(*this, client, Message);
+	else if (this->_parMsg.command == "JOIN")
+		command = new Join(*this, client, Message);
+	else if (this->_parMsg.command == "PRIVMSG")
+		command = new PrivMsg(*this, client, Message);
+	else if (this->_parMsg.command == "KICK")
+		command = new Kick(*this, client, Message);
+	else if (this->_parMsg.command == "TOPIC")
+		command = new Topic(*this, client, Message);
+	else if (this->_parMsg.command == "INVITE")
+		command = new Invite(*this, client, Message);
+  else if (this->_parMsg.command == "MODE")
+		command = new Mode(*this, client, Message);
+	if (command){
+		command->executeCommand();
+		delete command;
+	}
+
+	else if (this->_parMsg.command == "MODE")
        this->mode(&this->_parMsg, client);
-  } else if (this->_parMsg.command == "INVITE") {
-    Command *command = new Invite(*this, client, Message);
-    command->executeCommand();
-    delete command;
-    // this->invite(&this->_parMsg, client);
-  } else if (this->_parMsg.command == "LIST") {
+	
+
+  	else if (this->_parMsg.command == "LIST") {
       this->list(this->_parMsg, client);
   } else if (this->_parMsg.command == "CAP") {
       this->handshake(&this->_parMsg, client);
   } else if (this->_parMsg.command == "PING") {
     this->pong(&this->_parMsg, client);
   } else {
-    throw(std::runtime_error("Command not found"));
+    std::cerr << "Error: Command not found" << std::endl;
   }
 }
 
@@ -96,18 +85,20 @@ t_msg tokenize_msg(std::string Message) {
 
 
 void Server::parsing_msg(std::string &Message, Client &client) {
-  try {
-    this->_parMsg = tokenize_msg(Message);
+
+  if (Message.back() != '\n') {
+    client.addToBuffer(Message);
+  } else {
+    client.addToBuffer(Message);
+    std::cout << "CTRL - D TEST: " << client.getBuffer() << std::endl;
+    this->_parMsg = tokenize_msg(client.getBuffer());
     if (DEBUG) {
       std::cout << " .Com: " << this->_parMsg.command << std::endl;
       for (size_t i = 0; i < this->_parMsg.paramVec.size(); ++i) {
         std::cout << i << ".Tok: " << this->_parMsg.paramVec[i] << std::endl;
       }
     }
-    executeCommands(client, Message);
-    (void)client;
-  }
-  catch (std::exception &e) {
-    std::cout << e.what() << std::endl;
+    executeCommands(client, client.getBuffer());
+    client.cleanBuffer();
   }
 }
