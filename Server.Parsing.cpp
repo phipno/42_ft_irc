@@ -15,8 +15,7 @@
 #include "Invite.Class.hpp"
 #include "Topic.Class.hpp"
 #include "Kick.Class.hpp"
-
-
+#include "Mode.Class.hpp"
 
 void  Server::executeCommands(Client &client, std::string Message) {
 
@@ -38,6 +37,8 @@ void  Server::executeCommands(Client &client, std::string Message) {
 		command = new Topic(*this, client, Message);
 	else if (this->_parMsg.command == "INVITE")
 		command = new Invite(*this, client, Message);
+  else if (this->_parMsg.command == "MODE")
+		command = new Mode(*this, client, Message);
 	if (command){
 		command->executeCommand();
 		delete command;
