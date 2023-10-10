@@ -76,8 +76,7 @@ int Mode::topic_invite_restriction(std::vector<std::string> params, int pos) {
 	std::vector<std::string>::iterator mode = params.begin() + pos;
 	std::vector<std::string>::iterator next = params.begin() + pos + 1;
 	std::string msg;
-
-
+	
 	std::cout << "mode: " << std::endl;
 	std::vector<Channel> *channels = this->_server->getChannels();
 	std::vector<Channel>::iterator it = channels->begin();
@@ -92,8 +91,7 @@ int Mode::topic_invite_restriction(std::vector<std::string> params, int pos) {
 		if (*mode == "-t" && (next == params.end() || is_in_modes(*next)))
 			(*channels)[i].set_topic_restriction(false);
 	
-		// msg = make_msg_ready(&this->_parMsg, client, 0, *mode); // special case for MODE?
-		msg = "Dummy";
+		msg = make_msg_ready(0, *mode);
 		this->_server->send_message_to_channel(msg, (*channels)[i]);
 		return 0;
 	}
@@ -148,8 +146,7 @@ int Mode::user_limit(std::vector<std::string> params, int pos) {
 	if (*mode == "+l" && (limit != params.end() && valid_number(*limit, i))) {
 
 		(*channels)[i].set_userlimit(valid_number(*limit, i));
-		// msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
-		msg = "Dummy";
+		msg = make_msg_ready(0, *mode);
 		this->_server->send_message_to_channel(msg, (*channels)[i]);
 		return(0);
 	}
@@ -159,8 +156,7 @@ int Mode::user_limit(std::vector<std::string> params, int pos) {
 	if (*mode == "-l" && (limit == params.end() || is_in_modes(*mode))) {
 
 		(*channels)[i].set_userlimit(-1);
-		// msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
-		msg = "Dummy";
+		msg = make_msg_ready(0, *mode);
 		this->_server->send_message_to_channel(msg, (*channels)[i]);
 		return(0);
 	}
@@ -211,8 +207,7 @@ int Mode::key_mode(std::vector<std::string> params, int pos) {
 	if (*mode == "+k" && valid_passphrase(*key)) {
 		(*channels)[i].set_passrestriction(true);
 		(*channels)[i].set_passphrase(*key);
-		// msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
-		msg = "dummy";
+		msg = make_msg_ready(0, *mode);
 		this->_server->send_message_to_channel(msg, (*channels)[i]);
 		return (0);
 	}
@@ -220,8 +215,7 @@ int Mode::key_mode(std::vector<std::string> params, int pos) {
 	if (*mode == "-k" && (is_in_modes(*key) || key == params.end())) {
 		(*channels)[i].set_passrestriction(false);
 		(*channels)[i].set_passphrase("");
-		// msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
-		msg = "dummy";
+		msg = make_msg_ready(0, *mode);
 		this->_server->send_message_to_channel(msg, (*channels)[i]);
 		return (0);
 	}
