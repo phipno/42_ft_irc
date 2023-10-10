@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/10 11:23:47 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/10 11:54:04 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,7 +218,7 @@ std::string Server::recv_from_client_socket(Client &client) {
 		std::string line;
 		while (std::getline(msg, line, '\n')) {
 
-			std::cout  << "<<<<<<<" << "BUFFER: " << line << std::endl;
+			std::cout  << "<<<<<<<" << "LINE: " << line << std::endl;
 			parsing_msg(line, client);
 		}
 		
@@ -257,13 +257,13 @@ bool Server::is_empty_string(std::string token) {
 }
 
 //sends a message to all memebers of the channel, except for oneself
-void Server::send_message_to_channel(std::string message, class Channel &channel) {
+void Server::send_message_to_channel(std::string message, class Channel &channel, class Client &client) {
 
 	std::vector<Client>::iterator it = _clients.begin();
 
 	for (int i = 0 ; it != _clients.end() ; it++, i++) {
 
-		if (channel.is_in_channel(it->getNickName())) {
+		if (channel.is_in_channel(it->getNickName()) && client.getNickName() != it->getNickName()) {
 			send_msg_to_client_socket(_clients[i], message);
 		}
 	}

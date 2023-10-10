@@ -43,7 +43,6 @@ void  Server::executeCommands(Client &client, std::string Message) {
 		command->executeCommand();
 		delete command;
 	}
-
 	else if (this->_parMsg.command == "MODE")
        this->mode(&this->_parMsg, client);
 	

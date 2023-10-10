@@ -92,7 +92,7 @@ int Mode::topic_invite_restriction(std::vector<std::string> params, int pos) {
 			(*channels)[i].set_topic_restriction(false);
 	
 		msg = make_msg_ready(0, *mode);
-		this->_server->send_message_to_channel(msg, (*channels)[i]);
+		this->_server->send_message_to_channel(msg, (*channels)[i], *this->_client);
 		return 0;
 	}
 	Command::numReply(ERR_UNKNOWNMODE(this->_server->getHostname(), this->_client->getNickName(), *next));
@@ -147,7 +147,7 @@ int Mode::user_limit(std::vector<std::string> params, int pos) {
 
 		(*channels)[i].set_userlimit(valid_number(*limit, i));
 		msg = make_msg_ready(0, *mode);
-		this->_server->send_message_to_channel(msg, (*channels)[i]);
+		this->_server->send_message_to_channel(msg, (*channels)[i], *this->_client);
 		return(0);
 	}
 	else
@@ -157,7 +157,7 @@ int Mode::user_limit(std::vector<std::string> params, int pos) {
 
 		(*channels)[i].set_userlimit(-1);
 		msg = make_msg_ready(0, *mode);
-		this->_server->send_message_to_channel(msg, (*channels)[i]);
+		this->_server->send_message_to_channel(msg, (*channels)[i], *this->_client);
 		return(0);
 	}
 	else
@@ -208,7 +208,7 @@ int Mode::key_mode(std::vector<std::string> params, int pos) {
 		(*channels)[i].set_passrestriction(true);
 		(*channels)[i].set_passphrase(*key);
 		msg = make_msg_ready(0, *mode);
-		this->_server->send_message_to_channel(msg, (*channels)[i]);
+		this->_server->send_message_to_channel(msg, (*channels)[i], *this->_client);
 		return (0);
 	}
 
@@ -216,7 +216,7 @@ int Mode::key_mode(std::vector<std::string> params, int pos) {
 		(*channels)[i].set_passrestriction(false);
 		(*channels)[i].set_passphrase("");
 		msg = make_msg_ready(0, *mode);
-		this->_server->send_message_to_channel(msg, (*channels)[i]);
+		this->_server->send_message_to_channel(msg, (*channels)[i], *this->_client);
 		return (0);
 	}
 	else

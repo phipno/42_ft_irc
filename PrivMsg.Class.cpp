@@ -57,7 +57,7 @@ int PrivMsg::executeCommand(){
 			std::vector<Channel>::iterator it = channel->begin();
 			for (; it < channel->end(); it++){
 				if (it->get_name() == recipient && it->is_in_channel(this->_client->getNickName())) {
-					this->_server->send_message_to_channel(msg, *it);
+					this->_server->send_message_to_channel(msg, *it, *this->_client);
 					break ;
 				}
 			}

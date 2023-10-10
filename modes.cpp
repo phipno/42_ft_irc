@@ -71,25 +71,25 @@ int Server::topic_invite_restriction(std::vector<std::string> params, int pos, c
 	
 	if (*mode == "+i" && (next == params.end() || is_in_modes(*next))) {
 		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
-		send_message_to_channel(msg, _channels[i]);
+		send_message_to_channel(msg, _channels[i], client);
 		_channels[i].set_invite_only(true);
 		return (0);
 	}
 	if (*mode == "-i" && (next == params.end() || is_in_modes(*next))) {
 		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
-		send_message_to_channel(msg, _channels[i]);
+		send_message_to_channel(msg, _channels[i], client);
 		_channels[i].set_invite_only(false);
 		return (0);
 	}
 	if (*mode == "+t" && (next == params.end() || is_in_modes(*next))) {
 		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
-		send_message_to_channel(msg, _channels[i]);
+		send_message_to_channel(msg, _channels[i], client);
 		_channels[i].set_topic_restriction(true);
 		return (0);
 	}
 	if (*mode == "-t" && (next == params.end() || is_in_modes(*next))) {
 		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
-		send_message_to_channel(msg, _channels[i]);
+		send_message_to_channel(msg, _channels[i], client);
 		_channels[i].set_topic_restriction(false);
 		return (0);
 	}
@@ -142,7 +142,7 @@ int Server::user_limit(std::vector<std::string> params, int pos, class Client &c
 
 		_channels[i].set_userlimit(valid_number(*limit, i));
 		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
-		send_message_to_channel(msg, _channels[i]);
+		send_message_to_channel(msg, _channels[i], client);
 		return(0);
 	}
 	else
@@ -152,7 +152,7 @@ int Server::user_limit(std::vector<std::string> params, int pos, class Client &c
 
 		_channels[i].set_userlimit(-1);
 		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
-		send_message_to_channel(msg, _channels[i]);
+		send_message_to_channel(msg, _channels[i], client);
 		return(0);
 	}
 	else
@@ -201,7 +201,7 @@ int Server::key_mode(std::vector<std::string> params, int pos, class Client &cli
 		_channels[i].set_passrestriction(true);
 		_channels[i].set_passphrase(*key);
 		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
-		send_message_to_channel(msg, _channels[i]);
+		send_message_to_channel(msg, _channels[i], client);
 		return (0);
 	}
 
@@ -209,7 +209,7 @@ int Server::key_mode(std::vector<std::string> params, int pos, class Client &cli
 		_channels[i].set_passrestriction(false);
 		_channels[i].set_passphrase("");
 		msg = make_msg_ready(&this->_parMsg, client, 0, *mode);
-		send_message_to_channel(msg, _channels[i]);
+		send_message_to_channel(msg, _channels[i], client);
 		return (0);
 	}
 	else

@@ -27,7 +27,7 @@ int Bot::executeCommand() {
 	//unsigned long i = randomzahl, zwischen 1 udn 11
 	size_t i = 5;
 	std::string msg = make_msg_ready(_db[i]);
-	Command::returnMsgToServer(msg);
+	Command::numReply(msg);
 	return (0);
 }
 

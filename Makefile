@@ -25,8 +25,10 @@ SRC				= 	main \
 					Topic.Class \
 					Kick.Class \
 					Mode.Class \
+					Bot.Class \
 					modes \
 					commands
+#					Mode.Class \
 					
 DEPS 			= *.hpp
 

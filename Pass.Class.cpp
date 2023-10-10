@@ -19,7 +19,7 @@ Pass::~Pass() {};
 
 
 int Pass::executeCommand(){
-
+	std::cout << "PASS" << std::endl;
 	Command::tokenizeMsg();
 	if (checkRegistrationStatus())
 		return 1;

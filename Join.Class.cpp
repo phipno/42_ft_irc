@@ -39,7 +39,7 @@ int Join::executeCommand(){
 			this->_server->addChannel(channel);
 			std::string msg = make_msg_ready(j, "");
 			
-			this->_server->send_message_to_channel(msg, channel);
+			this->_server->send_message_to_channel(msg, channel, *this->_client);
             Command::numReply(RPL_NAMREPLY(this->_server->getHostname(), this->_client->getNickName(), channel.get_name(), "", channel.get_creator()));
             Command::numReply(RPL_ENDOFNAMES(this->_server->getHostname(), channel.get_creator(), channel.get_name()));
 		}
@@ -55,7 +55,7 @@ int Join::executeCommand(){
 				std::cout << std::endl;//REPLY with adequate numReply
 			else {
 				std::string msg = make_msg_ready(j, "");
-				this->_server->send_message_to_channel(msg, (*channels)[i]);
+				this->_server->send_message_to_channel(msg, (*channels)[i], *this->_client);
                 Command::numReply(RPL_NAMREPLY(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name(), (*channels)[i].make_memberlist(), (*channels)[i].get_creator()));
                 Command::numReply(RPL_ENDOFNAMES(this->_server->getHostname(), (*channels)[i].get_creator(), (*channels)[i].get_name()));
 			} 

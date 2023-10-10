@@ -67,7 +67,7 @@ int Topic::executeCommand(){
 	else if (!this->_server->is_empty_string(*it) && (privileges || !(*channels)[i].get_topic_restriction())) {
 		(*channels)[i].set_topic(*it);
 		std::string msg = make_msg_ready(0, (*channels)[i].get_topic());
-		this->_server->send_message_to_channel(msg, (*channels)[i]);
+		this->_server->send_message_to_channel(msg, (*channels)[i], *this->_client);
 	}
 	else if (!this->_server->is_empty_string(*it) && (*channels)[i].get_topic_restriction() && !privileges)
 		Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));

@@ -1,6 +1,6 @@
-#include "Command.Class.hpp"
-
 #pragma once
+
+#include "Command.Class.hpp"
 
 class Bot : public Command{
 
