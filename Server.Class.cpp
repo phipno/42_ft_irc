@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/09 13:17:23 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/10 11:09:38 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,9 +152,9 @@ void Server::runServer() {
 			acceptNewClient();
 		}
 		if (this->_fds[0].revents & POLLHUP){
-			// for (unsigned int i = 0; i < get_clients().size(); i++) {
-			// 	close(get_clients()[i].getClientSocket());
-			// }
+			for (unsigned int i = 0; i < get_clients().size(); i++) {
+				close(get_clients()[i].getClientSocket());
+			}
 			close(get_serversocket());
 		}
 		for (i = 0, j = 1; j < _fds.size() && i < _clients.size(); i++, j++) {
@@ -213,10 +213,16 @@ std::string Server::recv_from_client_socket(Client &client) {
 	} 
 	else {
 		
-		std::string message(buffer);
-		std::cout << "<<<<<<<" << message << std::endl;
+		std::cout  << "<<<<<<<" << "BUFFER: " << buffer << std::endl;
+		std::stringstream msg(buffer);
+		std::string line;
+		while (std::getline(msg, line, '\n')) {
+
+			std::cout  << "<<<<<<<" << "BUFFER: " << line << std::endl;
+			parsing_msg(line, client);
+		}
 		
-		parsing_msg(message, client);
+		std::cout << "<<<<<<<" << message << std::endl;
 		return (message);
 	}
 	return (message);
