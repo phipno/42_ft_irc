@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/03 14:34:38 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/10 10:27:22 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,10 +136,11 @@ void Server::runServer() {
 			acceptNewClient();
 		}
 		if (this->_fds[0].revents & POLLHUP){
-			// for (unsigned int i = 0; i < get_clients().size(); i++) {
-			// 	close(get_clients()[i].getClientSocket());
-			// }
+			for (unsigned int i = 0; i < get_clients().size(); i++) {
+				close(get_clients()[i].getClientSocket());
+			}
 			close(get_serversocket());
+			break ;
 		}
 		for (i = 0, j = 1; j < _fds.size() && i < _clients.size(); i++, j++) {
 					
@@ -150,7 +151,6 @@ void Server::runServer() {
 				std::cout << "========================" << std::endl;
 			}
 			if (_fds[j].revents & POLLHUP) {
-				
 				// remove_client(_clients[i], i);
 				close(_clients[i].getClientSocket());
 				_clients.erase(_clients.begin() + i);
@@ -193,9 +193,15 @@ std::string Server::recv_from_client_socket(Client &client) {
 			perror("recv");
 	} 
 	else {
-		std::string message(buffer);
-		std::cout << "<<<<<<<" << message << std::endl;
-		parsing_msg(message, client);
+		std::cout << "<<<<<<<BUFFER: " << buffer << std::endl;
+		// std::string message(buffer);
+		std::stringstream strstr(buffer);
+		std::string line;
+		while (std::getline(strstr, line, '\n')) {
+			std::cout << "<<<<<<<LINE: " << line << std::endl;
+			parsing_msg(line, client);
+		}
+		// std::cout << "<<<<<<<" << message << std::endl;
 		return (message);
 	}
 	return (message);

@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/10/04 13:51:32 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/10 10:10:54 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #include <vector>
 #include <unistd.h>
 #include <signal.h>
+#include <sstream>
 
 #include "defines.hpp"
 #include "Channel.Class.hpp"

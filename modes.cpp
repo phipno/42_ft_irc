@@ -34,14 +34,14 @@ int Server::mode(t_msg *message, Client &client) {
 		return(0);
 	}
 		
-	if (!_channels[i].is_operator(client.getNickName())) {
-		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
-		return (0);
-	}
-	
 	std::string channel = *params;
 	if (++params == message->paramVec.end()) {
-		numReply(client, RPL_CHANNELMODEIS(this->_hostname, _channels[i].get_name()));
+		numReply(client, RPL_CHANNELMODEIS(this->_hostname, _channels[i].get_name(), client.getNickName()));
+		return (0);
+	}
+
+	if (!_channels[i].is_operator(client.getNickName())) {
+		numReply(client, ERR_CHANOPRIVSNEEDED(this->_hostname, client.getNickName(), _channels[i].get_name()));
 		return (0);
 	}
 	

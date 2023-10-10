@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 
     (void) argc;
     int port = std::atoi(argv[1]); 
-    Server server(port, "pw");
+    Server server(port, ":pw");
     signal(SIGINT, signal_handler);
     while(!g_sigint) {
 
