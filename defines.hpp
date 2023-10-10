@@ -27,6 +27,7 @@
 // what is content of RPL_INVITING?
 #define RPL_INVITING(hostname, nickname, target, channel) (std::string(":" + hostname + " 341 " + nickname + " " + target + " " + channel))
 
+#define ERR_UNKNOWNCOMMAND(hostname, command) (std::string(":" + hostname + " 421 <" + std::string(command) + ">" + ":Unknown command"))
 #define ERR_NOSUCHNICK(hostname, nickname) (std::string(":" + std::string(hostname) + " 401 " + nickname + " :No such nick/channel"))
 #define ERR_CANNOTSENDTOCHAN(hostname, nickname, channel) (std::string(":" + hostname + " 404 " + nickname + " " + channel + " :Cannot send to channel"))
 #define ERR_NORECIPIENT(hostname, nickname, command) (std::string(":" + hostname + " 411 " + nickname + " " + command + " :No recipient given"))
