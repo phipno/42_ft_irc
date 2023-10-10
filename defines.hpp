@@ -26,8 +26,8 @@
 #define RPL_YOURHOST(hostname, nickname) (std::string(":" + std::string(hostname) + " 002 " + std::string(nickname) + " :Your host is " + std::string(hostname) + ", running on version 1.0 !"))
 // what is content of RPL_INVITING?
 #define RPL_INVITING(hostname, nickname, target, channel) (std::string(":" + hostname + " 341 " + nickname + " " + target + " " + channel))
-
 #define ERR_NOSUCHNICK(hostname, nickname) (std::string(":" + std::string(hostname) + " 401 " + nickname + " :No such nick/channel"))
+#define ERR_NOSUCHCHANNEL(hostname, channel) (std::string(":" + hostname + " 404 " + channel + " :No such channel"))
 #define ERR_CANNOTSENDTOCHAN(hostname, nickname, channel) (std::string(":" + hostname + " 404 " + nickname + " " + channel + " :Cannot send to channel"))
 #define ERR_NORECIPIENT(hostname, nickname, command) (std::string(":" + hostname + " 411 " + nickname + " " + command + " :No recipient given"))
 // #define ERR_NOTEXTTOSEND(hostname, nickname) (std::string(":irc42 412 " + nick + " :No text to send"))
