@@ -212,14 +212,13 @@ std::string Server::recv_from_client_socket(Client &client) {
 			perror("recv");
 	}
 	else {
-		// std::stringstream ss;
-		// std::string				line;
+		std::stringstream ss;
+		std::string				line;
 
-		// while (std::getline(ss, line, '\n')) {
-		std::string message(buffer);
-		parsing_msg(message, client);
-
-		// }
+		while (std::getline(ss, line, '\n')) {
+			std::string message(buffer);
+			parsing_msg(message, client);
+		}
 		std::cout << "<<<<<<<" << message << std::endl;
 		
 		return (message);
