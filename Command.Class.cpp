@@ -25,6 +25,7 @@ Command &Command::operator=(Command const &src){
 	this->_paramVec = src._paramVec;
 	this->_client = src._client;
 	this->_server = src._server;
+	this->_channels = src._channels;
 	return (*this);
 }
 	
@@ -60,7 +61,21 @@ void Command::tokenizeMsg(){
 	}
 }
 
-std::string Command::returnMsgToServer(std::string message){
+std::vector<std::string> Command::parse_join_kick(std::string commaToken) {
+	std::vector<std::string>	splitToken;
+	size_t	pos;
+
+	while ((pos = commaToken.find(',')) != std::string::npos) {
+		splitToken.push_back(commaToken.substr(0, pos));
+		commaToken.erase(0, pos + 1);
+	}
+	if (pos == std::string::npos)
+		splitToken.push_back(commaToken);
+
+	return splitToken;
+}
+
+std::string Command::numReply(std::string message){
 	this->_server->send_msg_to_client_socket(*this->_client, message);
 	return (message);
 }
@@ -69,7 +84,7 @@ int Command::checkRegistrationStatus(){
 	std::cout << MAGENTA << "REGSTATUS\n" << RESET;
 	// std::cout << MAGENTA << this->_client->getRegistrationStatus() << RESET;
 	if (this->_client->getRegistrationStatus() < REGISTERED){
-		returnMsgToServer(ERR_ALREADYREGISTERED(this->_server->getHostname(), this->_client->getNickName()));
+		numReply(ERR_ALREADYREGISTERED(this->_server->getHostname(), this->_client->getNickName()));
 		return (1);
 	}
 	return (0);
@@ -79,7 +94,7 @@ int Command::checkRegistrationStatusWelcomed(){
 	std::cout << MAGENTA << "REGSTATUS\n" << RESET;
 	// std::cout << MAGENTA << this->_client->getRegistrationStatus() << RESET;
 	if (this->_client->getRegistrationStatus() < WELCOMED){
-		returnMsgToServer(ERR_NOTREGISTERED(this->_server->getHostname(), this->_client->getNickName()));
+		numReply(ERR_NOTREGISTERED(this->_server->getHostname(), this->_client->getNickName()));
 		return (1);
 	}
 	return (0);
@@ -87,7 +102,7 @@ int Command::checkRegistrationStatusWelcomed(){
 
 int Command::checkEmptyParamter(){
 	if (this->_paramVec.empty()){
-		returnMsgToServer(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), this->_command));
+		numReply(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), this->_command));
 		return (1);
 	}
 	return (0);

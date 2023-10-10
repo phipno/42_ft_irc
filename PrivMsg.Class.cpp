@@ -38,7 +38,7 @@ int PrivMsg::executeCommand(){
 	if (checkEmptyParamter())
 		return 1;
     if (this->_paramVec.size() == 1){
-        Command::returnMsgToServer(ERR_NOTEXTTOSEND(this->_server->getHostname(), this->_client->getNickName()));
+        Command::numReply(ERR_NOTEXTTOSEND(this->_server->getHostname(), this->_client->getNickName()));
 		return 1;		
 	}
 
@@ -51,7 +51,7 @@ int PrivMsg::executeCommand(){
 	if (recipient.at(0) == '#') {
 		int i = this->_server->channel_exists(recipient);
 		if (i == -1)
-			Command::returnMsgToServer(ERR_NOSUCHNICK(this->_server->getHostname(), this->_client->getNickName()));	
+			Command::numReply(ERR_NOSUCHNICK(this->_server->getHostname(), this->_client->getNickName()));	
 		else {
 			std::vector<Channel> *channel = this->_server->getChannels();
 			std::vector<Channel>::iterator it = channel->begin();
@@ -62,7 +62,7 @@ int PrivMsg::executeCommand(){
 				}
 			}
 			if (it == channel->end())
-				Command::returnMsgToServer(ERR_CANNOTSENDTOCHAN(this->_server->getHostname(), this->_client->getNickName(), it->get_name()));
+				Command::numReply(ERR_CANNOTSENDTOCHAN(this->_server->getHostname(), this->_client->getNickName(), it->get_name()));
 		}
 	}
 	else {
@@ -75,14 +75,14 @@ int PrivMsg::executeCommand(){
 			}
 		}
 		if (clientit == client.end())
-			Command::returnMsgToServer(ERR_NOSUCHNICK(this->_server->getHostname(), this->_client->getNickName()));				
+			Command::numReply(ERR_NOSUCHNICK(this->_server->getHostname(), this->_client->getNickName()));				
 	}
 	return (0);
 }
 
 int PrivMsg::checkEmptyParamter(){
 	if (this->_paramVec.empty()){
-		Command::returnMsgToServer(ERR_NORECIPIENT(this->_server->getHostname(), this->_client->getNickName(), this->_command));
+		Command::numReply(ERR_NORECIPIENT(this->_server->getHostname(), this->_client->getNickName(), this->_command));
 		return (1);
 	}
 	return (0);
