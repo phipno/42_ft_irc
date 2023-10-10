@@ -40,8 +40,8 @@ int Join::executeCommand(){
 			std::string msg = make_msg_ready(j, "");
 			
 			this->_server->send_message_to_channel(msg, channel);
-            Command::returnMsgToServer(RPL_NAMREPLY(this->_server->getHostname(), this->_client->getNickName(), channel.get_name(), "", channel.get_creator()));
-            Command::returnMsgToServer(RPL_ENDOFNAMES(this->_server->getHostname(), channel.get_creator(), channel.get_name()));
+            Command::numReply(RPL_NAMREPLY(this->_server->getHostname(), this->_client->getNickName(), channel.get_name(), "", channel.get_creator()));
+            Command::numReply(RPL_ENDOFNAMES(this->_server->getHostname(), channel.get_creator(), channel.get_name()));
 		}
 		else {
 			int code;
@@ -56,8 +56,8 @@ int Join::executeCommand(){
 			else {
 				std::string msg = make_msg_ready(j, "");
 				this->_server->send_message_to_channel(msg, (*channels)[i]);
-                Command::returnMsgToServer(RPL_NAMREPLY(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name(), (*channels)[i].make_memberlist(), (*channels)[i].get_creator()));
-                Command::returnMsgToServer(RPL_ENDOFNAMES(this->_server->getHostname(), (*channels)[i].get_creator(), (*channels)[i].get_name()));
+                Command::numReply(RPL_NAMREPLY(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name(), (*channels)[i].make_memberlist(), (*channels)[i].get_creator()));
+                Command::numReply(RPL_ENDOFNAMES(this->_server->getHostname(), (*channels)[i].get_creator(), (*channels)[i].get_name()));
 			} 
 		}
 	}

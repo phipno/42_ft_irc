@@ -37,7 +37,7 @@ int Mode::executeCommand(){
 	
 	int i = this->_server->channel_exists(*params);
 	if (i == -1) {
-		Command::returnMsgToServer(ERR_NOSUCHNICK(this->_server->getHostname(), this->_client->getNickName()));
+		Command::numReply(ERR_NOSUCHNICK(this->_server->getHostname(), this->_client->getNickName()));
 		return(0);
 	}
 	
@@ -45,12 +45,12 @@ int Mode::executeCommand(){
 	std::vector<Channel>::iterator it = channels->begin();
 	for (; it != channels->end(); it++){
 		if (!(*channels)[i].is_operator(this->_client->getNickName())) {
-			Command::returnMsgToServer(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
+			Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
 			return (0);
 		}
 		std::string channel = *params;
 		if (++params == this->_paramVec.end()) {
-			Command::returnMsgToServer(RPL_CHANNELMODEIS(this->_server->getHostname(), (*channels)[i].get_name()));
+			Command::numReply(RPL_CHANNELMODEIS(this->_server->getHostname(), (*channels)[i].get_name()));
 			return (0);
 		}
 	}
@@ -76,7 +76,7 @@ int Mode::topic_invite_restriction(std::vector<std::string> params, int pos) {
 	std::vector<std::string>::iterator mode = params.begin() + pos;
 	std::vector<std::string>::iterator next = params.begin() + pos + 1;
 	std::string msg;
-	
+
 	std::cout << "mode: " << std::endl;
 	std::vector<Channel> *channels = this->_server->getChannels();
 	std::vector<Channel>::iterator it = channels->begin();
@@ -95,7 +95,7 @@ int Mode::topic_invite_restriction(std::vector<std::string> params, int pos) {
 		this->_server->send_message_to_channel(msg, (*channels)[i]);
 		return 0;
 	}
-	Command::returnMsgToServer(ERR_UNKNOWNMODE(this->_server->getHostname(), this->_client->getNickName(), *next));
+	Command::numReply(ERR_UNKNOWNMODE(this->_server->getHostname(), this->_client->getNickName(), *next));
 	return (472);
 }
 
@@ -106,7 +106,7 @@ int Mode::operator_mode(std::vector<std::string> params, int pos) {
 	std::vector<std::string>::iterator user = params.begin() + pos + 1;
 
 	if (user == params.end() || is_in_modes(*user)){
-		Command::returnMsgToServer(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), "MODE +o"));
+		Command::numReply(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), "MODE +o"));
 		return(461);
 	}
 
@@ -121,9 +121,9 @@ int Mode::operator_mode(std::vector<std::string> params, int pos) {
 		}
 		else {
 			if (*mode == "+o")
-				Command::returnMsgToServer(ERR_USERNOTINCHANNEL(this->_server->getHostname(), this->_client->getNickName(), *user, params[0]));
+				Command::numReply(ERR_USERNOTINCHANNEL(this->_server->getHostname(), this->_client->getNickName(), *user, params[0]));
 			else
-				Command::returnMsgToServer(ERR_USERNOTINCHANNEL(this->_server->getHostname(), this->_client->getNickName(), *user, params[0]));
+				Command::numReply(ERR_USERNOTINCHANNEL(this->_server->getHostname(), this->_client->getNickName(), *user, params[0]));
 		}
 	}
 	return (0);
@@ -139,7 +139,7 @@ int Mode::user_limit(std::vector<std::string> params, int pos) {
 
 	if (*mode == "+l" && (limit == params.end() || is_in_modes(*limit) || !valid_number(*limit, i))) {
 
-		Command::returnMsgToServer(ERR_UNKNOWNMODE(this->_server->getHostname(), this->_client->getNickName(), *mode));
+		Command::numReply(ERR_UNKNOWNMODE(this->_server->getHostname(), this->_client->getNickName(), *mode));
 		return(461);
 	}
 	
@@ -151,7 +151,7 @@ int Mode::user_limit(std::vector<std::string> params, int pos) {
 		return(0);
 	}
 	else
-		Command::returnMsgToServer(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), "+l"));
+		Command::numReply(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), "+l"));
 
 	if (*mode == "-l" && (limit == params.end() || is_in_modes(*mode))) {
 
@@ -161,7 +161,7 @@ int Mode::user_limit(std::vector<std::string> params, int pos) {
 		return(0);
 	}
 	else
-		Command::returnMsgToServer(ERR_UNKNOWNMODE(this->_server->getHostname(), this->_client->getNickName(), *limit));
+		Command::numReply(ERR_UNKNOWNMODE(this->_server->getHostname(), this->_client->getNickName(), *limit));
 	return (0);
 }
 
@@ -194,13 +194,13 @@ int Mode::key_mode(std::vector<std::string> params, int pos) {
 	std::vector<Channel> *channels = this->_server->getChannels();
 	if ((*channels)[i].get_passrestriction() && *mode == "+k") {
 
-		Command::returnMsgToServer(ERR_KEYSET(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
+		Command::numReply(ERR_KEYSET(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
 		return (467);
 	}
 	
 	if (*mode == "+k" && (key == params.end() || is_in_modes(*key) || !valid_passphrase(*key))) {
 
-		Command::returnMsgToServer(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), "+k"));
+		Command::numReply(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), "+k"));
 		return(461);
 	}
 
@@ -220,7 +220,7 @@ int Mode::key_mode(std::vector<std::string> params, int pos) {
 		return (0);
 	}
 	else
-		Command::returnMsgToServer(ERR_UNKNOWNMODE(this->_server->getHostname(), this->_client->getNickName(), *key));
+		Command::numReply(ERR_UNKNOWNMODE(this->_server->getHostname(), this->_client->getNickName(), *key));
 	return (0);
 }
 
@@ -252,7 +252,7 @@ bool Mode::is_in_modes(std::string param) {
 
 std::string Mode::make_msg_ready(size_t channelnumber, std::string topic_message){
     std::string msg;
-	(void) topic_message;
+	(void) channelnumber;
 
     msg += ":" + this->_client->getNickName() + "!~" + this->_client->getUserName() + "@" + this->_server->getHostname() + \
 	" MODE " + this->_paramVec[0] + " " + topic_message;

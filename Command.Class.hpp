@@ -25,7 +25,7 @@ class Command{
 		virtual ~Command();
 
 		void tokenizeMsg();
-		std::string returnMsgToServer(std::string message);
+		std::string numReply(std::string message);
 		std::string makeMsgReady(Client &client, size_t channelnumber, std::string topic_message);
 		int checkRegistrationStatus();
 		int checkRegistrationStatusWelcomed();

@@ -44,21 +44,21 @@ int Kick::executeCommand(){
                 else {
                     if (this->_paramVec.size() >= 3) {
                         (*channels)[i].kick_user(userToKick[j]);
-                        Command::returnMsgToServer("You were kicked out of #" + (*channels)[i].get_name() + "\nReason: " + this->_paramVec[2]);
+                        Command::numReply("You were kicked out of #" + (*channels)[i].get_name() + "\nReason: " + this->_paramVec[2]);
                     } else {
                         (*channels)[i].kick_user(userToKick[j]);
-                        Command::returnMsgToServer("You were kicked out of #" + (*channels)[i].get_name() + "\nNo Reason given");
+                        Command::numReply("You were kicked out of #" + (*channels)[i].get_name() + "\nNo Reason given");
             }
                 }
             }
         } else if (j > userToKick.size()){
             if (this->_paramVec.size() >= 3) {
                 (*channels)[i].kick_user(userToKick[j]);
-                Command::returnMsgToServer("You were kicked out of #" + (*channels)[i].get_name() + "\nReason: " + this->_paramVec[2]);
+                Command::numReply("You were kicked out of #" + (*channels)[i].get_name() + "\nReason: " + this->_paramVec[2]);
             }
             else {
                 (*channels)[i].kick_user(userToKick[j]);
-                Command::returnMsgToServer("You were kicked out of #" + (*channels)[i].get_name() + "\nNo Reason given");
+                Command::numReply("You were kicked out of #" + (*channels)[i].get_name() + "\nNo Reason given");
             }
         } else
             ; //TODO error missing params

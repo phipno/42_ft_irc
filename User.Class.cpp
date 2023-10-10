@@ -43,8 +43,8 @@ int User::executeCommand(){
     
     // if client typed in nickname, he will be welcomed after username
     if (this->_client->getStatus() == NICKNAME) {
-        Command::returnMsgToServer(RPL_WELCOME(this->_server->getHostname(), this->_client->getNickName(), this->_client->getUserName()));
-        Command::returnMsgToServer(RPL_YOURHOST(this->_server->getHostname(), this->_client->getNickName()));
+        Command::numReply(RPL_WELCOME(this->_server->getHostname(), this->_client->getNickName(), this->_client->getUserName()));
+        Command::numReply(RPL_YOURHOST(this->_server->getHostname(), this->_client->getNickName()));
         this->_client->registerClient(WELCOMED);
         return 0;
     }
@@ -59,7 +59,7 @@ int User::executeCommand(){
 int User::checkEmptyParamter(){
     std::cout << MAGENTA << "EMPTYPARAM\n" << RESET;
     if (this->_paramVec.empty() || this->_paramVec.size() < 3){
-        Command::returnMsgToServer(ERR_NONICKNAMEGIVEN(this->_server->getHostname()));
+        Command::numReply(ERR_NONICKNAMEGIVEN(this->_server->getHostname()));
         return (1);
     }
     return (0);
