@@ -43,46 +43,39 @@ int Invite::executeCommand(){
 	}
 	if (clientit == clients.end())
         Command::numReply(ERR_NOSUCHNICK(this->_server->getHostname(), inviteNick));
-
-	std::vector<Channel> *channels = this->_server->getChannels();
-    std::vector<Channel>::iterator it = channels->begin();
-	for (; it != channels->end(); it++){
-		if (it->get_name() == channelName){
-			Channel channel = *it;
-			if (channel.is_in_channel(inviteNick)){
-				Command::numReply(ERR_USERONCHANNEL(this->_server->getHostname(), inviteNick, channel.get_name()));
-                return 1;
-			}
-			if (channel.get_invite_only()){
-				if (channel.is_operator(this->_client->getNickName())){
-					Command::numReply(RPL_INVITING(this->_server->getHostname(), this->_client->getNickName(), inviteNick, channel.get_name()));
-                    std::string msg = make_msg_ready(0, "");
-					// numReply(*clientit, msg); can this one be replaced with send message to client socket?
-					it->set_invitee(inviteNick);
-					return 0;
+	else {
+		std::vector<Channel> *channels = this->_server->getChannels();
+		std::vector<Channel>::iterator it = channels->begin();
+		for (; it != channels->end(); it++){
+			if (it->get_name() == channelName){
+				Channel channel = *it;
+				if (channel.is_in_channel(inviteNick)){
+					Command::numReply(ERR_USERONCHANNEL(this->_server->getHostname(), inviteNick, channel.get_name()));
+					return 1;
 				}
-				else{
-					Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), channel.get_name()));
-                    return 1;
+				else if (channel.get_invite_only()){
+					if (channel.is_operator(this->_client->getNickName())){
+						communicateInvite(inviteNick, channel.get_name(), *clientit);
+						it->set_invitee(inviteNick);
+					}
+					else
+						Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), channel.get_name()));
+				}
+				else {
+					if (channel.is_in_channel(this->_client->getNickName())){
+						communicateInvite(inviteNick, channel.get_name(), *clientit);
+						it->set_invitee(inviteNick);
+					}
+					else
+						Command::numReply(ERR_NOTONCHANNEL(this->_server->getHostname(), this->_client->getNickName(), channel.get_name()));
 				}
 			}
 			else {
-				if (channel.is_in_channel(this->_client->getNickName())){
-					Command::numReply(RPL_INVITING(this->_server->getHostname(), this->_client->getNickName(), inviteNick, channel.get_name()));
-                    std::string msg = make_msg_ready(0, "");
-					this->_server->send_msg_to_client_socket(*clientit, msg);
-					it->set_invitee(inviteNick);
-					return 0;
-				}
-				else {
-					Command::numReply(ERR_NOTONCHANNEL(this->_server->getHostname(), this->_client->getNickName(), channel.get_name()));
-					return 1;
-				}
+				Command::numReply(RPL_INVITING(this->_server->getHostname(), this->_client->getNickName(), inviteNick, channelName));
+				std::string msg = make_msg_ready(0, "");
+				this->_server->send_msg_to_client_socket(*clientit, msg);
 			}
 		}
-        Command::numReply(RPL_INVITING(this->_server->getHostname(), this->_client->getNickName(), inviteNick, it->get_name()));
-		std::string msg = make_msg_ready(0, "");
-        this->_server->send_msg_to_client_socket(*clientit, msg);
 	}
 	return 0;
 }
@@ -103,4 +96,10 @@ std::string Invite::make_msg_ready(size_t channelnumber, std::string topic_messa
 	msg += ":" + this->_client->getNickName() + "!~" + this->_client->getUserName() + "@" + this->_server->getHostname() + \
 	" " + this->_command + " " + this->_paramVec[0] + " :" + this->_paramVec[1];
 	return (msg);
+}
+
+void Invite::communicateInvite(std::string nick, std::string channel, Client &client){
+	Command::numReply(RPL_INVITING(this->_server->getHostname(), this->_client->getNickName(), nick, channel));
+	std::string msg = make_msg_ready(0, "");
+	this->_server->send_msg_to_client_socket(client, msg);
 }
