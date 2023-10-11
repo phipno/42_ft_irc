@@ -57,7 +57,6 @@ int Invite::executeCommand(){
 				if (channel.is_operator(this->_client->getNickName())){
 					Command::numReply(RPL_INVITING(this->_server->getHostname(), this->_client->getNickName(), inviteNick, channel.get_name()));
                     std::string msg = make_msg_ready(0, "");
-					// numReply(*clientit, msg); can this one be replaced with send message to client socket?
 					it->set_invitee(inviteNick);
 					return 0;
 				}
@@ -80,10 +79,10 @@ int Invite::executeCommand(){
 				}
 			}
 		}
-        Command::numReply(RPL_INVITING(this->_server->getHostname(), this->_client->getNickName(), inviteNick, it->get_name()));
-		std::string msg = make_msg_ready(0, "");
-        this->_server->send_msg_to_client_socket(*clientit, msg);
 	}
+    Command::numReply(RPL_INVITING(this->_server->getHostname(), this->_client->getNickName(), inviteNick, channelName));
+	std::string msg = make_msg_ready(0, "");
+	this->_server->send_msg_to_client_socket(*clientit, msg);
 	return 0;
 }
 
