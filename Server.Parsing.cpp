@@ -41,10 +41,13 @@ void  Server::executeCommands(Client &client, std::string Message) {
 		command = new Invite(*this, client, Message);
   else if (this->_parMsg.command == "MODE")
 		command = new Mode(*this, client, Message);
+  else if (this->_parMsg.command == "PING")
+		  pong(&this->_parMsg, client);
 	if (command){
 		command->executeCommand();
 		delete command;
-	} else
+	} else if (this->_parMsg.command != "NOTICE" && this->_parMsg.command != "PING" \
+          && this->_parMsg.command != "WHO" && this->_parMsg.command != "PART")
     numReply(client, ERR_UNKNOWNCOMMAND(this->_hostname, this->_parMsg.command));
 }
 

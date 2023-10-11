@@ -44,7 +44,7 @@ int Mode::executeCommand(){
 	std::vector<Channel> *channels = this->_server->getChannels();
 	std::vector<Channel>::iterator it = channels->begin();
 	for (; it != channels->end(); it++){
-		if (!(*channels)[i].is_operator(this->_client->getNickName())) {
+		if (!(*channels)[i].is_operator(this->_client->getNickName()) && _paramVec.size() > 1) {
 			Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
 			return (0);
 		}
@@ -143,25 +143,28 @@ int Mode::user_limit(std::vector<std::string> params, int pos) {
 		return(461);
 	}
 	
-	if (*mode == "+l" && (limit != params.end() && valid_number(*limit, i))) {
+	if (*mode == "+l") {
+		if (limit != params.end() && valid_number(*limit, i)) {
 
-		(*channels)[i].set_userlimit(valid_number(*limit, i));
-		msg = make_msg_ready(0, *mode);
-		this->_server->send_message_to_channel(msg, (*channels)[i]);
-		return(0);
+			(*channels)[i].set_userlimit(valid_number(*limit, i));
+			msg = make_msg_ready(0, *mode);
+			this->_server->send_message_to_channel(msg, (*channels)[i]);
+			return(0);
+		}
+		else
+			Command::numReply(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), "+l"));
 	}
-	else
-		Command::numReply(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), "+l"));
+	else if (*mode == "-l") {
+		if (limit == params.end() || is_in_modes(*mode)) {
 
-	if (*mode == "-l" && (limit == params.end() || is_in_modes(*mode))) {
-
-		(*channels)[i].set_userlimit(-1);
-		msg = make_msg_ready(0, *mode);
-		this->_server->send_message_to_channel(msg, (*channels)[i]);
-		return(0);
+			(*channels)[i].set_userlimit(-1);
+			msg = make_msg_ready(0, *mode);
+			this->_server->send_message_to_channel(msg, (*channels)[i]);
+			return(0);
+		}
+		else
+			Command::numReply(ERR_UNKNOWNMODE(this->_server->getHostname(), this->_client->getNickName(), *limit));
 	}
-	else
-		Command::numReply(ERR_UNKNOWNMODE(this->_server->getHostname(), this->_client->getNickName(), *limit));
 	return (0);
 }
 
