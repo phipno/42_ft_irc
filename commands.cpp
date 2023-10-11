@@ -43,7 +43,6 @@ int Server::handshake(t_msg *message, class Client &client) {
 
 int Server::pong(t_msg *message, class Client &client) {
 
-	// if (message->paramVec.size() >= 2)
 	std::string msg = "PONG ";
 	std::vector<std::string>::iterator it = message->paramVec.begin();
 	for ( ; it != message->paramVec.end(); it++)
