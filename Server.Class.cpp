@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/11 11:31:50 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/11 13:47:28 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,7 +218,7 @@ std::string Server::recv_from_client_socket(Client &client) {
 	}
 	else {
 		
-		// std::cout  << "<<<<<<<" << "BUFFER: " << buffer << std::endl;
+		std::cout  << "<<<<<<<" << "BUFFER: " << buffer << std::endl;
 		// std::stringstream msg(buffer);
 		// std::string line;
 		// while (std::getline(msg, line, '\n')) {

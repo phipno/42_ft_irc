@@ -50,7 +50,6 @@ int Join::executeCommand(){
 			else
 				code = (*channels)[i].add_user(this->_client->getNickName(), "", false);
 				
-			//switchcase
 			if (code)
 				std::cout << std::endl;//REPLY with adequate numReply
 			else {
