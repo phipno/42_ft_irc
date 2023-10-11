@@ -29,7 +29,18 @@ int Join::executeCommand(){
 	if (this->_paramVec.size() >= 2)
 		keyForChannel = Command::parse_join_kick(this->_paramVec[1]);
 
-    std::vector<Channel> *channels = this->_server->getChannels();
+	if (DEBUG) {
+		for (std::vector<std::string>::iterator It = channelsToJoin.begin();
+				 It != channelsToJoin.end(); ++It) {
+			std::cout << "Channel: " << *It << std::endl;
+		}
+		for (std::vector<std::string>::iterator It = keyForChannel.begin();
+				 It != keyForChannel.end(); ++It) {
+			std::cout << "Keys: " << *It << std::endl;
+		}
+	}
+
+  std::vector<Channel> *channels = this->_server->getChannels();
 	for (size_t j = 0; j < channelsToJoin.size(); j++) {
 		int i = this->_server->channel_exists(channelsToJoin[j]);
 		if (i == -1) {
@@ -61,24 +72,14 @@ int Join::executeCommand(){
 			} 
 		}
 	}
-	if (DEBUG) {
-		for (std::vector<std::string>::iterator It = channelsToJoin.begin();
-				 It != channelsToJoin.end(); ++It) {
-			std::cout << "Channel: " << *It << std::endl;
-		}
-		for (std::vector<std::string>::iterator It = keyForChannel.begin();
-				 It != keyForChannel.end(); ++It) {
-			std::cout << "Keys: " << *It << std::endl;
-		}
-	}
     return 0;
 }
 
 std::string Join::make_msg_ready(size_t channelnumber, std::string topic_message){
     std::string msg;
 	(void) topic_message;
-
+	(void) channelnumber;
     msg += ":" + this->_client->getNickName() + "!~" + this->_client->getUserName() + "@" + this->_server->getHostname() + \
-	" " + this->_command + " " + this->_paramVec[channelnumber];
+	" " + this->_command + " "/* + this->_paramVec[channelnumber]*/;
     return (msg);
 }

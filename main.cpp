@@ -25,10 +25,9 @@ int main(int argc, char **argv) {
         server.runServer();
     }
     for (unsigned int i = 0; i < server.get_clients().size(); i++) {
-		int j = close(server.get_clients()[i].getClientSocket());
-        std::cout << "J" << j << std::endl;
+		std::cout << "Closing Client Socket: " << close(server.get_clients()[i].getClientSocket());
     }
-	close(server.get_serversocket());
+	std::cout << "Closing Server Socket: " << close(server.get_serversocket()) << std::endl;
     return (0);
 }
 
