@@ -13,7 +13,7 @@ class Join : public Command{
 
         virtual int executeCommand();
         int checkEmptyParamter();
-        std::string make_msg_ready(size_t channelnumber, std::string topic_message);
+        std::string make_msg_ready(std::string channelToCreate, std::string topic_message);
         
         std::vector<std::string> parse_join_kick(std::string commaToken);
 };

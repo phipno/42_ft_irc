@@ -48,7 +48,7 @@ int Join::executeCommand(){
 			Channel channel(channelsToJoin[j]);
 			channel.add_user(this->_client->getNickName(), "", true);
 			this->_server->addChannel(channel);
-			std::string msg = make_msg_ready(j, "");
+			std::string msg = make_msg_ready(channelsToJoin[j], "");
 			
 			this->_server->send_message_to_channel(msg, channel);
             Command::numReply(RPL_NAMREPLY(this->_server->getHostname(), this->_client->getNickName(), channel.get_name(), "", channel.get_creator()));
@@ -64,7 +64,7 @@ int Join::executeCommand(){
 			if (code)
 				std::cout << std::endl;//REPLY with adequate numReply
 			else {
-				std::string msg = make_msg_ready(j, "");
+				std::string msg = make_msg_ready(channelsToJoin[j], "");
 				this->_server->send_message_to_channel(msg, (*channels)[i]);
                 Command::numReply(RPL_NAMREPLY(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name(), (*channels)[i].make_memberlist(), (*channels)[i].get_creator()));
                 Command::numReply(RPL_ENDOFNAMES(this->_server->getHostname(), (*channels)[i].get_creator(), (*channels)[i].get_name()));
@@ -74,11 +74,11 @@ int Join::executeCommand(){
     return 0;
 }
 
-std::string Join::make_msg_ready(size_t channelnumber, std::string topic_message){
+std::string Join::make_msg_ready(std::string channelToCreate, std::string topic_message){
     std::string msg;
 	(void) topic_message;
-	(void) channelnumber;
+	
     msg += ":" + this->_client->getNickName() + "!~" + this->_client->getUserName() + "@" + this->_server->getHostname() + \
-	" " + this->_command + " "/* + this->_paramVec[channelnumber]*/;
+	" " + this->_command + " " + channelToCreate;
     return (msg);
 }
