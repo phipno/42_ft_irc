@@ -44,9 +44,8 @@ void  Server::executeCommands(Client &client, std::string Message) {
 	if (command){
 		command->executeCommand();
 		delete command;
-	} else {
+	} else
     numReply(client, ERR_UNKNOWNCOMMAND(this->_hostname, this->_parMsg.command));
-  }
 }
 
 t_msg tokenize_msg(std::string Message) {
@@ -86,7 +85,8 @@ void Server::parsing_msg(std::string &Message, Client &client) {
   while (std::getline(msg, line, '\n')) {
     if (ctrlD == false) {
       client.addToBuffer(line);
-      std::cout << "CTRL - D TEST: " << client.getBuffer() << std::endl;
+      if (DEBUG)
+        std::cout << "CTRL - D TEST: " << client.getBuffer() << std::endl;
       this->_parMsg = tokenize_msg(client.getBuffer());
       if (DEBUG) {
         std::cout << " .Com: " << this->_parMsg.command << std::endl;
