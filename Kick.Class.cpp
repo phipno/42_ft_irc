@@ -40,7 +40,7 @@ int Kick::executeCommand(){
     Command::tokenizeMsg();
 	if (Command::checkRegistrationStatusWelcomed())
 		return 1;
-	if (Command::checkEmptyParamter())
+	if (checkEmptyParamter())
 		return 1;
 
     std::vector<std::string> channelsToKick, userToKick;
@@ -48,49 +48,119 @@ int Kick::executeCommand(){
 
     channelsToKick = Command::parse_join_kick(this->_paramVec[0]);
     if (this->_paramVec.size() >= 2) // ? 
-        userToKick = Command::parse_join_kick(this->_paramVec[1]);
+		userToKick = Command::parse_join_kick(this->_paramVec[1]);
 
 	std::vector<Channel> *channels = this->_server->getChannels();
-    for (size_t j = 0; j < channelsToKick.size(); j++) {
-        int i = this->_server->channel_exists(channelsToKick[j]);
-        if (i == -1)
-             Command::numReply(ERR_NOSUCHCHANNEL(this->_server->getHostname(), (*channels)[i].get_name()));
-        else if((*channels)[i].is_operator(this->_client->getNickName())){
-            std::vector<std::string>::iterator it = userToKick.begin();
-            for (; it != userToKick.end(); ++it) {
-                if ((*channels)[i].is_in_channel(*it) == false)
-                    Command::numReply(ERR_USERNOTINCHANNEL(this->_server->getHostname(), it->data(), " ", (*channels)[i].get_name()));
-                else {
-                    if (this->_paramVec.size() >= 3) {
-                        (*channels)[i].kick_user(userToKick[j]);
-                        Command::numReply("You were kicked out of #" + (*channels)[i].get_name() + "\nReason: " + this->_paramVec[2]);
-                    } else {
-                        (*channels)[i].kick_user(userToKick[j]);
-                        Command::numReply("You were kicked out of #" + (*channels)[i].get_name() + "\nNo Reason given");
-            }
-        }
-
-        else
-            Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
-
-        else if ((*channels)[i].is_in_channel(this->_client->getNickName()) == false)
-            ;//TODO error kicker is not in channel
-        else if ((*channels)[i].has_permission(this->_client->getNickName()) == false)
-            ;//TODO error has no permission
-        else if (channelsToKick.size() == 1) {
-                }
-            }
-        } else if (j > userToKick.size()){
-            if (this->_paramVec.size() >= 3) {
-                (*channels)[i].kick_user(userToKick[j]);
-                Command::numReply("You were kicked out of #" + (*channels)[i].get_name() + "\nReason: " + this->_paramVec[2]);
-            }
-            else {
-                (*channels)[i].kick_user(userToKick[j]);
-                Command::numReply("You were kicked out of #" + (*channels)[i].get_name() + "\nNo Reason given");
-            }
-        } else
-            ; //TODO error missing params
-    }
+	for (size_t j = 0; j < channelsToKick.size(); j++) {
+		int i = this->_server->channel_exists(channelsToKick[j]);
+		if (i == -1)
+			Command::numReply(ERR_NOSUCHCHANNEL(this->_server->getHostname(), channelsToKick[j]));
+		else if (!(*channels)[i].is_in_channel(this->_client->getNickName()))
+			Command::numReply(ERR_NOTONCHANNEL(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
+		else if(!(*channels)[i].is_operator(this->_client->getNickName()))
+			Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
+		else {
+			std::vector<std::string>::iterator it = userToKick.begin();
+					
+			std::vector<Client> clients = this->_server->getClients();
+			std::vector<Client>::iterator clientit = clients.begin();
+			for ( ; clientit < clients.end(); clientit++){
+				if (clientit->getNickName() == *it)
+					break;
+			}
+			// std::cout << MAGENTA << clientit->getNickName() << RESET << std::endl;
+			for (; it != userToKick.end(); ++it) {
+				if ((*channels)[i].is_in_channel(*it) == false)
+					Command::numReply(ERR_USERNOTINCHANNEL(this->_server->getHostname(), it->data(), " ", (*channels)[i].get_name()));
+				else {
+					if (this->_paramVec.size() >= 3) {
+						(*channels)[i].kick_user(userToKick[j]);
+						this->_server->send_msg_to_client_socket(*clientit, "You were kicked out of " + (*channels)[i].get_name() + "\nReason: " + this->_paramVec[2]);
+					}
+					else {
+						(*channels)[i].kick_user(userToKick[j]);
+						this->_server->send_msg_to_client_socket(*clientit, "You were kicked out of " + (*channels)[i].get_name() + "\nReason: " + "\nNo Reason given");
+					}
+				}
+			}
+			if (j > userToKick.size()){
+				if (this->_paramVec.size() >= 3) {
+					(*channels)[i].kick_user(userToKick[j]);
+					this->_server->send_msg_to_client_socket(*clientit, "You were kicked out of " + (*channels)[i].get_name() + "\nReason: " + this->_paramVec[2]);
+				}
+				else {
+					(*channels)[i].kick_user(userToKick[j]);
+					this->_server->send_msg_to_client_socket(*clientit, "You were kicked out of " + (*channels)[i].get_name() + "\nNo Reason given");
+				}
+			}
+			// else
+			// 	; //TODO error missing params
+			}
+		}
 	return 0;
 }
+
+int Kick::checkEmptyParamter(){
+	if (this->_paramVec.empty() || this->_paramVec.size() < 2){
+		numReply(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), this->_command));
+		return (1);
+	}
+	return (0);
+}
+
+// void Server::kick(t_msg &parsedMsg, Client &client) {
+//     if (parsedMsg.paramVec.empty()) {
+//         numReply(461, &parsedMsg, client);
+//         return ;
+//     }
+    
+//     std::vector<std::string> channelsToKick, userToKick;
+//     std::vector<Channel> joinChannel;
+
+//     channelsToKick = parse_join_kick(parsedMsg.paramVec[0]);
+//     if (parsedMsg.paramVec.size() >= 2)
+//         userToKick = parse_join_kick(parsedMsg.paramVec[1]);
+
+//     for (size_t j = 0; j < channelsToKick.size(); j++) {
+//         int i = channel_exists(channelsToKick[j]);
+//         if (i == -1)
+//                 ; //TODO numReply channel doesnt exist ERR_NOSUCHCHANNEL
+//         // ? is this client.getNickName good, or what NAME is saved inside the channels 
+//         else if (this->_channels[i].is_in_channel(client.getNickName()) == false)
+//             ;//TODO error kicker is not in channel
+//         else if (this->_channels[i].has_permission(client.getNickName()) == false)
+//             ;//TODO error has no permission
+//         else if (channelsToKick.size() == 1) {
+//             std::vector<std::string>::iterator it = userToKick.begin();
+//             for (; it != userToKick.end(); ++it) {
+//                 if (this->_channels[i].is_in_channel(*it) == false)
+//                     ;//TODO error user to kick is not in channel
+//                 else {
+//                     if (parsedMsg.paramVec.size() >= 3) {
+//                         this->_channels[i].kick_user(userToKick[j]);
+//                         send_msg_to_client_socket(client, "You were kicked out of #" + this->_channels[i].get_name() + "\nReason: " + parsedMsg.paramVec[2]);
+//                     } else {
+//                         this->_channels[i].kick_user(userToKick[j]);
+//                         send_msg_to_client_socket(client, "You were kicked out of #" + this->_channels[i].get_name() + "\nNo Reason given");
+//             }
+//                 }
+//             }
+//         } else if (j > userToKick.size()){
+//             if (parsedMsg.paramVec.size() >= 3) {
+//                 this->_channels[i].kick_user(userToKick[j]);
+//                 send_msg_to_client_socket(client, "You were kicked out of #" + this->_channels[i].get_name() + "\nReason: " + parsedMsg.paramVec[2]);
+//             }
+//             else {
+//                 this->_channels[i].kick_user(userToKick[j]);
+//                 send_msg_to_client_socket(client, "You were kicked out of #" + this->_channels[i].get_name() + "\nNo Reason given");
+//             }
+//         } else
+//             ; //TODO error missing params
+//     }
+// }
+
+//         int kick_user(std::string to_kick); //returns 1 if successfull
+//         bool is_in_channel(std::string name);
+//         bool has_permission(std::string name);
+
+
