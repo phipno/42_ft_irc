@@ -213,17 +213,18 @@ std::string Server::recv_from_client_socket(Client &client) {
 	}
 	else {
 		
-		std::cout  << "<<<<<<<" << "BUFFER: " << buffer << std::endl;
-		std::stringstream msg(buffer);
-		std::string line;
-		while (std::getline(msg, line, '\n')) {
+		// std::cout  << "<<<<<<<" << "BUFFER: " << buffer << std::endl;
+		// std::stringstream msg(buffer);
+		// std::string line;
+		// while (std::getline(msg, line, '\n')) {
 
-			std::cout  << "<<<<<<<" << "BUFFER: " << line << std::endl;
-			parsing_msg(line, client);
-		}
-		
-		std::cout << "<<<<<<<" << message << std::endl;
-		return (message);
+		// 	parsing_msg(line, client);
+		// 	std::cout  << "<<<<<<<" << "BUFFER: " << line << std::endl;
+		// }
+		message = buffer;
+		parsing_msg(message, client);
+		// std::cout << "<<<<<<<" << message << std::endl;
+		// return (message);
 	}
 	return (message);
 }

@@ -6,6 +6,8 @@
 #include <exception>
 #include <sstream>
 
+#include "defines.hpp"
+#include "Command.Class.hpp"
 #include "Server.Class.hpp"
 #include "Pass.Class.hpp"
 #include "Nick.Class.hpp"
@@ -42,21 +44,8 @@ void  Server::executeCommands(Client &client, std::string Message) {
 	if (command){
 		command->executeCommand();
 		delete command;
-	}
-
-	else if (this->_parMsg.command == "MODE")
-       this->mode(&this->_parMsg, client);
-	
-
-  	else if (this->_parMsg.command == "LIST") {
-      this->list(this->_parMsg, client);
-  } else if (this->_parMsg.command == "CAP") {
-      this->handshake(&this->_parMsg, client);
-  } else if (this->_parMsg.command == "PING") {
-    this->pong(&this->_parMsg, client);
-  } else {
-    std::cerr << "Error: Command not found" << std::endl;
-  }
+	} else
+    numReply(client, ERR_UNKNOWNCOMMAND(this->_hostname, this->_parMsg.command));
 }
 
 t_msg tokenize_msg(std::string Message) {
@@ -85,20 +74,28 @@ t_msg tokenize_msg(std::string Message) {
 
 
 void Server::parsing_msg(std::string &Message, Client &client) {
+	std::stringstream msg(Message);
+	std::string       line;
+  bool              ctrlD = false;
 
-  // if (Message.back() != '\n') {
-  //   client.addToBuffer(Message);
-  // } else {
+  if (Message.back() != '\n') {
     client.addToBuffer(Message);
-    std::cout << "CTRL - D TEST: " << client.getBuffer() << std::endl;
-    this->_parMsg = tokenize_msg(client.getBuffer());
-    if (DEBUG) {
-      std::cout << " .Com: " << this->_parMsg.command << std::endl;
-      for (size_t i = 0; i < this->_parMsg.paramVec.size(); ++i) {
-        std::cout << i << ".Tok: " << this->_parMsg.paramVec[i] << std::endl;
+    ctrlD = true;
+  }
+  while (std::getline(msg, line, '\n')) {
+    if (ctrlD == false) {
+      client.addToBuffer(line);
+      if (DEBUG)
+        std::cout << "CTRL - D TEST: " << client.getBuffer() << std::endl;
+      this->_parMsg = tokenize_msg(client.getBuffer());
+      if (DEBUG) {
+        std::cout << " .Com: " << this->_parMsg.command << std::endl;
+        for (size_t i = 0; i < this->_parMsg.paramVec.size(); ++i) {
+          std::cout << i << ".Tok: " << this->_parMsg.paramVec[i] << std::endl;
+        }
       }
+      executeCommands(client, client.getBuffer());
+      client.cleanBuffer();
     }
-    executeCommands(client, client.getBuffer());
-    client.cleanBuffer();
-  // }
+  }
 }
