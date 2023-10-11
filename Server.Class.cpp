@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/10 13:25:41 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/11 11:31:50 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,11 @@ int Server::setupServer(){
 		std::cerr << "Error creating socket\n" ;
 		return 1;
 	}
+	int reuse = 1;
+    if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int)) < 0) {
+        std::cerr << "Error setting socket options\n";
+        return 1;
+    }
 	// bind serversocket, using internet style (struct sockaddr_in)
 	this->_serverAddr.sin_family = AF_INET;
 	this->_serverAddr.sin_port = htons(this->_port);

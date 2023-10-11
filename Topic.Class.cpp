@@ -57,7 +57,7 @@ int Topic::executeCommand(){
 	//e.g: TOPIC #chan1,#chan2 :new_topic changes the topic for both channels into new_topic
 	//loop through the code below
 	if (it == this->_paramVec.end()) {
-		// numReply(client, RPL_TOPIC(this->_hostname, client.getNickName(), _channels[i].get_name(), _channels[i].get_topic()));
+		Command::numReply(RPL_TOPIC(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name(), (*channels)[i].get_topic()));
 		return(0);
 	}
 	if (this->_server->is_empty_string(*it) && (privileges || !(*channels)[i].get_topic_restriction()))
