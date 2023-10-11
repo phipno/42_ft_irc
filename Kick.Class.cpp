@@ -108,5 +108,5 @@ int Kick::checkEmptyParamter(){
 		numReply(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), this->_command));
 		return (1);
 	}
-	return (0);
+	return 0;
 }
