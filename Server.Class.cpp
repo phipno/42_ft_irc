@@ -6,7 +6,7 @@
 /*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/10 11:23:47 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/11 13:47:28 by aestraic         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,11 @@ int Server::setupServer(){
 		std::cerr << "Error creating socket\n" ;
 		return 1;
 	}
+	int reuse = 1;
+    if (setsockopt(_serverSocket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(int)) < 0) {
+        std::cerr << "Error setting socket options\n";
+        return 1;
+    }
 	// bind serversocket, using internet style (struct sockaddr_in)
 	this->_serverAddr.sin_family = AF_INET;
 	this->_serverAddr.sin_port = htons(this->_port);
@@ -213,7 +218,7 @@ std::string Server::recv_from_client_socket(Client &client) {
 	}
 	else {
 		
-		// std::cout  << "<<<<<<<" << "BUFFER: " << buffer << std::endl;
+		std::cout  << "<<<<<<<" << "BUFFER: " << buffer << std::endl;
 		// std::stringstream msg(buffer);
 		// std::string line;
 		// while (std::getline(msg, line, '\n')) {
@@ -228,6 +233,7 @@ std::string Server::recv_from_client_socket(Client &client) {
 	}
 	return (message);
 }
+
 
 //A message is written to a client's socket
 void Server::send_msg_to_client_socket(Client &client, std::string message) {

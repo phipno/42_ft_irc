@@ -75,9 +75,9 @@ std::vector<std::string> Command::parse_join_kick(std::string commaToken) {
 	return splitToken;
 }
 
-std::string Command::numReply(std::string message){
+int Command::numReply(std::string message){
 	this->_server->send_msg_to_client_socket(*this->_client, message);
-	return (message);
+	return (1);
 }
 
 int Command::checkRegistrationStatus(){

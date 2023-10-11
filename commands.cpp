@@ -36,13 +36,19 @@ there.
 
 int Server::handshake(t_msg *message, class Client &client) {
 
-	send_msg_to_client_socket(client, "PONG " + message->paramVec[2]);
+	// if (message->paramVec.size() >= 3)
+		send_msg_to_client_socket(client, "PONG " + message->paramVec[1]);
 	return (1);
 }
 
 int Server::pong(t_msg *message, class Client &client) {
 
-	send_msg_to_client_socket(client, "PONG " + message->paramVec[0] + " " + message->paramVec[1]);
+	std::string msg = "PONG ";
+	std::vector<std::string>::iterator it = message->paramVec.begin();
+	for ( ; it != message->paramVec.end(); it++)
+		msg += *it + " ";
+		
+	send_msg_to_client_socket(client, msg);
 	return (1);
 }
 

@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 11:03:14 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/09 13:10:08 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/11 13:29:14 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 
 #define ERR_UNKNOWNCOMMAND(hostname, command) (std::string(":" + hostname + " 421 <" + std::string(command) + ">" + ":Unknown command"))
 #define ERR_NOSUCHNICK(hostname, nickname) (std::string(":" + std::string(hostname) + " 401 " + nickname + " :No such nick/channel"))
+#define ERR_NOSUCHCHANNEL(hostname, channel) (std::string(":" + hostname + " 404 " + channel + " :No such channel"))
 #define ERR_CANNOTSENDTOCHAN(hostname, nickname, channel) (std::string(":" + hostname + " 404 " + nickname + " " + channel + " :Cannot send to channel"))
 #define ERR_NORECIPIENT(hostname, nickname, command) (std::string(":" + hostname + " 411 " + nickname + " " + command + " :No recipient given"))
 // #define ERR_NOTEXTTOSEND(hostname, nickname) (std::string(":irc42 412 " + nick + " :No text to send"))
