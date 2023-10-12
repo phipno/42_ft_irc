@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/28 11:03:14 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/11 16:32:33 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/12 10:00:46 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,9 @@
 #define ERR_NOTREGISTERED(hostname, nickname) (std::string(":" + hostname + " 451 " + nickname + " :You have not registered"))
 #define ERR_NEEDMOREPARAMS(hostname, nickname, command) (std::string(":" + std::string(hostname) + " 461 " + std::string(nickname) + " :" +std::string(command) + " :Not enough parameters"))
 #define ERR_ALREADYREGISTERED(hostname, nickname) (std::string(":" + std::string(hostname) + " 462 " + std::string(nickname) + " :You may not reregister"))
+#define ERR_CHANNELISFULL(hostname, nickname, channel) (std::string(":" + hostname + " 471 " + nickname + " " + channel + " :Cannot join channel (+l)"))
+#define ERR_INVITEONLYCHAN(hostname, nickname, channel) (std::string(":" + hostname + " 473 " + nickname + " " + channel + " :Cannot join channel (+i)"))
+#define ERR_BADCHANNELKEY(hostname, nickname, channel) (std::string(":" + hostname + " 475 " + nickname + " " + channel + " :Cannot join channel (+k)"))
 #define ERR_CHANOPRIVSNEEDED(hostname, nickname, channel) (std::string(":" + hostname + " 482 " + nickname + " " + channel + " :You're not channel operator"))
 
 //TOPIC
