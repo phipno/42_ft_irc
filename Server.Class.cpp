@@ -20,7 +20,7 @@ Server::Server(){
 	this->_fds[MAX_EVENTS];
 };
 
-Server::Server(int port, std::string password) : _port(port), _password(password), _hostname("Ingwer.Radish.Cherry"){
+Server::Server(int port, std::string password) : _port(port), _password(":" + password), _hostname("Ingwer.Radish.Cherry"){
 };
 
 Server::~Server(){

@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sstream>
+#include <cstdio>
 
 #include "defines.hpp"
 #include "Channel.Class.hpp"

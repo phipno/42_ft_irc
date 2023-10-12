@@ -81,7 +81,7 @@ void Server::parsing_msg(std::string &Message, Client &client) {
 	std::string       line;
   bool              ctrlD = false;
 
-  if (Message.back() != '\n') {
+  if (Message.size() > 0 && Message[Message.size() - 1] != '\n') {
     client.addToBuffer(Message);
     ctrlD = true;
   }
