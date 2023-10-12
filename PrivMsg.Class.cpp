@@ -63,7 +63,7 @@ int PrivMsg::executeCommand(){
 				}
 			}
 			if (it == channel->end())
-				Command::numReply(ERR_CANNOTSENDTOCHAN(this->_server->getHostname(), this->_client->getNickName(), it->get_name()));
+				Command::numReply(ERR_CANNOTSENDTOCHAN(this->_server->getHostname(), this->_client->getNickName(), ""));
 		}
 	}
 	else {
