@@ -88,15 +88,15 @@ void Server::parsing_msg(std::string &Message, Client &client) {
   while (std::getline(msg, line, '\n')) {
     if (ctrlD == false) {
       client.addToBuffer(line);
-      if (DEBUG)
-        std::cout << "CTRL - D TEST: " << client.getBuffer() << std::endl;
+      // if (DEBUG)
+      //   std::cout << "CTRL - D TEST: " << client.getBuffer() << std::endl;
       this->_parMsg = tokenize_msg(client.getBuffer());
-      if (DEBUG) {
-        std::cout << " .Com: " << this->_parMsg.command << std::endl;
-        for (size_t i = 0; i < this->_parMsg.paramVec.size(); ++i) {
-          std::cout << i << ".Tok: " << this->_parMsg.paramVec[i] << std::endl;
-        }
-      }
+      // if (DEBUG) {
+      //   std::cout << " .Com: " << this->_parMsg.command << std::endl;
+      //   for (size_t i = 0; i < this->_parMsg.paramVec.size(); ++i) {
+      //     std::cout << i << ".Tok: " << this->_parMsg.paramVec[i] << std::endl;
+      //   }
+      // }
       executeCommands(client, client.getBuffer());
       client.cleanBuffer();
     }

@@ -29,6 +29,7 @@ int main(int argc, char **argv) {
 		std::cout << "Closing Client Socket: " << close(server.get_clients()[i].getClientSocket());
     }
 	std::cout << "Closing Server Socket: " << close(server.get_serversocket()) << std::endl;
+ }
     return (0);
 }
 
