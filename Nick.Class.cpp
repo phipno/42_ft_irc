@@ -53,6 +53,9 @@ int Nick::executeCommand(){
 		this->_client->registerClient(WELCOMED);
 		return (0);
 	}
+	else if (this->_client->getStatus() == WELCOMED) {
+		this->_client->setNickName(this->_paramVec[0]);
+	}
 	else {
 		this->_client->setNickName(this->_paramVec[0]);
 		this->_client->registerClient(NICKNAME);

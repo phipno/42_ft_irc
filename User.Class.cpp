@@ -31,7 +31,7 @@ int User::executeCommand(){
     Command::tokenizeMsg();
     if (Command::checkRegistrationStatus())
         return 1;
-    if (Command::checkEmptyParamter()) // to be changed to class specific function (4 params)
+    if (checkEmptyParamter()) // to be changed to class specific function (4 params)
         return 1;
     
     if (this->_paramVec[0].length() <= USERLEN)
@@ -48,6 +48,9 @@ int User::executeCommand(){
         this->_client->registerClient(WELCOMED);
         return 0;
     }
+    else if (this->_client->getStatus() == WELCOMED) {
+        ; //do nothing when trying to change the username
+    }
     else {
         this->_client->setFullName(this->_paramVec[0]);
         this->_client->registerClient(USERNAME);
@@ -57,9 +60,9 @@ int User::executeCommand(){
 
 /* command requires 4 parameters */
 int User::checkEmptyParamter(){
-    std::cout << MAGENTA << "EMPTYPARAM\n" << RESET;
+    // std::cout << MAGENTA << "EMPTYPARAM\n" << RESET;
     if (this->_paramVec.empty() || this->_paramVec.size() < 3){
-        Command::numReply(ERR_NONICKNAMEGIVEN(this->_server->getHostname()));
+        Command::numReply(ERR_NEEDMOREPARAMS(this->_server->getHostname(), this->_client->getNickName(), this->_command));
         return (1);
     }
     return (0);

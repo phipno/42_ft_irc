@@ -42,12 +42,8 @@ int Mode::executeCommand(){
 	}
 	
 	std::vector<Channel> *channels = this->_server->getChannels();
-	// std::vector<Channel>::iterator it = channels->begin();
 	if (!(*channels)[i].is_operator(this->_client->getNickName()) && _paramVec.size() > 1) {
 			Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
-	// for (; it != channels->end(); it++){
-	// 		return (0);
-	// 	}
 		std::string channel = *params;
 	}
 		if (++params == this->_paramVec.end()) {
