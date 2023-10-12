@@ -61,8 +61,12 @@ int Join::executeCommand(){
 			else
 				code = (*channels)[i].add_user(this->_client->getNickName(), "", false);
 				
-			if (code)
-				std::cout << std::endl;//REPLY with adequate numReply
+			if (code == 1)
+				Command::numReply(ERR_BADCHANNELKEY(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
+			else if (code == 2)
+				Command::numReply(ERR_INVITEONLYCHAN(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
+			else if (code == 3)
+				Command::numReply(ERR_CHANNELISFULL(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
 			else {
 				std::string msg = make_msg_ready(channelsToJoin[j], "");
 				this->_server->send_message_to_channel(msg, (*channels)[i]);

@@ -14,4 +14,5 @@ class Topic : public Command{
 		virtual int executeCommand();
 		int checkEmptyParamter();
         std::string make_msg_ready(size_t channelnumber, std::string topic_message);
+		bool is_empty_string(std::string token);
 };

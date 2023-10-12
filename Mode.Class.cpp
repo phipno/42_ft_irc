@@ -42,30 +42,30 @@ int Mode::executeCommand(){
 	}
 	
 	std::vector<Channel> *channels = this->_server->getChannels();
-	std::vector<Channel>::iterator it = channels->begin();
-	for (; it != channels->end(); it++){
-		if (!(*channels)[i].is_operator(this->_client->getNickName()) && _paramVec.size() > 1) {
+	// std::vector<Channel>::iterator it = channels->begin();
+	if (!(*channels)[i].is_operator(this->_client->getNickName()) && _paramVec.size() > 1) {
 			Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
-			return (0);
-		}
+	// for (; it != channels->end(); it++){
+	// 		return (0);
+	// 	}
 		std::string channel = *params;
+	}
 		if (++params == this->_paramVec.end()) {
 			Command::numReply(RPL_CHANNELMODEIS(this->_server->getHostname(), (*channels)[i].get_name()));
 			return (0);
 		}
-	}
 	
 	std::cout << "PARAMS: " << *params << std::endl;
-	for (int i = 1; params != this->_paramVec.end(); params++, i++) {
+	for (int j = 1; params != this->_paramVec.end(); params++, j++) {
 		
 		if (*params == "+i" || *params == "-i" || *params == "+t" || *params == "-t" )
-			topic_invite_restriction(this->_paramVec, i);
+			topic_invite_restriction(this->_paramVec, j);
 		else if (*params == "+k" || *params == "-k")
-			key_mode(this->_paramVec, i);
+			key_mode(this->_paramVec, j);
 		else if (*params == "+l" || *params == "-l")
-			user_limit(this->_paramVec, i);
+			user_limit(this->_paramVec, j);
 		else if (*params == "+o" || *params == "-o")
-			operator_mode(this->_paramVec, i);
+			operator_mode(this->_paramVec, j);
 	}
 	return (0);
 }

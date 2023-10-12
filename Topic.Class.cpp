@@ -60,16 +60,16 @@ int Topic::executeCommand(){
 		Command::numReply(RPL_TOPIC(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name(), (*channels)[i].get_topic()));
 		return(0);
 	}
-	if (this->_server->is_empty_string(*it) && (privileges || !(*channels)[i].get_topic_restriction()))
+	if (is_empty_string(*it) && (privileges || !(*channels)[i].get_topic_restriction()))
 		(*channels)[i].set_topic("No topic is set");
-	else if (this->_server->is_empty_string(*it) && (*channels)[i].get_topic_restriction() && !privileges)
+	else if (is_empty_string(*it) && (*channels)[i].get_topic_restriction() && !privileges)
 		Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
-	else if (!this->_server->is_empty_string(*it) && (privileges || !(*channels)[i].get_topic_restriction())) {
+	else if (!is_empty_string(*it) && (privileges || !(*channels)[i].get_topic_restriction())) {
 		(*channels)[i].set_topic(*it);
 		std::string msg = make_msg_ready(0, (*channels)[i].get_topic());
 		this->_server->send_message_to_channel(msg, (*channels)[i]);
 	}
-	else if (!this->_server->is_empty_string(*it) && (*channels)[i].get_topic_restriction() && !privileges)
+	else if (!is_empty_string(*it) && (*channels)[i].get_topic_restriction() && !privileges)
 		Command::numReply(ERR_CHANOPRIVSNEEDED(this->_server->getHostname(), this->_client->getNickName(), (*channels)[i].get_name()));
 	return (0);
 }
@@ -79,4 +79,15 @@ std::string Topic::make_msg_ready(size_t channelnumber, std::string topic_messag
 	msg += ":" + this->_client->getNickName() + "!~" + this->_client->getUserName() + "@" + this->_server->getHostname() + \
 	" " + this->_command + " " + this->_paramVec[channelnumber] + " :" + topic_message;
 	return (msg);
+}
+
+bool Topic::is_empty_string(std::string token) {
+	
+	std::cout << "TOKEN: " << token << std::endl;
+	// Last token has always a space at the end(should be fixed)
+	if (token == ":") {
+		std::cout << "empty string()" << std::endl;
+		return (true);
+	}
+	return (false);
 }

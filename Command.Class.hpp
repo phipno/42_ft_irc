@@ -11,9 +11,9 @@ class Command{
 		Command();
 		Command (Command const &src);
 		std::string					_message;
-		std::string					_prefix; //dont know if i need that
+		std::string					_prefix;
 		std::string					_command;
-		std::string					_param; //this could be better formulated
+		std::string					_param;
 		std::vector<std::string>	_paramVec;
 		Client						*_client;
 		Server						*_server;

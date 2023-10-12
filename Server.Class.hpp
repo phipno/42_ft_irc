@@ -6,7 +6,7 @@
 /*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2023/10/09 13:11:12 by kczichow         ###   ########.fr       */
+/*   Updated: 2023/10/12 11:14:23 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@
 #include "Client.Class.hpp"
 
 typedef	struct s_msg{
-	std::string					prefix; //dont know if i need that
+	std::string					prefix;
 	std::string					command;
-	std::string					param; //this could be better formulated
+	std::string					param;
 	std::vector<std::string>	paramVec;
 	
 } t_msg;
@@ -45,77 +45,52 @@ typedef	struct s_msg{
 class Server{
 
 	private:
-     int					_port;
-     std::string			_password;
-	 std::string			_hostname;
-     int					_serverSocket;
-	 struct sockaddr_in		_serverAddr;
-	 struct pollfd			_serverPollfd;
-	 std::vector<Channel>	_channels;
-	 std::vector<Client>	_clients;
-	 std::vector<pollfd>	_fds;
-	 t_msg					_parMsg; //added this to private, just because :)
-	
-	int setupServer();
-	void acceptNewClient();
-	void remove_client(Client &client, int client_id);
-		void remove_client_from_channels(class Client &client);
-	
-	public:
-	 	Server();
-		~Server();
-		Server(int port, std::string password);
+		int						_port;
+		std::string				_password;
+		std::string				_hostname;
+		int						_serverSocket;
+		struct sockaddr_in		_serverAddr;
+		struct pollfd			_serverPollfd;
+		std::vector<Channel>	_channels;
+		std::vector<Client>		_clients;
+		std::vector<pollfd>		_fds;
+		t_msg					_parMsg;
+		
+		Server();
 		Server (Server const &src);
 		Server &operator= (Server const &src);
+		
+		void acceptNewClient();
+		int setupServer();
+	
+	public:
+		~Server();
+		Server(int port, std::string password);
 
 		void runServer();
-		void ping(class Client &client);
 		int pong(t_msg *message, class Client &client);
 		int handshake(t_msg *message, class Client &client);
-		std::string make_msg_ready(t_msg *message, Client &client, size_t channelnumber, std::string topic_message);
 
 		//Messages
 		std::string recv_from_client_socket(Client &client);
 		void send_msg_to_client_socket(Client &client, std::string message);
-		void send_message_to_channel(std::string message, class Channel &channel);		
-		void list(t_msg &message, Client &client);
-
-		//Commands
-		void join_channel(std::string channelName, class Client &client);
-		int pass(t_msg *message, Client &client);
-		int nick(t_msg *message, Client &client);
-		int user(t_msg *message, Client &client);
-		int privmsg(t_msg *message, Client &client);
-		void join(t_msg &parsedMsg, Client &client);
-		int topic(t_msg *parsedMsg, Client &client);
-		int invite(t_msg *message, Client &client);
-
-		//Modes
-		int mode(t_msg *message, Client &client);
-		bool is_in_modes(std::string param);
-		int operator_mode(std::vector<std::string> params, int pos, class Client &client);
-		int topic_invite_restriction(std::vector<std::string> params, int pos, class Client &client);
-		int user_limit(std::vector<std::string> params, int pos, class Client &client);
-		int valid_number(std::string param, int channelindex);
-		int key_mode(std::vector<std::string> params, int pos, class Client &client);
-		bool valid_passphrase(std::string param);
-			
-		//misc
-		void signal_handler(int binary);
+		void send_message_to_channel(std::string message, class Channel &channel);
 		void numReply(Client &client, std::string message);
+
+		//Channels
+		void join_channel(std::string channelName, class Client &client);
+		int channel_exists(std::string channelName);
 		
-		//parsing
+		//Parsing
 		void parsing_msg(std::string &message, Client &client);
 	 	void executeCommands(Client &client, std::string Message);
-		int channel_exists(std::string channelName);
-		bool is_empty_string(std::string token);
 
 		//Debugging
 		void list_channels(void);
 		void list_channels_all(void);
 		void list_clients(void);
 
-		//Getters
+		//Getter/Setter
 		std::vector<Client> get_clients(void);
 		std::vector<pollfd> get_fds(void);
 		int get_serversocket(void);
@@ -124,6 +99,5 @@ class Server{
 		std::string getHostname();
 		std::vector<Client> getClients();
 		std::vector<Channel> *getChannels();
-
 		void addChannel(Channel channel);
 };

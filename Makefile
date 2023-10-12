@@ -24,9 +24,7 @@ SRC				= 	main \
 					Invite.Class \
 					Topic.Class \
 					Kick.Class \
-					Mode.Class \
-					modes \
-					commands
+					Mode.Class 
 					
 DEPS 			= *.hpp
 
