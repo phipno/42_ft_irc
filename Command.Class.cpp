@@ -81,8 +81,6 @@ int Command::numReply(std::string message){
 }
 
 int Command::checkRegistrationStatus(){
-	std::cout << MAGENTA << "REGSTATUS\n" << RESET;
-	// std::cout << MAGENTA << this->_client->getRegistrationStatus() << RESET;
 	if (this->_client->getRegistrationStatus() < REGISTERED){
 		numReply(ERR_ALREADYREGISTERED(this->_server->getHostname(), this->_client->getNickName()));
 		return (1);
@@ -91,8 +89,6 @@ int Command::checkRegistrationStatus(){
 }
 
 int Command::checkRegistrationStatusWelcomed(){
-	std::cout << MAGENTA << "REGSTATUS\n" << RESET;
-	// std::cout << MAGENTA << this->_client->getRegistrationStatus() << RESET;
 	if (this->_client->getRegistrationStatus() < WELCOMED){
 		numReply(ERR_NOTREGISTERED(this->_server->getHostname(), this->_client->getNickName()));
 		return (1);

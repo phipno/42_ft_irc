@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.Class.cpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aestraic <aestraic@student.42.fr>          +#+  +:+       +#+        */
+/*   By: kczichow <kczichow@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/15 10:27:01 by kczichow          #+#    #+#             */
-/*   Updated: 2023/10/11 13:47:28 by aestraic         ###   ########.fr       */
+/*   Updated: 2023/10/12 11:09:43 by kczichow         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,16 +142,12 @@ void Server::runServer() {
 	setupServer();
 	
 	while (!g_sigint) {
-		// std::cout << "run_Server()" << g_sigint << std::endl;
 		// set poll with unlimited time
 		int PollResult = poll(_fds.data(), _fds.size(), -1);
 		if (PollResult == -1) {
 			perror("poll");
 			continue;
 		}
-		// std::cout << "poll_result" << PollResult << std::endl;
-		
-		
 		//used for connecting a client to a server
 		if (this->_fds[0].revents & POLLIN){
 			acceptNewClient();
@@ -171,8 +167,6 @@ void Server::runServer() {
 				std::cout << "========================" << std::endl;
 			}
 			if (_fds[j].revents & POLLHUP) {
-				
-				// remove_client(_clients[i], i);
 				close(_clients[i].getClientSocket());
 				_clients.erase(_clients.begin() + i);
 				_fds.erase(_fds.begin() + j);
@@ -182,25 +176,25 @@ void Server::runServer() {
 	}
 };
 
-// void Server::remove_client(Client &client, int client_id) {
-	
-// 	remove_client_from_channels(client);
-// 	(void) client_id;
-// 	// close(_clients[client_id].getClientSocket());
-// 	// _clients.erase(_clients.begin() + client_id);
-// 	// _fds.erase(_fds.begin() + client_id + 1);
-// }
+int Server::pong(t_msg *message, class Client &client) {
 
-//TO-DO Removing works for _clients-vector, but cant remove clients from channels prperly
-// void Server::remove_client_from_channels(class Client &client) {
+	std::string msg = "PONG ";
+	std::vector<std::string>::iterator it = message->paramVec.begin();
+	for ( ; it != message->paramVec.end(); it++)
+		msg += *it + " ";
+		
+	send_msg_to_client_socket(client, msg);
+	return (1);
+}
 
-// 	std::vector<Channel>::iterator it_chan = _channels.begin();
-	
-// 	for (int i = 0 ; it_chan != _channels.end(); it_chan++, i++) {
-// 		if (it_chan->get_users().find(client.getNickName()) != it_chan->get_users().end())
-// 			_channels[i].get_users().erase(_channels[i].get_users().find(client.getNickName()));
-// 	}
-// }
+int Server::handshake(t_msg *message, class Client &client) {
+
+	// if (message->paramVec.size() >= 3)
+		send_msg_to_client_socket(client, "PONG " + message->paramVec[1]);
+	return (1);
+}
+
+/* ------------------------- PUBLIC: MESSAGES ---------------------------------*/
 
 //receives a message from a client's socket
 std::string Server::recv_from_client_socket(Client &client) {
@@ -234,7 +228,6 @@ std::string Server::recv_from_client_socket(Client &client) {
 	return (message);
 }
 
-
 //A message is written to a client's socket
 void Server::send_msg_to_client_socket(Client &client, std::string message) {
 
@@ -247,20 +240,6 @@ void Server::send_msg_to_client_socket(Client &client, std::string message) {
 	
 	if (bytesRead == -1)
 		perror("send message to client");
-}
-
-//Debugging/ HELPER functions
-
-//an empty string is, when there is only a : in the token
-bool Server::is_empty_string(std::string token) {
-	
-	std::cout << "TOKEN: " << token << std::endl;
-	// Last token has always a space at the end(should be fixed)
-	if (token == ":") {
-		std::cout << "empty string()" << std::endl;
-		return (true);
-	}
-	return (false);
 }
 
 //sends a message to all memebers of the channel, except for oneself
@@ -279,6 +258,38 @@ void Server::send_message_to_channel(std::string message, class Channel &channel
 void Server::numReply(Client &client, std::string message){
 	send_msg_to_client_socket(client, message);
 }
+
+/* ------------------------- PUBLIC: CHANNELS --------------------------------*/
+
+void Server::join_channel(std::string channelName, class Client &client) {
+	
+	int i = channel_exists(channelName);
+	std::cout << "Channel already exists? " << i << std::endl;
+	if (i == -1) {
+		Channel channel(channelName);
+		channel.add_user(client.getNickName(), "", true);
+		this->_channels.push_back(channel);
+	}
+	else{
+		this->_channels[i].add_user(client.getNickName(), "", false);
+	}
+}
+
+int Server::channel_exists(std::string channelName) {
+
+	std::vector<Channel>::iterator it = this->_channels.begin();
+	for ( int i = 0; it != this->_channels.end(); it++, i++) {
+		if (channelName == it->get_name())
+			return (i);
+	}
+	return (-1);
+}
+
+/* ------------------------- PUBLIC: PARSING ---------------------------------*/
+
+// in file Server.Parsing.cpp
+
+/* ------------------------- PUBLIC: DEBUGGING -------------------------------*/
 
 void Server::list_channels(void) {
 
@@ -317,38 +328,14 @@ void Server::list_clients(void) {
 	std::cout << "--------------------------------" << std::endl;
 }
 
-//getter/setter
-std::vector<Client> Server::get_clients(void) {
-	return (_clients);
-}
+/* ------------------------- PUBLIC: GETTER/SETTER ---------------------------*/
 
-std::vector<pollfd> Server::get_fds(void) {
-	return (_fds);
-}
-
-int Server::get_serversocket(void) {
-	return (_serverSocket);
-}
-
-t_msg Server::get_parsedMsg() {
-	return _parMsg;
-}
-std::string Server::getPassword(){
-	return this->_password;
-}
-
-std::string Server::getHostname(){
-	return this->_hostname;
-}
-
-std::vector<Client> Server::getClients(){
-	return this->_clients;
-}
-
-std::vector<Channel> *Server::getChannels(){
-	return &this->_channels;
-}
-
-void Server::addChannel(Channel channel){
-	this->_channels.push_back(channel);
-}
+std::vector<Client> Server::get_clients(void) {return _clients;}
+std::vector<pollfd> Server::get_fds(void) {return _fds;}
+int Server::get_serversocket(void) {return _serverSocket;}
+t_msg Server::get_parsedMsg() {return _parMsg;}
+std::string Server::getPassword(){return this->_password;}
+std::string Server::getHostname(){return this->_hostname;}
+std::vector<Client> Server::getClients(){return this->_clients;}
+std::vector<Channel> *Server::getChannels(){return &this->_channels;}
+void Server::addChannel(Channel channel){this->_channels.push_back(channel);}
