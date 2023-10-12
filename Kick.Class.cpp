@@ -67,7 +67,6 @@ int Kick::executeCommand(){
 					if (clientit->getNickName() == *it)
 						break;
 				}
-				std::cout << MAGENTA << clientit->getNickName() << RESET << std::endl;
 				if ((*channels)[i].is_in_channel(*it) == false)
 					Command::numReply(ERR_USERNOTINCHANNEL(this->_server->getHostname(), it->data(), " ", (*channels)[i].get_name()));
 				else {
